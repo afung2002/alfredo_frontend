@@ -90,3 +90,96 @@ $ yarn run dev
 - env.dev  
 
 - env.prod  
+
+## 📂 Folder Structure  
+
+📁 env    
+📁 node_modules    
+📁 public    
+📁 src    
+├── 📦 apps    
+│   ├── 📦 company-tracker    
+│   ├── 📦 find-intros    
+│   ├── 📦 fund-manager       
+│   ├── 📦 limited-partner    
+│   ├── 📦 memo-generator    
+│   └── 📦 vc-associate    
+├── 📁 assets    
+├── 🧩 components    
+│   ├── 🧩 AppCard    
+│   ├── 🧩 AppSideMenu    
+├── 📁 constants    
+│   ├── 📄 index.ts    
+│   ├── 📄 routes.ts    
+│   └── 📄 tags.ts    
+📁 hooks    
+📁 layouts    
+│   ├── 📄 LandingLayout.tsx    
+│   └── 📄 MasterLayout.tsx    
+├── 📄 pages    
+│   ├── 📄 AppsPage.tsx    
+│   ├── 📄 LandingPage.tsx    
+│   ├── 📄 Page404.tsx    
+│   └── 📄 Settings.tsx    
+📁 redux    
+│   ├── 📁 selectors    
+│   ├── 📁 slices    
+│   └── 📄 store.ts    
+📁 router    
+│   ├── 📄 index.tsx    
+│   └── 📄 routes.tsx    
+📁 schemas    
+📁 services    
+│   └── 📁 api    
+│       └── 📄 index.ts    
+📁 types    
+│   └── 📄 index.ts    
+📁 utils    
+│   ├── 📄 dateUtils.ts    
+│   ├── 📄 formUtils.ts    
+│   ├── 📄 investmentUtils.ts    
+│   ├── 📄 uiUtils.ts    
+│   └── 📄 validationUtils.ts    
+📄 App.css    
+📄 App.tsx    
+📄 index.css    
+📄 index.tsx    
+📄 main.tsx    
+📄 vite-env.d.ts    
+📄 .gitignore    
+📄 eslint.config.js    
+📄 index.html    
+📄 package.json    
+📄 README.md    
+📄 tsconfig.app.json    
+📄 tsconfig.json    
+📄 tsconfig.node.json    
+📄 vite.config.ts    
+📄 yarn.lock  
+
+
+
+
+## 🧩 Reusable Components  
+
+
+
+## 🪝 Reusable Hooks  
+
+
+
+## 📈 Roadmap  
+
+
+- ✅ Organize the folder structure for modularity, scalability, and reusability  
+
+- ✅ Install required dependencies and configure the project  
+
+- ✅ Create Postman workspace with the API collection and a mock server  
+
+- 🚧 Relocate existing components to their appropriate modular folders  
+
+- 🚧 Refactor components that require optimization or better structure  
+
+- 🚧 Ensure full UI functionality of Fund Manager AI with mock APIs  
+
