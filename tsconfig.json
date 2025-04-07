@@ -1,0 +1,32 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "src/",
+    "types": [
+      "node"
+    ],
+  "paths": {
+      "@src/*": [ "./src/*" ],
+      "@assets/*": ["./src/assets/*"],
+      "@components/*": ["./src/components/*"],
+      "@constants/*": ["./src/constants/*"],
+      "@types/*": ["./src/types/*"],
+      "@pages/*": ["./src/pages/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@layouts/*": ["./src/layouts/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@services/*": ["./src/services/*"],
+      "@redux/*": ["./src/redux/*"],
+      "@fundManagerLayouts/*": ["./src/apps/fund-manager/layouts/*"],
+      "@fundManagerPages/*": ["./src/apps/fund-manager/pages/*"]
+    },
+    "moduleResolution": "node",
+  }
+
+}
