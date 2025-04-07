@@ -50,6 +50,43 @@ This is a monorepo of the Predictive VC Apps front end, a collection of applicat
 
 - **React Hook Form**: A performant, flexible, and extensible form library for React.  
 
-- **Zod**: A TypeScript-first schema declaration and validation library.  
+- **Zod**: A TypeScript-first schema declaration and validation library.   
 
 
+## 🛠️ Setup    
+
+
+Ensure you have the following requirements met to set up the project:  
+
+
+- Node.js: A recent version is recommended.  
+
+- Yarn: The project uses Yarn as the package manager.  
+
+
+
+## 🚀 Installation  
+
+
+- In terminal be sure you are in the root directory, and to install all used dependencies write:  
+
+```bash
+$ yarn install
+```  
+
+
+- After finishing, you can run the project in the dev environment by writing:  
+
+```bash
+$ yarn run dev
+```  
+
+
+
+
+## 🔑 Configuration (env variables)  
+
+
+- env.dev  
+
+- env.prod  
