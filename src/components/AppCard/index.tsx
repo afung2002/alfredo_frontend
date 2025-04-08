@@ -9,7 +9,9 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-
+import { useSelector } from 'react-redux';
+import { selectUserApps } from '../../redux/selectors/user.selector';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 interface AppCardProps {
   title: string;
   description: string;
@@ -28,7 +30,7 @@ const AppCard: React.FC<AppCardProps> = ({
   onAdd,
 }) => {
   const navigate = useNavigate();
-
+  const savedApps = useSelector(selectUserApps);
   const handleCardClick = (event: React.MouseEvent) => {
     // Prevent navigation if clicking the add button
     if ((event.target as HTMLElement).closest('.MuiIconButton-root')) {
@@ -36,7 +38,7 @@ const AppCard: React.FC<AppCardProps> = ({
     }
     navigate(path);
   };
-
+  const isSaved = savedApps?.some((app) => app.title === title);
   return (
     <Card
       onClick={handleCardClick}
@@ -135,7 +137,7 @@ const AppCard: React.FC<AppCardProps> = ({
               color: 'primary.main',
             }}
           >
-            <AddCircleOutlineIcon />
+            {isSaved ? <RemoveCircleOutlineIcon color="action" /> : <AddCircleOutlineIcon />}
           </IconButton>
         </Box>
       </CardContent>
