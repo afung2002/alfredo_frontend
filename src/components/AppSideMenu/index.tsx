@@ -14,7 +14,7 @@ type AppSideMenuProps = {
 };
 
 
-const AppSideMenu = ({sideMenuButtons}: AppSideMenuProps) => {
+const AppSideMenu = ({ sideMenuButtons }: AppSideMenuProps) => {
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -26,11 +26,11 @@ const AppSideMenu = ({sideMenuButtons}: AppSideMenuProps) => {
   const isActive = (path: string) => {
     if (path === Routes.FUND_MANAGER) {
       // For the main route, only match exact path or investment view/new investment
-      return location.pathname === path || 
-             location.pathname.startsWith(Routes.FUND_MANAGER) &&
-             !sideMenuButtons.some(button => 
-               button.path !== path && location.pathname.startsWith(button.path)
-             );
+      return location.pathname === path ||
+        location.pathname.startsWith(Routes.FUND_MANAGER) &&
+        !sideMenuButtons.some(button =>
+          button.path !== path && location.pathname.startsWith(button.path)
+        );
     }
     return location.pathname.startsWith(path);
   };
