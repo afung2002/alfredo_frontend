@@ -1,16 +1,14 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { Card, CardContent } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { Document } from "../../types";
-import FileIcon from '@mui/icons-material/InsertDriveFile';
 import DownloadIcon from '@mui/icons-material/Download';
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 const DocumentCard: React.FC<{ document: Document }> = ({ document }) => {
   const handleDelete = () => {
     console.log('file deleted');
   };
-
   return (
     <Card sx={{ 
       height: '200px', // Fixed height for consistent card size
@@ -39,7 +37,7 @@ const DocumentCard: React.FC<{ document: Document }> = ({ document }) => {
             whiteSpace: 'nowrap'
           }}
         >
-          {document.file instanceof File ? document.file.name : 'Untitled Document'}
+          {document.file}
         </Typography>
 
         {/* Centered icon */}
@@ -49,9 +47,9 @@ const DocumentCard: React.FC<{ document: Document }> = ({ document }) => {
           alignItems: 'center',
           justifyContent: 'center'
         }}>
-          <FileIcon sx={{ 
+          <DescriptionOutlinedIcon sx={{ 
             fontSize: 48,
-            color: 'black'
+            // color: 'black'
           }} />
         </Box>
 
@@ -75,9 +73,11 @@ const DocumentCard: React.FC<{ document: Document }> = ({ document }) => {
           >
             <DeleteIcon />
           </IconButton>
-
-          {/* Download button */}
-          <IconButton 
+            <div>
+            <Button sx={{
+              textTransform: 'none',
+            }}>View</Button>
+            <IconButton 
             size="small" 
             color="primary"
             sx={{
@@ -89,6 +89,9 @@ const DocumentCard: React.FC<{ document: Document }> = ({ document }) => {
           >
             <DownloadIcon />
           </IconButton>
+            </div>
+          {/* Download button */}
+          
         </Box>
       </CardContent>
     </Card>
