@@ -22,6 +22,10 @@ const DashboardNavigation: React.FC = () => {
       navigate(Routes.APPS);
       return;
     }
+    if(value === "saved") {
+      navigate(Routes.APPS_SAVED_APPS);
+      return;
+    }
     if (value === "settings") {
       navigate(Routes.APPS_SETTINGS);
       return;
