@@ -1,110 +1,48 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  Box,
-  ButtonGroup,
-  Button,
   Typography,
   Tabs,
   Tab,
   TextField,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import AppCard from '@components/AppCard';
-import AppImage1 from '@assets/appImage1.svg';
-import AppImage2 from '@assets/appImage2.svg';
-import AppImage3 from '@assets/appImage3.svg';
-import AppImage4 from '@assets/appImage4.svg';
-import AppImage5 from '@assets/appImage5.svg';
-import AppImage6 from '@assets/appImage6.svg';
-import { Routes } from '../../constants/routes';
-
-
-const filterTabs = [
-  { label: 'All', value: 'all' },
-  { label: 'For Investors', value: 'investors' },
-  { label: 'For Founders', value: 'founders' },
-  { label: 'For Limited Partners', value: 'limited-partners' },
-];
-
-// Temporary mock data for cards
-const mockCards = [
-  {
-    title: 'Fundmanager.ai',
-    description: 'AI-powered fund admin for nimble funds & super angels',
-    imageUrl: AppImage1,
-    category: 'For Investors',
-    path: Routes.FUND_MANAGER,
-  },
-  {
-    title: 'Limitedpartner.ai',
-    description: 'AI-powered control panel for high-performing limited partners ',
-    imageUrl: AppImage2,
-    category: 'For Limited Partners',
-    path: '/pitch-deck-analyzer',
-  },
-  {
-    title: 'Findintros.ai',
-    description: 'Harness your investor ecosystem to pinpoint customers & request intros',
-    imageUrl: AppImage3,
-    category: 'For Founders',
-    path: '/lp-portfolio-insights',
-  },
-  {
-    title: 'Companytracker.ai',
-    description: 'Input investment prospects and track all relevant updates, in real-time',
-    imageUrl: AppImage4,
-    category: 'For Investors',
-    path: '/lp-portfolio-insights',
-  },
-  {
-    title: 'VCassociate.ai',
-    description: 'Enter characteristics and comb target websites for relevant prospects',
-    imageUrl: AppImage5,
-    category: 'For Investors',
-    path: '/lp-portfolio-insights',
-  },
-  {
-    title: 'Memogenerator.ai',
-    description: 'AI-powered investment memo generation',
-    imageUrl: AppImage6,
-    category: 'For Investors',
-    path: '/lp-portfolio-insights',
-  },
-];
+import {APP_CARDS} from '@constants/appCards';
+import { APPS_FILTER_TABS } from '@constants/index';
+import { useDispatch } from 'react-redux';
+import { addAppToUser } from '../../redux/slices/user';
+import { AppType } from '../../types';
+import { searchByTitle } from '../../utils/uiUtils';
 
 const AppsPage = () => {
-  const navigate = useNavigate();
-  const [selectedButton, setSelectedButton] = useState('marketplace');
+  const dispatch = useDispatch();
+  const [filteredCards, setFilteredCards] = useState(APP_CARDS);
   const [selectedTab, setSelectedTab] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  useEffect(() => {
+    const filteredCards = APP_CARDS.filter((card) => {
+      if (selectedTab === 'all') return true;
+      return card.categoryValue === selectedTab;
+    });
+    setFilteredCards(filteredCards);
+    setSearchTerm('');
+  }, [selectedTab]);
 
-  const handleButtonClick = (value: string) => {
-    if (value === 'settings') {
-      navigate('/settings');
-      return;
-    }
-    if (value === 'logout') {
-      // Handle logout logic here
-      return;
-    }
-    setSelectedButton(value);
-  };
-
-  const handleAddApp = (appTitle: string) => {
-    console.log(`Adding app: ${appTitle}`);
+  const handleToggleApp = (card: AppType) => {
+    dispatch(addAppToUser(card))
   };
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', width: '100%' }}>
-      {/* Main Content */}
-      <Box sx={{ flex: 1, p: 4 }}>
-        {/* Header */}
+    <div className='min-h-screen w-full p-4 flex-1'>
         <Typography variant="h5" sx={{ mb: 2, fontWeight: 500, textAlign: 'left'}}>
           Cutting-Edge Applications for Startup Investing
         </Typography>
-
-        {/* Search and Tabs Container */}
-        
-          {/* Search Bar */}
           <TextField
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              const filteredCards = searchByTitle(APP_CARDS, e.target.value, 'title');
+              console.log('Filtered Cards:', filteredCards);
+              setFilteredCards(filteredCards);
+            }}
             fullWidth
             placeholder="Search applications..."
             variant="outlined"
@@ -120,7 +58,6 @@ const AppsPage = () => {
             }}
           />
 
-          {/* Filter Tabs */}
           <Tabs
             value={selectedTab}
             onChange={(_, newValue) => setSelectedTab(newValue)}
@@ -149,7 +86,7 @@ const AppsPage = () => {
               },
             }}
           >
-            {filterTabs.map((tab) => (
+            {APPS_FILTER_TABS.map((tab) => (
               <Tab
                 key={tab.value}
                 label={tab.label}
@@ -159,9 +96,8 @@ const AppsPage = () => {
             ))}
           </Tabs>
       
-        {/* Cards */}
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: '600px' }}>
-          {selectedTab === 'all' && mockCards.map((card, index) => (
+        <div className="flex flex-col gap-2 min--[600px]">
+          {filteredCards.map((card, index) => (
             <AppCard
               key={index}
               title={card.title}
@@ -169,12 +105,11 @@ const AppsPage = () => {
               imageUrl={card.imageUrl}
               category={card.category}
               path={card.path}
-              onAdd={() => handleAddApp(card.title)}
+              onAdd={() => handleToggleApp(card)}
             />
           ))}
-        </Box>
-      </Box>
-    </Box>
+        </div>
+    </div>
   )
 }
 
