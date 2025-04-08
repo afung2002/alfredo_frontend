@@ -12,6 +12,7 @@ import Funds from '../apps/fund-manager/pages/Funds';
 import Documents from '../apps/fund-manager/pages/Documents';
 import NewFund from '../apps/fund-manager/pages/NewFund';
 import FundView from '../apps/fund-manager/pages/Fund';
+import SavedApps from '../pages/SavedApps';
 const LandingLayout = lazy(() => import('@layouts/LandingLayout'));
 const LandingPage = lazy(() => import('@pages/LandingPage'));
 const Page404 = lazy(() => import('@pages/Page404'));
@@ -39,6 +40,10 @@ export const routes: RouteObject[] = [
       {
         path: Routes.APPS_SETTINGS,
         element: <Settings />,
+      },
+      {
+        path: Routes.APPS_SAVED_APPS,
+        element: <SavedApps />,
       },
     ],
   },
