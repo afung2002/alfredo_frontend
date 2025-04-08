@@ -8,12 +8,7 @@ import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { userId } from '@constants/index';
 import { Routes } from '@constants/routes';
 
-interface AppCardProps {
-  showHeader?: boolean;
-  showFundChip?: boolean;
-}
-
-const Funds: React.FC<AppCardProps> = ({  showHeader, showFundChip }) => {
+const Funds = () => {
   const [funds, setFunds] = useState<Fund[]>([]);
   const [selectedTab, setSelectedTab] = useState("all");
   const [loading, setLoading] = useState(true);
@@ -116,8 +111,7 @@ const Funds: React.FC<AppCardProps> = ({  showHeader, showFundChip }) => {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-      {/* Fund Statistics */}
-      {showHeader && <Box sx={{ mb: 1 }}>
+      <Box sx={{ mb: 1 }}>
         <Typography variant="h5" sx={{ mb: 1, fontWeight: 500, textAlign: 'left' }}>
           {totalFunds} Funds
         </Typography>
@@ -130,7 +124,7 @@ const Funds: React.FC<AppCardProps> = ({  showHeader, showFundChip }) => {
             {totalEstimatedValue} Estimated Value
           </Typography>
         </Box>
-      </Box>}
+      </Box>
 
       <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
         <TextField
