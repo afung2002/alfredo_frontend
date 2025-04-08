@@ -244,13 +244,13 @@ const FundView: React.FC = () => {
       {selectedTab === "updates" && (
         <FundUpdatesListView />
       )} */}
-      {selectedTab === "documents" && (
+      {/* {selectedTab === "documents" && (
         <DocumentsListView
           showFilters={false}
           showUploadNew={true}
           showHeader={false}
         />
-      )}
+      )} */}
     </Box>
   );
 };
