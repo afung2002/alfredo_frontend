@@ -1,4 +1,5 @@
 import { SxProps, Theme } from '@mui/material';
+import { AppType } from '../types';
 
 export const searchTextFieldStyles: SxProps<Theme> = {
   flex: 1,
@@ -109,3 +110,11 @@ export const loadingContainerStyles: SxProps<Theme> = {
 export const errorContainerStyles: SxProps<Theme> = {
   p: 3,
 }; 
+
+export const searchByTitle = (cards: AppType[], searchTerm: string, searchBy: string): AppType[] => {
+  if (!searchTerm.trim()) return cards;
+
+  return cards.filter((card) =>
+    card[searchBy].toLowerCase().includes(searchTerm.trim().toLowerCase())
+  );
+};
