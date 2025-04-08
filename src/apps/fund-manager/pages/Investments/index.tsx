@@ -22,13 +22,9 @@ import {
 import { FILTER_TABS, DEFAULT_TAB } from '@constants/index';
 import { Routes } from '../../../../constants/routes';
 
-interface AppCardProps {
-  showFilters?: boolean;
-  showHeader?: boolean;
-  showFundChip?: boolean;
-}
 
-const Investments = ({ showFilters, showHeader, showFundChip }: AppCardProps) => {
+
+const Investments = () => {
   const [investments, setInvestments] = useState<InvestmentDetails[]>([]);
   const [fundInvestments, setFundInvestments] = useState<InvestmentDetails[]>([]);
   const [angelInvestments, setAngelInvestments] = useState<InvestmentDetails[]>([]);
@@ -98,7 +94,7 @@ const Investments = ({ showFilters, showHeader, showFundChip }: AppCardProps) =>
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-      {showHeader && <Box sx={{ mb: 1 }}>
+      <Box sx={{ mb: 1 }}>
         <Typography variant="h5" sx={{ mb: 1, fontWeight: 500, textAlign: 'left' }}>
           {totalInvestments} Investments
         </Typography>
@@ -111,7 +107,7 @@ const Investments = ({ showFilters, showHeader, showFundChip }: AppCardProps) =>
             {estimatedValue} est value
           </Typography>
         </Box>
-      </Box>}
+      </Box>
 
       <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
         <TextField
@@ -131,7 +127,7 @@ const Investments = ({ showFilters, showHeader, showFundChip }: AppCardProps) =>
         </Button>
       </Box>
 
-      {showFilters && <Tabs
+      <Tabs
         value={selectedTab}
         onChange={(_, newValue) => setSelectedTab(newValue)}
         variant="scrollable"
@@ -147,14 +143,13 @@ const Investments = ({ showFilters, showHeader, showFundChip }: AppCardProps) =>
             disableRipple
           />
         ))}
-      </Tabs>}
+      </Tabs>
 
       {selectedTab === "all" && filteredInvestments.map((investment, index) => (
         <InvestmentCard 
           key={index} 
           investment={investment} 
-          showFundChip={showFundChip} 
-          onClick={() => navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':id', investment.id))}
+          onClick={() => navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':investmentId', investment.id))}
         />
       ))}
 
@@ -164,8 +159,7 @@ const Investments = ({ showFilters, showHeader, showFundChip }: AppCardProps) =>
             <InvestmentCard 
               key={index} 
               investment={investment} 
-              showFundChip={showFundChip} 
-              onClick={() => navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':id', investment.id))}
+              onClick={() => navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':investmentId', investment.id))}
             />
           ))
         ) : (
@@ -181,7 +175,6 @@ const Investments = ({ showFilters, showHeader, showFundChip }: AppCardProps) =>
             <InvestmentCard 
               key={index} 
               investment={investment} 
-              showFundChip={showFundChip} 
               onClick={() => navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':investmentId', investment.id))}
             />
           ))
