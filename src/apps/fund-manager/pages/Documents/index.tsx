@@ -6,21 +6,17 @@ import { getUserDocuments } from '@services/index';
 import { Document } from '../../../../types';
 import UploadDocumentModal from '@components/UploadDocumentModal';
 import { Routes } from '../../../../constants/routes';
+import { searchByTitle } from '../../../../utils/uiUtils';
 
-interface DocumentsProps {
-  // documents?: Document[];
-  showUploadNew?: boolean;
-  showFilters?: boolean;
-  showHeader?: boolean;
-}
-
-const Documents: React.FC<DocumentsProps> = ({ showUploadNew, showFilters, showHeader }) => {
+const Documents = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [selectedTab, setSelectedTab] = useState("all");
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [filteredDocs, setFilteredDocs] = useState<Document[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
   const filterTabs = [
@@ -39,7 +35,10 @@ const Documents: React.FC<DocumentsProps> = ({ showUploadNew, showFilters, showH
           file: doc.file,
           companyName: doc.companyName,
           description: doc.description,
-          uploadDate: doc.uploadDate
+          uploadDate: doc.uploadDate,
+          type: doc.type,
+          size: doc.size,
+          fileType: doc.fileType,
         }));
         setDocuments(transformedDocuments);
       } catch (err) {
@@ -52,15 +51,23 @@ const Documents: React.FC<DocumentsProps> = ({ showUploadNew, showFilters, showH
 
     fetchDocuments();
   }, []);
-
+  useEffect(() => {
+    console.log(selectedTab)
+    const filteredDocs = documents.filter((doc) => {
+      if (selectedTab === 'all') return true;
+      return doc.type === selectedTab;
+    });
+    setFilteredDocs(filteredDocs);
+    setSearchTerm('');
+  }, [selectedTab, documents]);
   const handleModalClose = () => {
     setIsUploadModalOpen(false);
     // Refresh documents list
-    setDocuments([]);
+    // setDocuments([]);
   }
   // Calculate total documents
   const totalDocuments = documents.length;
-  
+
   // Calculate total documents by type
   const investmentDocuments = documents.filter(doc => doc.companyName?.includes('Investment')).length;
   const fundDocuments = documents.filter(doc => doc.companyName?.includes('Fund')).length;
@@ -97,19 +104,23 @@ const Documents: React.FC<DocumentsProps> = ({ showUploadNew, showFilters, showH
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
       {/* Document Statistics */}
-      {showHeader && <Box sx={{ mb: 1 }}>
+      <Box sx={{ mb: 1 }}>
         <Typography variant="h5" sx={{ mb: 1, fontWeight: 500, textAlign: 'left' }}>
           {totalDocuments} Documents
         </Typography>
-      </Box>}
+      </Box>
 
       <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
         <TextField
+          value={searchTerm}
+          onChange={(e) => { 
+            setSearchTerm(e.target.value);
+            const filteredDocs = searchByTitle(documents, e.target.value, 'file');
+            setFilteredDocs(filteredDocs);
+          }}
           placeholder="Search documents..."
           variant="outlined"
           size="small"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
           sx={{
             flex: 1,
             "& .MuiOutlinedInput-root": {
@@ -124,26 +135,25 @@ const Documents: React.FC<DocumentsProps> = ({ showUploadNew, showFilters, showH
             },
           }}
         />
-        {showUploadNew && (
-          <Button
-            variant="contained"
-            onClick={() => setIsUploadModalOpen(true)}
-            sx={{
-              bgcolor: "black",
-              color: "white",
-              borderRadius: "2px",
-              "&:hover": {
-                bgcolor: "rgba(0, 0, 0, 0.8)",
-              },
-            }}
-          >
-            Upload New
-          </Button>
-        )}
+
+        <Button
+          variant="contained"
+          onClick={() => setIsUploadModalOpen(true)}
+          sx={{
+            bgcolor: "black",
+            color: "white",
+            borderRadius: "2px",
+            "&:hover": {
+              bgcolor: "rgba(0, 0, 0, 0.8)",
+            },
+          }}
+        >
+          Upload New
+        </Button>
+
       </Box>
 
-      {/* Filter Tabs */}
-      {showFilters && <Tabs
+      <Tabs
         value={selectedTab}
         onChange={(_, newValue) => setSelectedTab(newValue)}
         variant="scrollable"
@@ -167,7 +177,7 @@ const Documents: React.FC<DocumentsProps> = ({ showUploadNew, showFilters, showH
               border: "1px solid",
               borderColor: "rgba(0, 0, 0, 0.8)",
               backgroundColor: "transparent",
-              color:'black'
+              color: 'black'
             },
           },
         }}
@@ -180,13 +190,13 @@ const Documents: React.FC<DocumentsProps> = ({ showUploadNew, showFilters, showH
             disableRipple
           />
         ))}
-      </Tabs>}
+      </Tabs>
 
       {/* Document Grid */}
-      {filteredDocuments.length > 0 ? (
+      {filteredDocs.length > 0 ? (
         <Grid container spacing={3}>
-          {filteredDocuments.map((document, index) => (
-            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
+          {filteredDocs.map((document, index) => (
+            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }} key={index}>
               <DocumentCard document={document} />
             </Grid>
           ))}
@@ -205,7 +215,7 @@ const Documents: React.FC<DocumentsProps> = ({ showUploadNew, showFilters, showH
         onClose={handleModalClose}
         onDocumentUploaded={() => {
           // Refresh documents list
-          setDocuments([]);
+          // setDocuments([]);
         }}
       />
     </Box>
