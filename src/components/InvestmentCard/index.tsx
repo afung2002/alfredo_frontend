@@ -5,18 +5,17 @@ import { InvestmentDetails } from "../../types";
 
 interface InvestmentCardProps {
     investment: InvestmentDetails;
-    showFundChip?: boolean;
     onClick?: () => void;
 }
   
-const InvestmentCard: React.FC<InvestmentCardProps> = ({ investment, showFundChip, onClick }) => {
-    // const handleCardClick = (event: React.MouseEvent) => {
-    //     // Prevent navigation if clicking the add button
-    //     if ((event.target as HTMLElement).closest('.MuiIconButton-root')) {
-    //         return;
-    //     }
-    //     onClick?.();
-    // };
+const InvestmentCard: React.FC<InvestmentCardProps> = ({ investment, onClick }) => {
+    const handleCardClick = (event: React.MouseEvent) => {
+        // Prevent navigation if clicking the add button
+        if ((event.target as HTMLElement).closest('.MuiIconButton-root')) {
+            return;
+        }
+        onClick?.();
+    };
     const formattedAmount = new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD'
@@ -24,7 +23,7 @@ const InvestmentCard: React.FC<InvestmentCardProps> = ({ investment, showFundChi
 
     return (
         <Card
-        // onClick={handleCardClick}
+        onClick={handleCardClick}
         sx={{
           display: "flex",
           alignItems: "center",
@@ -53,7 +52,7 @@ const InvestmentCard: React.FC<InvestmentCardProps> = ({ investment, showFundChi
           </Typography>
         </Box>
         <Box>
-          {showFundChip && <Chip
+          <Chip
             label={
               investment.fundInvested ? investment.fundInvested : "Angel"
             }
@@ -64,7 +63,7 @@ const InvestmentCard: React.FC<InvestmentCardProps> = ({ investment, showFundChi
               color:  investment.fundInvested ? "primary.main" : "gray",
               width: "100px"
             }}
-          />}
+          />
 
           <IconButton size="small" sx={{ color: "text.secondary" }}>
             <ArrowForwardIcon />
