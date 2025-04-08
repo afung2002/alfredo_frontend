@@ -31,7 +31,7 @@ export interface Fund {
   fundSize: string;
   estimatedValue: string;
   updates?: FundUpdate[];
-  portfolio?: Investment[];
+  portfolio?: InvestmentDetails[];
 }
 
 export interface FundUpdate {
@@ -62,5 +62,14 @@ export interface Fund {
   fundSize: string;
   estimatedValue: string;
   updates?: FundUpdate[];
-  portfolio?: Investment[];
+  portfolio?: InvestmentDetails[];
+}
+
+export interface AppType {
+  title: string;
+    description: string;
+    imageUrl: string;
+    categoryValue: string;
+    category: string;
+    path: string;
 }
