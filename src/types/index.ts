@@ -12,6 +12,7 @@ export interface InvestmentDetails {
   fundInvested: string;
   type: InvestmentType;
   status: string;
+  updates: string
 }
 
 export interface LimitedPartner {
