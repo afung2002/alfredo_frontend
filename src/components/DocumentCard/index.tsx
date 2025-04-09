@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Paper, Typography } from "@mui/material";
 import { Card, CardContent } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { Document } from "../../types";
@@ -10,23 +10,23 @@ const DocumentCard: React.FC<{ document: Document }> = ({ document }) => {
     console.log('file deleted');
   };
   return (
-    <Card sx={{ 
-      height: '200px', // Fixed height for consistent card size
-      display: 'flex',
-      flexDirection: 'column',
-      position: 'relative',
-      boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
-      '&:hover': {
-        boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-      }
-    }}>
-      <CardContent sx={{ 
-        flex: 1, 
-        display: 'flex', 
-        flexDirection: 'column',
-        p: 2,
-        '&:last-child': { pb: 2 }, // Override Material-UI's default padding
-      }}>
+    <Paper
+      variant="outlined"
+      className="transition-shadow duration-200 flex flex-col gap-4"
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        p: '16px',
+        borderRadius: '6px',
+        cursor: "pointer",
+        backgroundColor: 'grey.100',
+
+        ':hover': {
+          backgroundColor: '#f5f5f5',
+        }
+      }}
+    >
         {/* File name at the top */}
         <Typography 
           variant="subtitle2" 
@@ -34,7 +34,8 @@ const DocumentCard: React.FC<{ document: Document }> = ({ document }) => {
             fontWeight: 500,
             overflow: 'hidden',
             textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap'
+            whiteSpace: 'nowrap',
+            alignSelf: 'flex-start',
           }}
         >
           {document.file}
@@ -57,7 +58,8 @@ const DocumentCard: React.FC<{ document: Document }> = ({ document }) => {
         <Box sx={{ 
           display: 'flex', 
           justifyContent: 'space-between',
-          mt: 'auto'
+          mt: 'auto',
+          width: '100%',
         }}>
           {/* Delete button */}
           <IconButton 
@@ -93,8 +95,7 @@ const DocumentCard: React.FC<{ document: Document }> = ({ document }) => {
           {/* Download button */}
           
         </Box>
-      </CardContent>
-    </Card>
+    </Paper>
   );
 };        
 
