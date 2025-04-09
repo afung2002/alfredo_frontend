@@ -1,52 +1,6 @@
 import { SxProps, Theme } from '@mui/material';
 import { AppType } from '../types';
 
-export const searchTextFieldStyles: SxProps<Theme> = {
-  flex: 1,
-  "& .MuiOutlinedInput-root": {
-    borderRadius: "28px",
-    height: "36px",
-    "& fieldset": {
-      borderColor: "rgba(0, 0, 0, 0.10)",
-    },
-    "&:hover fieldset": {
-      borderColor: "rgba(0, 0, 0, 0.12)",
-    },
-  },
-};
-
-export const addNewButtonStyles: SxProps<Theme> = {
-  bgcolor: "black",
-  color: "white",
-  borderRadius: "2px",
-  "&:hover": {
-    bgcolor: "rgba(0, 0, 0, 0.8)",
-  },
-};
-
-export const tabsStyles: SxProps<Theme> = {
-  mb: 3,
-  minHeight: "36px",
-  "& .MuiTabs-flexContainer": {
-    gap: 1,
-  },
-  "& .MuiTab-root": {
-    minHeight: "32px",
-    padding: "6px 16px",
-    borderRadius: "16px",
-    fontSize: "0.875rem",
-    textTransform: "none",
-    border: "1px solid",
-    borderColor: "rgba(0, 0, 0, 0.2)",
-    "&.Mui-selected": {
-      border: "1px solid",
-      borderColor: "rgba(0, 0, 0, 0.8)",
-      backgroundColor: "transparent",
-      color: 'black'
-    },
-  },
-};
-
 export const noDataMessageStyles: SxProps<Theme> = {
   textAlign: "center",
   mt: 4,
