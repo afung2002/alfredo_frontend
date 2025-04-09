@@ -1,31 +1,38 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, CircularProgress, Alert, Button, Tab, Tabs, TextField } from '@mui/material';
+import { Box, Typography, CircularProgress, Alert, Tab, Tabs } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import InvestmentCard from '@components/InvestmentCard';
 import { getUserInvestments } from '@services/index';
 import { InvestmentDetails, InvestmentType } from '../../../../types';
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { userId } from '@constants/index';
-import { 
-  transformInvestmentData, 
-  calculateTotalInvestments, 
-  calculateTotalInvested, 
+import {
+  transformInvestmentData,
+  calculateTotalInvestments,
+  calculateTotalInvested,
   calculateEstimatedValue,
-  filterInvestmentsByType 
+  filterInvestmentsByType
 } from '@utils/investmentUtils';
-import { 
-  searchTextFieldStyles, 
-  addNewButtonStyles, 
-  tabsStyles, 
-  noDataMessageStyles 
+import {
+  noDataMessageStyles
 } from '@utils/uiUtils';
 import { FILTER_TABS, DEFAULT_TAB } from '@constants/index';
 import { Routes } from '../../../../constants/routes';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { addInvestmentsToUser } from '@redux/slices/user';
+import { selectUserInvestments } from '../../../../redux/selectors/user.selector';
+import Input from '../../../../components/Input';
+import { useForm } from 'react-hook-form';
+import Button from '@components/Button';
 
 
 const Investments = () => {
-  const [investments, setInvestments] = useState<InvestmentDetails[]>([]);
+  const { control, watch, setValue } = useForm({
+    defaultValues: {
+      'searchInvestments': ''
+    }
+  });
+  const searchValue = watch('searchInvestments');
   const [fundInvestments, setFundInvestments] = useState<InvestmentDetails[]>([]);
   const [angelInvestments, setAngelInvestments] = useState<InvestmentDetails[]>([]);
   const [selectedTab, setSelectedTab] = useState(DEFAULT_TAB);
@@ -33,13 +40,18 @@ const Investments = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  const investments = useSelector(selectUserInvestments);
+  useEffect(() => {
+    setSearchQuery(searchValue)
+  }, [searchValue]);
   useEffect(() => {
     const fetchInvestments = async () => {
       try {
         const data = await getUserInvestments(userId);
         const transformedInvestments = transformInvestmentData(data);
-        setInvestments(transformedInvestments);
+        dispatch(addInvestmentsToUser(transformedInvestments));
+        // setInvestments(transformedInvestments);
         setFundInvestments(filterInvestmentsByType(transformedInvestments, InvestmentType.FUND));
         setAngelInvestments(filterInvestmentsByType(transformedInvestments, InvestmentType.ANGEL));
       } catch (err) {
@@ -53,8 +65,8 @@ const Investments = () => {
     fetchInvestments();
   }, [userId]);
 
-  const totalInvestments = calculateTotalInvestments(investments);
-  const totalInvested = calculateTotalInvested(investments);
+  const totalInvestments = calculateTotalInvestments(investments || []);
+  const totalInvested = calculateTotalInvested(investments || []);
   const estimatedValue = calculateEstimatedValue(totalInvested);
 
   const handleAddNew = (event: React.MouseEvent) => {
@@ -64,7 +76,7 @@ const Investments = () => {
     navigate(Routes.FUND_MANAGER_NEW_INVESTMENT);
   };
 
-  const filteredInvestments = investments.filter(investment =>
+  const filteredInvestments = investments?.filter(investment =>
     investment.companyName.toLowerCase()?.includes(searchQuery.toLowerCase())
   );
 
@@ -92,6 +104,8 @@ const Investments = () => {
     );
   }
 
+
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
       <Box sx={{ mb: 1 }}>
@@ -109,19 +123,16 @@ const Investments = () => {
         </Box>
       </Box>
 
-      <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
-        <TextField
+      <Box sx={{ display: "flex", gap: 2, mb: 2, width: '100%' }}>
+        <Input
+          type="text"
+          name="searchInvestments"
+          control={control}
           placeholder="Search investments..."
-          variant="outlined"
-          size="small"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          sx={searchTextFieldStyles}
+          className="flex flex-col w-full"
         />
         <Button
           onClick={handleAddNew}
-          variant="contained"
-          sx={addNewButtonStyles}
         >
           Add New
         </Button>
@@ -132,11 +143,27 @@ const Investments = () => {
         onChange={(_, newValue) => setSelectedTab(newValue)}
         variant="scrollable"
         scrollButtons={false}
-        TabIndicatorProps={{ style: { display: "none" } }}
-        sx={tabsStyles}
+        TabIndicatorProps={{ style: { display: 'none' } }}
+
       >
         {FILTER_TABS.map((tab) => (
           <Tab
+          sx={{
+            minHeight: 32,
+            minWidth: 'auto',
+            px: 4,
+            borderRadius: '50px',
+            textTransform: 'none',
+            bgcolor: tab.value === selectedTab ? 'primary.main' : 'grey.200',
+            color: tab.value === selectedTab ? 'white' : 'black',
+            mx: 1,
+            fontSize: 14,
+            fontWeight: 500,
+            '&.Mui-selected': {
+              bgcolor: 'primary.main',
+              color: 'white',
+            },
+          }}
             key={tab.value}
             label={tab.label}
             value={tab.value}
@@ -145,10 +172,10 @@ const Investments = () => {
         ))}
       </Tabs>
 
-      {selectedTab === "all" && filteredInvestments.map((investment, index) => (
-        <InvestmentCard 
-          key={index} 
-          investment={investment} 
+      {selectedTab === "all" && filteredInvestments?.map((investment, index) => (
+        <InvestmentCard
+          key={index}
+          investment={investment}
           onClick={() => navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':investmentId', investment.id))}
         />
       ))}
@@ -156,10 +183,10 @@ const Investments = () => {
       {selectedTab === "fund" && (
         filteredFundInvestments.length > 0 ? (
           filteredFundInvestments.map((investment, index) => (
-            <InvestmentCard 
-              key={index} 
-              investment={investment} 
-              onClick={() => navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':investmentId', investment.id))}
+            <InvestmentCard
+              key={index}
+              investment={investment}
+
             />
           ))
         ) : (
@@ -172,9 +199,9 @@ const Investments = () => {
       {selectedTab === "angel" && (
         filteredAngelInvestments.length > 0 ? (
           filteredAngelInvestments.map((investment, index) => (
-            <InvestmentCard 
-              key={index} 
-              investment={investment} 
+            <InvestmentCard
+              key={index}
+              investment={investment}
               onClick={() => navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':investmentId', investment.id))}
             />
           ))
