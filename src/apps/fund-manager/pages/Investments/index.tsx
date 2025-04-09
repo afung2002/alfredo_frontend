@@ -24,10 +24,11 @@ import { selectUserInvestments } from '../../../../redux/selectors/user.selector
 import Input from '../../../../components/Input';
 import { useForm } from 'react-hook-form';
 import Button from '@components/Button';
+import InvestmentsList from '@src/components/InvestmentsList';
 
 
 const Investments = () => {
-  const { control, watch, setValue } = useForm({
+  const { control, watch } = useForm({
     defaultValues: {
       'searchInvestments': ''
     }
@@ -171,46 +172,12 @@ const Investments = () => {
           />
         ))}
       </Tabs>
-
-      {selectedTab === "all" && filteredInvestments?.map((investment, index) => (
-        <InvestmentCard
-          key={index}
-          investment={investment}
-          onClick={() => navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':investmentId', investment.id))}
+        <InvestmentsList 
+        selectedTab={selectedTab}
+        filteredInvestments={filteredInvestments}
+        filteredFundInvestments={filteredFundInvestments}
+        filteredAngelInvestments={filteredAngelInvestments}
         />
-      ))}
-
-      {selectedTab === "fund" && (
-        filteredFundInvestments.length > 0 ? (
-          filteredFundInvestments.map((investment, index) => (
-            <InvestmentCard
-              key={index}
-              investment={investment}
-
-            />
-          ))
-        ) : (
-          <Typography variant="body1" sx={noDataMessageStyles}>
-            No fund investments found.
-          </Typography>
-        )
-      )}
-
-      {selectedTab === "angel" && (
-        filteredAngelInvestments.length > 0 ? (
-          filteredAngelInvestments.map((investment, index) => (
-            <InvestmentCard
-              key={index}
-              investment={investment}
-              onClick={() => navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':investmentId', investment.id))}
-            />
-          ))
-        ) : (
-          <Typography variant="body1" sx={noDataMessageStyles}>
-            No angel investments found.
-          </Typography>
-        )
-      )}
     </Box>
   );
 };
