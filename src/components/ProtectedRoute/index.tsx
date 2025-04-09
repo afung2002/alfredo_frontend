@@ -7,7 +7,7 @@ type ProtectedRouteProps = {
 };
 const ProtectedRoute = ({children}: ProtectedRouteProps) => {
   const { isLoaded, isSignedIn } = useUser();
-  
+  console.log(useUser())
   if (!isLoaded) {
     return <Loader />;
   }
