@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, CircularProgress, Alert, Button, Tab, Tabs, TextField, Grid } from '@mui/material';
+import { Box, Typography, CircularProgress, Alert, Tab, Tabs, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import DocumentCard from '@components/DocumentCard';
 import { getUserDocuments } from '@services/index';
@@ -7,8 +7,16 @@ import { Document } from '../../../../types';
 import UploadDocumentModal from '@components/UploadDocumentModal';
 import { Routes } from '../../../../constants/routes';
 import { searchByTitle } from '../../../../utils/uiUtils';
-
+import Input from '../../../../components/Input';
+import { useForm } from 'react-hook-form';
+import Button from '@components/Button';
 const Documents = () => {
+  const { control, watch, setValue } = useForm({
+        defaultValues: {
+          'searchDocuments': ''
+        }
+      });
+  const searchValue = watch('searchDocuments');
   const [documents, setDocuments] = useState<Document[]>([]);
   const [selectedTab, setSelectedTab] = useState("all");
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -18,7 +26,10 @@ const Documents = () => {
   const [filteredDocs, setFilteredDocs] = useState<Document[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
-
+useEffect(() => {
+  const filteredDocs = searchByTitle(documents, searchValue, 'file');
+  setFilteredDocs(filteredDocs);
+  }, [searchValue]);
   const filterTabs = [
     { label: "All", value: "all" },
     { label: "Investment", value: "investment" },
@@ -58,7 +69,7 @@ const Documents = () => {
       return doc.type === selectedTab;
     });
     setFilteredDocs(filteredDocs);
-    setSearchTerm('');
+    setValue('searchDocuments', '');
   }, [selectedTab, documents]);
   const handleModalClose = () => {
     setIsUploadModalOpen(false);
@@ -110,43 +121,17 @@ const Documents = () => {
         </Typography>
       </Box>
 
-      <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
-        <TextField
-          value={searchTerm}
-          onChange={(e) => { 
-            setSearchTerm(e.target.value);
-            const filteredDocs = searchByTitle(documents, e.target.value, 'file');
-            setFilteredDocs(filteredDocs);
-          }}
-          placeholder="Search documents..."
-          variant="outlined"
-          size="small"
-          sx={{
-            flex: 1,
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "28px",
-              height: "36px",
-              "& fieldset": {
-                borderColor: "rgba(0, 0, 0, 0.10)",
-              },
-              "&:hover fieldset": {
-                borderColor: "rgba(0, 0, 0, 0.12)",
-              },
-            },
-          }}
-        />
+      <Box sx={{ display: "flex", gap: 2, mb: 2, width: '100%' }}>
 
+        <Input
+          type="text"
+          name="searchDocuments"
+          control={control}
+          placeholder="Search documents..."
+          className="flex flex-col w-full"
+        />
         <Button
-          variant="contained"
           onClick={() => setIsUploadModalOpen(true)}
-          sx={{
-            bgcolor: "black",
-            color: "white",
-            borderRadius: "2px",
-            "&:hover": {
-              bgcolor: "rgba(0, 0, 0, 0.8)",
-            },
-          }}
         >
           Upload New
         </Button>
@@ -158,32 +143,26 @@ const Documents = () => {
         onChange={(_, newValue) => setSelectedTab(newValue)}
         variant="scrollable"
         scrollButtons={false}
-        TabIndicatorProps={{ style: { display: "none" } }}
-        sx={{
-          mb: 3,
-          minHeight: "36px",
-          "& .MuiTabs-flexContainer": {
-            gap: 1,
-          },
-          "& .MuiTab-root": {
-            minHeight: "32px",
-            padding: "6px 16px",
-            borderRadius: "16px",
-            fontSize: "0.875rem",
-            textTransform: "none",
-            border: "1px solid",
-            borderColor: "rgba(0, 0, 0, 0.2)",
-            "&.Mui-selected": {
-              border: "1px solid",
-              borderColor: "rgba(0, 0, 0, 0.8)",
-              backgroundColor: "transparent",
-              color: 'black'
-            },
-          },
-        }}
+        TabIndicatorProps={{ style: { display: 'none' } }}
       >
         {filterTabs.map((tab) => (
           <Tab
+          sx={{
+            minHeight: 32,
+            minWidth: 'auto',
+            px: 4,
+            borderRadius: '50px',
+            textTransform: 'none',
+            bgcolor: tab.value === selectedTab ? 'primary.main' : 'grey.200',
+            color: tab.value === selectedTab ? 'white' : 'black',
+            mx: 1,
+            fontSize: 14,
+            fontWeight: 500,
+            '&.Mui-selected': {
+              bgcolor: 'primary.main',
+              color: 'white',
+            },
+          }}
             key={tab.value}
             label={tab.label}
             value={tab.value}
