@@ -13,7 +13,7 @@ const FundManagerLayout = () => {
     { label: 'Back to Apps', value: 'back-to-apps', path: Routes.APPS },
   ];
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh' }} className="bg-gray-50">
       <AppSideMenu sideMenuButtons={sideMenuButtons} />
       <Box sx={{ flex: 1, px: "130px", pt:"100px"}}>
         <Outlet />
