@@ -8,22 +8,42 @@ import {
   IconButton,
   CircularProgress,
   Alert,
+  Paper,
 } from "@mui/material";
 import { InvestmentDetails } from "../../../../types";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowBack, Edit, Link } from "@mui/icons-material";
+import { selectUserInvestments } from "@redux/selectors/user.selector";
+import { useSelector } from "react-redux";
+import { Routes } from "../../../../constants/routes";
 // import DocumentsListView from "./DocumentsListView";
-import { getInvestmentById } from "@services/index";
+// import { getInvestmentById } from "@services/index";
 const Investment: React.FC = () => {
+  const investments = useSelector(selectUserInvestments);
   const [investment, setInvestment] = useState<InvestmentDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const { investmentId } = useParams<{ investmentId: string }>();
+  useEffect(() => {
+
+    if (investmentId && investments) {
+      const foundInvestment = investments.find(
+        (inv) => inv.id === investmentId
+      );
+      if (foundInvestment) {
+        setInvestment(foundInvestment);
+        setLoading(false);
+      } else {
+        setError("Investment not found");
+      }
+    }
+  }, [investments])
+  console.log("investment", investment);
   const navigate = useNavigate();
 
   const handleEdit = () => {
-    navigate(`/fundmanager-ai/${investmentId}/edit`);
+    navigate(Routes.FUND_MANAGER_INVESTMENT_EDIT.replace(":investmentId", investmentId || ""));
   };
 
   const formattedAmount = new Intl.NumberFormat("en-US", {
@@ -41,23 +61,23 @@ const Investment: React.FC = () => {
     currency: "USD",
   }).format(parseInt(investment?.postMoneyValuation || "0"));
 
-  useEffect(() => {
-    const fetchInvestment = async () => {
-      try {
-        if (investmentId) {
-          const data = await getInvestmentById(investmentId);
-          setInvestment(data);
-        } else {
-          console.error("Investment ID is required");
-        }
-      } catch (err) {
-        setError("Failed to fetch investment. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchInvestment();
-  }, [investmentId]);
+  // useEffect(() => {
+  //   const fetchInvestment = async () => {
+  //     try {
+  //       if (investmentId) {
+  //         const data = await getInvestmentById(investmentId);
+  //         setInvestment(data);
+  //       } else {
+  //         console.error("Investment ID is required");
+  //       }
+  //     } catch (err) {
+  //       setError("Failed to fetch investment. Please try again later.");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchInvestment();
+  // }, [investmentId]);
 
   if (loading) {
     return (
@@ -89,7 +109,7 @@ const Investment: React.FC = () => {
   }
 
   return (
-    <Box sx={{ p: 3, maxWidth: 800, mx: "auto", width: "fit-content" }}>
+    <Box sx={{ p: 3, }}>
       <Button
         variant="text"
         onClick={() => navigate(-1)}
@@ -113,10 +133,11 @@ const Investment: React.FC = () => {
       >
         Investment
       </Typography>
-      <Card
+      <Paper
+        variant="outlined"
         sx={{
           p: 3,
-          width: "500px",
+          // width: "500px",
           border: "1px solid",
           borderColor: "grey.200",
           borderRadius: "10px",
@@ -263,7 +284,34 @@ const Investment: React.FC = () => {
             {investment.status}
           </Typography>
         </Box>
-      </Card>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            gap: "5px",
+            width: "100%",
+            borderTop: "1px solid",
+            borderColor: "grey.200",
+            pt: 0,
+          }}
+        >
+          <Typography
+            variant="body2"
+            sx={{
+              color: "primary.main",
+              fontWeight: 500,
+              mb: 1,
+              mt: 2,
+            }}
+          >
+            UPDATES
+          </Typography>
+          <Typography variant="body2" color="text.secondary" align="left">
+            {investment.updates}
+          </Typography>
+        </Box>
+      </Paper>
       {/* <DocumentsListView
         showFilters={false}
         showUploadNew={true}
