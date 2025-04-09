@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AppType } from '../../types';
+import { AppType, InvestmentDetails } from '../../types';
 
 interface User {
   jwtToken: string;
@@ -12,12 +12,14 @@ interface UserState {
   user: User | null;
   isAuthenticated: boolean;
   savedApps: AppType[] | null;
+  investments: InvestmentDetails[] | null;
 }
 
 const initialState: UserState = {
   user: null,
   isAuthenticated: false,
   savedApps: null,
+  investments: null,
 };
 
 const userSlice = createSlice({
@@ -42,9 +44,12 @@ const userSlice = createSlice({
       } else {
         state.savedApps = [action.payload];
       }
-    }
+    },
+    addInvestmentsToUser: (state, action: PayloadAction<InvestmentDetails[]>) => {
+      state.investments = action.payload;
+    },
   },
 });
 
-export const { setUser, removeUser, addAppToUser } = userSlice.actions;
+export const { setUser, removeUser, addAppToUser, addInvestmentsToUser } = userSlice.actions;
 export default userSlice.reducer;
