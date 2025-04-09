@@ -82,10 +82,12 @@ const DashboardNavigation: React.FC = () => {
           <Button
             key={button.value}
             onClick={() => handleButtonClick(button.value)}
+            className={`${selectedButton === button.value ? "bg-gray-300" : ""}`}
             sx={{
               color:
                 selectedButton === button.value ? "black" : "text.secondary",
               fontWeight: selectedButton === button.value ? 500 : 400,
+
             }}
           >
             {button.label}
