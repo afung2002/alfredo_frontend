@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, CircularProgress, Alert, Button, TextField } from '@mui/material';
+import { Box, Typography, CircularProgress, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import FundListCard from '@components/FundListCard';
 import { getUserFunds } from '@services/index';
@@ -7,15 +7,26 @@ import { Fund } from '../../../../types';
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { userId } from '@constants/index';
 import { Routes } from '@constants/routes';
+import Input from '../../../../components/Input';
+import { useForm } from 'react-hook-form';
+import Button from '@components/Button';
 
 const Funds = () => {
+  const { control, watch, setValue } = useForm({
+      defaultValues: {
+        'searchFunds': ''
+      }
+    });
+  const searchValue = watch('searchFunds');
   const [funds, setFunds] = useState<Fund[]>([]);
   const [selectedTab, setSelectedTab] = useState("all");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
-
+    useEffect(() => {
+        setSearchQuery(searchValue)
+      }, [searchValue]);
   const filterTabs = [
     { label: "All", value: "all" },
     { label: "Active", value: "active" },
@@ -26,7 +37,6 @@ const Funds = () => {
     const fetchFunds = async () => {
       try {
         const data = await getUserFunds(userId);
-        console.log('Fetched funds:', data); // Log the fetched data
 
         // Transform the data to match the Fund type
         const transformedFunds: Fund[] = data.map((fund: any) => ({
@@ -126,39 +136,17 @@ const Funds = () => {
         </Box>
       </Box>
 
-      <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
-        <TextField
-          placeholder="Search funds..."
-          variant="outlined"
-          size="small"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          sx={{
-            flex: 1,
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "28px",
-              height: "36px",
-              "& fieldset": {
-                borderColor: "rgba(0, 0, 0, 0.10)",
-              },
-              "&:hover fieldset": {
-                borderColor: "rgba(0, 0, 0, 0.12)",
-              },
-            },
-          }}
-        />
+      <Box sx={{ display: "flex", gap: 2, mb: 2, width: '100%' }}>
+
+        <Input
+        type="text"
+        name="searchFunds"
+        control={control}
+        placeholder="Search funds..."
+        className="flex flex-col w-full"
+      />
         <Button
-          onClick={handleAddNew}
-          variant="contained"
-          sx={{
-            bgcolor: "black",
-            color: "white",
-            borderRadius: "2px",
-            "&:hover": {
-              bgcolor: "rgba(0, 0, 0, 0.8)",
-            },
-          }}
-        >
+          onClick={handleAddNew}>
           Add New
         </Button>
       </Box>
