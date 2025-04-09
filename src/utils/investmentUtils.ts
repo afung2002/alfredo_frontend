@@ -1,8 +1,9 @@
-import { Investment, InvestmentType } from '../types';
+import { InvestmentDetails, InvestmentType } from '../types';
 
-export const transformInvestmentData = (data: any[]): Investment[] => {
-  return data.map((inv: any) => ({
-    id: inv._id,
+export const transformInvestmentData = (data: any[]): InvestmentDetails[] => {
+  console.log(data)
+  return data.map((inv: InvestmentDetails) => ({
+    id: inv.id,
     companyName: inv.companyName,
     websiteUrl: inv.websiteUrl,
     founderEmail: inv.founderEmail,
@@ -13,15 +14,16 @@ export const transformInvestmentData = (data: any[]): Investment[] => {
     postMoneyValuation: inv.postMoneyValuation?.toString(),
     fundInvested: inv.fundInvested,
     type: inv.fundInvested ? InvestmentType.FUND : InvestmentType.ANGEL,
-    status: inv.status
+    status: inv.status,
+    updates: inv.updates,
   }));
 };
 
-export const calculateTotalInvestments = (investments: Investment[]): number => {
+export const calculateTotalInvestments = (investments: InvestmentDetails[]): number => {
   return investments.length;
 };
 
-export const calculateTotalInvested = (investments: Investment[]): string => {
+export const calculateTotalInvested = (investments: InvestmentDetails[]): string => {
   return investments
     .reduce((sum, inv) => sum + parseInt(inv.amount.replace(/[$,]/g, '')), 0)
     .toLocaleString('en-US', { style: 'currency', currency: 'USD' });
@@ -32,6 +34,6 @@ export const calculateEstimatedValue = (totalInvested: string): string => {
     .toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 };
 
-export const filterInvestmentsByType = (investments: Investment[], type: InvestmentType): Investment[] => {
+export const filterInvestmentsByType = (investments: InvestmentDetails[], type: InvestmentType): InvestmentDetails[] => {
   return investments.filter(inv => inv.type === type);
 }; 
