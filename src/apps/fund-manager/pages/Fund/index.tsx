@@ -9,6 +9,7 @@ import {
   IconButton,
   CircularProgress,
   Alert,
+  Paper,
 } from "@mui/material";
 import { Fund } from "../../../../types";
 import { Link } from "@mui/icons-material";
@@ -94,7 +95,7 @@ const FundView: React.FC = () => {
   }
 
   return (
-    <Box sx={{ p: 3, maxWidth: 800, mx: "auto", width: "min-content"}}>
+    <Box sx={{ p: 3,   width: '100%' }}>
       <Button
         variant="text"
         onClick={() => navigate(-1)}
@@ -120,10 +121,11 @@ const FundView: React.FC = () => {
         Fund
       </Typography>
 
-      <Card
+      <Paper
+        variant="outlined"
         sx={{
           p: 3,
-          width: "500px",
+          // width: "500px",
           border: "1px solid",
           borderColor: "grey.200",
           borderRadius: "10px",
@@ -198,38 +200,33 @@ const FundView: React.FC = () => {
             </Box>
           </Box>
         </Box>
-      </Card>
+      </Paper>
       <Tabs
         value={selectedTab}
         onChange={(_, newValue) => setSelectedTab(newValue)}
         variant="scrollable"
         scrollButtons={false}
-        TabIndicatorProps={{ style: { display: "none" } }}
-        sx={{
-          mb: 3,
-          minHeight: "36px",
-          "& .MuiTabs-flexContainer": {
-            gap: 1,
-          },
-          "& .MuiTab-root": {
-            minHeight: "32px",
-            padding: "6px 16px",
-            borderRadius: "16px",
-            fontSize: "0.875rem",
-            textTransform: "none",
-            border: "1px solid",
-            borderColor: "rgba(0, 0, 0, 0.2)",
-            "&.Mui-selected": {
-              color:'black',
-              border: "1px solid",
-              borderColor: "rgba(0, 0, 0, 0.8)",
-              backgroundColor: "transparent",
-            },
-          },
-        }}
+        TabIndicatorProps={{ style: { display: 'none' } }}
+
       >
         {filterTabs.map((tab) => (
           <Tab
+          sx={{
+            minHeight: 32,
+            minWidth: 'auto',
+            px: 4,
+            borderRadius: '50px',
+            textTransform: 'none',
+            bgcolor: tab.value === selectedTab ? 'primary.main' : 'grey.200',
+            color: tab.value === selectedTab ? 'white' : 'black',
+            mx: 1,
+            fontSize: 14,
+            fontWeight: 500,
+            '&.Mui-selected': {
+              bgcolor: 'primary.main',
+              color: 'white',
+            },
+          }}
             key={tab.value}
             label={tab.label}
             value={tab.value}
