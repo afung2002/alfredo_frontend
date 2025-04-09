@@ -6,6 +6,7 @@ import {
   Typography,
   IconButton,
   Chip,
+  Paper,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -40,7 +41,7 @@ const AppCard: React.FC<AppCardProps> = ({
   };
   const isSaved = savedApps?.some((app) => app.title === title);
   return (
-    <Card
+    <Paper
       onClick={handleCardClick}
       sx={{
         width: '100%',
@@ -48,7 +49,11 @@ const AppCard: React.FC<AppCardProps> = ({
         display: 'flex',
         alignItems: 'center',
         cursor: 'pointer',
+        borderRadius: 2,
         boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+        overflow: 'hidden',
+        backgroundColor: '#FFF',
+
         '&:hover': {
           boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
         },
@@ -60,7 +65,8 @@ const AppCard: React.FC<AppCardProps> = ({
           width: 120,
           height: '100%',
           flexShrink: 0,
-          backgroundColor: 'grey.100',
+          // backgroundColor: 'grey.100',
+          overflow: 'hidden',
         }}
       >
         <Box
@@ -71,6 +77,8 @@ const AppCard: React.FC<AppCardProps> = ({
             width: '100%',
             height: '100%',
             objectFit: 'cover',
+          // backgroundColor: 'grey.100',
+
           }}
         />
       </Box>
@@ -141,7 +149,7 @@ const AppCard: React.FC<AppCardProps> = ({
           </IconButton>
         </Box>
       </CardContent>
-    </Card>
+    </Paper>
   );
 };
 
