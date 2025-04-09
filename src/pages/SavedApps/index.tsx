@@ -3,7 +3,6 @@ import {
   Typography,
   Tabs,
   Tab,
-  TextField,
 } from '@mui/material';
 import AppCard from '@components/AppCard';
 import { APPS_FILTER_TABS } from '@constants/index';
@@ -11,14 +10,21 @@ import { selectUserApps } from '@redux/selectors/user.selector';
 import { useDispatch, useSelector } from 'react-redux';
 import { addAppToUser } from '../../redux/slices/user';
 import { AppType } from '../../types';
+import { useForm } from 'react-hook-form';
+import Input from '../../components/Input';
 import { searchByTitle } from '../../utils/uiUtils';
 
 const SavedApps = () => {
+  const { control, watch, setValue } = useForm({
+    defaultValues: {
+      'searchApps': ''
+    }
+  });
+  const searchValue = watch('searchApps');
   const savedApps = useSelector(selectUserApps);
   const dispatch = useDispatch();
   const [filteredCards, setFilteredCards] = useState(savedApps);
   const [selectedTab, setSelectedTab] = useState('all');
-  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const filteredCards = savedApps?.filter((card) => {
@@ -26,69 +32,59 @@ const SavedApps = () => {
       return card.categoryValue === selectedTab;
     });
     setFilteredCards(filteredCards || null);
-    setSearchTerm('');
+    setValue('searchApps', '');
   }, [selectedTab, savedApps]);
 
   const handleToggleApp = (card: AppType) => {
     dispatch(addAppToUser(card))
   };
+
+  useEffect(() => {
+    const filteredCards = searchByTitle(savedApps || [], searchValue, 'title');
+    setFilteredCards(filteredCards);
+  }, [searchValue]);
   return (
     <div className='min-h-screen w-full p-4 flex-1'>
       <Typography variant="h5" sx={{ mb: 2, fontWeight: 500, textAlign: 'left' }}>
         Cutting-Edge Applications for Startup Investing
       </Typography>
-      <TextField
-        value={searchTerm}
-        onChange={(e) => {
-          setSearchTerm(e.target.value);
-          const filteredCards = searchByTitle(savedApps || [], e.target.value, 'title');
-          setFilteredCards(filteredCards);
-        }}
-        fullWidth
-        placeholder="Search applications..."
-        variant="outlined"
-        sx={{
-          mb: 2,
-          "& fieldset": {
-            borderColor: "rgba(0, 0, 0, 0.10)",
-          },
-          "& .MuiOutlinedInput-root": {
-            borderRadius: "28px",
-            height: "36px",
-          },
-        }}
-      />
+
+      <Input
+        type="text"
+        name="searchApps"
+        control={control}
+        placeholder="Search Apps..."
+        className="flex flex-col mb-4"
+        />
+
 
       <Tabs
+      className='mb-2'
         value={selectedTab}
         onChange={(_, newValue) => setSelectedTab(newValue)}
         variant="scrollable"
         scrollButtons={false}
         TabIndicatorProps={{ style: { display: 'none' } }}
-        sx={{
-          mb: 1,
-          minHeight: '36px',
-          '& .MuiTabs-flexContainer': {
-            gap: 1,
-          },
-          '& .MuiTab-root': {
-            minHeight: '32px',
-            padding: '6px 16px',
-            borderRadius: '16px',
-            fontSize: '0.875rem',
-            textTransform: 'none',
-            border: '1px solid transparent',
-            '&.Mui-selected': {
-              border: '1px solid',
-              borderColor: 'rgba(0, 0, 0, 0.2)',
-              backgroundColor: 'transparent',
-              color: 'black',
-            },
-          },
-        }}
+
       >
         {APPS_FILTER_TABS.map((tab) => (
           <Tab
+          sx={{
+            minHeight: 32,
+            minWidth: 'auto',
+            px: 4,
+            borderRadius: '50px',
+            textTransform: 'none',
+            bgcolor: tab.value === selectedTab ? 'primary.main' : 'grey.200',
+            color: tab.value === selectedTab ? 'white' : 'black',
+            mx: 1,
+            fontSize: 14,
+            fontWeight: 500,
+            '&.Mui-selected': {
+              bgcolor: 'primary.main',
+              color: 'white',
+            },
+          }}
             key={tab.value}
             label={tab.label}
             value={tab.value}
@@ -97,7 +93,7 @@ const SavedApps = () => {
         ))}
       </Tabs>
 
-      <div className="flex flex-col gap-2 min--[600px]">
+      <div className="flex flex-col gap-4 min--[600px]">
         {filteredCards?.map((card, index) => (
           <AppCard
             key={index}
