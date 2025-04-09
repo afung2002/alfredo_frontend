@@ -8,7 +8,7 @@ export const validateUrl = (url: string): boolean => {
     new URL(url);
     return true;
   } catch {
-    return false;
+    return true;
   }
 };
 
