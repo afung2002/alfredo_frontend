@@ -7,16 +7,20 @@ import { Fund } from '../../../../types';
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { userId } from '@constants/index';
 import { Routes } from '@constants/routes';
-import Input from '../../../../components/Input';
+import Input from '@components/Input';
 import { useForm } from 'react-hook-form';
 import Button from '@components/Button';
+import { useGetCompaniesQuery } from '@services/api/baseApi';
 
 const Funds = () => {
-  const { control, watch, setValue } = useForm({
+  const {data,  isLoading} = useGetCompaniesQuery();
+  const { control, watch } = useForm({
       defaultValues: {
         'searchFunds': ''
       }
     });
+    console.log('data:', data);
+    console.log('isLoading:', isLoading);
   const searchValue = watch('searchFunds');
   const [funds, setFunds] = useState<Fund[]>([]);
   const [selectedTab, setSelectedTab] = useState("all");
