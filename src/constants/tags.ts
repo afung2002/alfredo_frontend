@@ -1,3 +1,8 @@
 export enum Tags {
-  User = 'user',
+  USER = 'user',
+  COMPANIES = 'companies',
+  INVESTMENTS = 'investments',
+  FUNDS = 'funds',
+  DOCUMENTS = 'documents',
+  LIMITED_PARTNERS = 'limited-partners',
 }
