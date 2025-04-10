@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, CircularProgress, Alert, Tab, Tabs } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import InvestmentCard from '@components/InvestmentCard';
 import { getUserInvestments } from '@services/index';
 import { InvestmentDetails, InvestmentType } from '../../../../types';
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
@@ -13,15 +12,12 @@ import {
   calculateEstimatedValue,
   filterInvestmentsByType
 } from '@utils/investmentUtils';
-import {
-  noDataMessageStyles
-} from '@utils/uiUtils';
 import { FILTER_TABS, DEFAULT_TAB } from '@constants/index';
-import { Routes } from '../../../../constants/routes';
+import { Routes } from '@constants/routes';
 import { useDispatch, useSelector } from 'react-redux';
 import { addInvestmentsToUser } from '@redux/slices/user';
-import { selectUserInvestments } from '../../../../redux/selectors/user.selector';
-import Input from '../../../../components/Input';
+import { selectUserInvestments } from '@redux/selectors/user.selector';
+import Input from '@components/Input';
 import { useForm } from 'react-hook-form';
 import Button from '@components/Button';
 import InvestmentsList from '@src/components/InvestmentsList';
@@ -33,28 +29,22 @@ const Investments = () => {
       'searchInvestments': ''
     }
   });
+  const investments = useSelector(selectUserInvestments);
+
   const searchValue = watch('searchInvestments');
-  const [fundInvestments, setFundInvestments] = useState<InvestmentDetails[]>([]);
-  const [angelInvestments, setAngelInvestments] = useState<InvestmentDetails[]>([]);
+  const [filteredInvestments, setFilteredInvestments] = useState<InvestmentDetails[]>(investments || []);
   const [selectedTab, setSelectedTab] = useState(DEFAULT_TAB);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const investments = useSelector(selectUserInvestments);
-  useEffect(() => {
-    setSearchQuery(searchValue)
-  }, [searchValue]);
+
   useEffect(() => {
     const fetchInvestments = async () => {
       try {
         const data = await getUserInvestments(userId);
         const transformedInvestments = transformInvestmentData(data);
         dispatch(addInvestmentsToUser(transformedInvestments));
-        // setInvestments(transformedInvestments);
-        setFundInvestments(filterInvestmentsByType(transformedInvestments, InvestmentType.FUND));
-        setAngelInvestments(filterInvestmentsByType(transformedInvestments, InvestmentType.ANGEL));
       } catch (err) {
         setError('Failed to fetch investments. Please try again later.');
         console.error('Error fetching investments:', err);
@@ -64,7 +54,7 @@ const Investments = () => {
     };
 
     fetchInvestments();
-  }, [userId]);
+  }, [dispatch]);
 
   const totalInvestments = calculateTotalInvestments(investments || []);
   const totalInvested = calculateTotalInvested(investments || []);
@@ -76,18 +66,26 @@ const Investments = () => {
     }
     navigate(Routes.FUND_MANAGER_NEW_INVESTMENT);
   };
+  useEffect(() => {
+      if (selectedTab === 'all') {
+        setFilteredInvestments(investments || []);
+      } else if (selectedTab === 'fund') {
+        setFilteredInvestments(filterInvestmentsByType(investments || [], InvestmentType.FUND));
+      } else if (selectedTab === 'angel') {
+        setFilteredInvestments(filterInvestmentsByType(investments || [], InvestmentType.ANGEL));
+      }
+  }, [selectedTab, investments]);
+  useEffect(() => {
+    if (searchValue) {
+      const filtered = investments?.filter(investment =>
+        investment.companyName.toLowerCase()?.includes(searchValue.toLowerCase())
+      );
+      setFilteredInvestments(filtered || []);
+    } else {
+      setFilteredInvestments(investments || []);
+    }
+  }, [searchValue, investments]);
 
-  const filteredInvestments = investments?.filter(investment =>
-    investment.companyName.toLowerCase()?.includes(searchQuery.toLowerCase())
-  );
-
-  const filteredFundInvestments = fundInvestments.filter(investment =>
-    investment.companyName.toLowerCase()?.includes(searchQuery.toLowerCase())
-  );
-
-  const filteredAngelInvestments = angelInvestments.filter(investment =>
-    investment.companyName.toLowerCase()?.includes(searchQuery.toLowerCase())
-  );
 
   if (loading) {
     return (
@@ -173,10 +171,7 @@ const Investments = () => {
         ))}
       </Tabs>
         <InvestmentsList 
-        selectedTab={selectedTab}
-        filteredInvestments={filteredInvestments}
-        filteredFundInvestments={filteredFundInvestments}
-        filteredAngelInvestments={filteredAngelInvestments}
+        investments={filteredInvestments}
         />
     </Box>
   );
