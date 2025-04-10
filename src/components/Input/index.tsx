@@ -11,9 +11,10 @@ interface IInputProps extends OutlinedInputProps {
   labelClassName?: string;
   isGroupInputs?: boolean;
   reason?: string;
+  rounded?: boolean;
 }
 
-const Input = ({ name, control, className, labelClassName, defaultValue, label, reason, ...props }: IInputProps) => {
+const Input = ({ name, control, className, labelClassName, defaultValue, label, reason, rounded = true, ...props }: IInputProps) => {
   const { field: { onChange, value }, fieldState: { error } } = useController({
     name,
     control,
@@ -35,7 +36,7 @@ const Input = ({ name, control, className, labelClassName, defaultValue, label, 
         size="small"
         {...props}
         className="w-full p-1"
-        sx={{borderRadius: '50px'}}
+        sx={{borderRadius: rounded ? '50px' : '8px'}}
         id={label}
         name={name}
         value={value}
