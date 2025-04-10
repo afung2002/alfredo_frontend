@@ -1,10 +1,10 @@
 import { Box, Button, Paper, Typography } from "@mui/material";
-import { Card, CardContent } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { Document } from "../../types";
 import DownloadIcon from '@mui/icons-material/Download';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+
 const DocumentCard: React.FC<{ document: Document }> = ({ document }) => {
   const handleDelete = () => {
     console.log('file deleted');
