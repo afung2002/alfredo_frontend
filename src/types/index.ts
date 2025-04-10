@@ -15,7 +15,7 @@ export interface InvestmentDetails {
   updates: string
 }
 
-export interface LimitedPartner {
+export interface LimitedPartnerType {
   _id: string;
   name: string;
   websiteUrl: string;
