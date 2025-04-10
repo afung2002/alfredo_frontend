@@ -5,6 +5,7 @@ import { createFund, getFundById, updateFund } from '@services/index';
 import { userId } from '@constants/index';
 import { ArrowBack } from '@mui/icons-material';
 import { formContainerStyles } from '@utils/uiUtils';
+import { Routes } from '../../../../constants/routes';
 
 const NewFund: React.FC = () => {
   const navigate = useNavigate();
@@ -187,7 +188,7 @@ const NewFund: React.FC = () => {
             <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
               <Button
                 variant="outlined"
-                onClick={() => navigate('/fundmanager-ai/funds')}
+                onClick={() => navigate(Routes.FUND_MANAGER_FUNDS)}
                 disabled={loading}
               >
                 Cancel
