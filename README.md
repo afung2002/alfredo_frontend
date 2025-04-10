@@ -177,7 +177,23 @@ $ yarn run dev
 
 - ✅ Create Postman workspace with the API collection and a mock server  
 
-- 🚧 Relocate existing components to their appropriate modular folders  
+- ✅ Relocate existing components to their appropriate modular folders  
+
+- ✅ Add investments portfolio to fund
+
+- ✅ Add limited partners to fund
+
+- ✅ Add updates to fund
+
+- ✅ Add documents to fund
+
+- 🚧 Sign up users to clerk
+
+- 🚧 Create investment edit component
+
+- 🚧 Create fund edit component
+
+- 🚧 Add view / delete / download features to document
 
 - 🚧 Refactor components that require optimization or better structure  
 
