@@ -10,6 +10,7 @@ import { searchByTitle } from '../../../../utils/uiUtils';
 import Input from '../../../../components/Input';
 import { useForm } from 'react-hook-form';
 import Button from '@components/Button';
+import DocumentsList from '../../../../components/DocumentsList';
 const Documents = () => {
   const { control, watch, setValue } = useForm({
         defaultValues: {
@@ -171,22 +172,7 @@ useEffect(() => {
         ))}
       </Tabs>
 
-      {/* Document Grid */}
-      {filteredDocs.length > 0 ? (
-        <Grid container spacing={3}>
-          {filteredDocs.map((document, index) => (
-            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }} key={index}>
-              <DocumentCard document={document} />
-            </Grid>
-          ))}
-        </Grid>
-      ) : (
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
-          <Typography variant="body1">
-            {searchQuery ? "No documents found matching your search." : "No documents found"}
-          </Typography>
-        </Box>
-      )}
+      <DocumentsList documents={filteredDocs} />
 
       {/* Upload Modal */}
       <UploadDocumentModal
