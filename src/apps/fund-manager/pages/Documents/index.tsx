@@ -11,7 +11,9 @@ import Input from '../../../../components/Input';
 import { useForm } from 'react-hook-form';
 import Button from '@components/Button';
 import DocumentsList from '../../../../components/DocumentsList';
+import { useGetDocumentsQuery } from '@services/api/baseApi';
 const Documents = () => {
+  const { data: documentsData, isLoading: isLoadingDocuments, error: errorDocuments } = useGetDocumentsQuery();
   const { control, watch, setValue } = useForm({
         defaultValues: {
           'searchDocuments': ''
@@ -24,16 +26,16 @@ const Documents = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredDocs, setFilteredDocs] = useState<Document[]>([]);
+  const [filteredDocs, setFilteredDocs] = useState<Document[]>(documentsData || []);
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 useEffect(() => {
-  const filteredDocs = searchByTitle(documents, searchValue, 'file');
+  const filteredDocs = searchByTitle(documentsData, searchValue, 'file');
   setFilteredDocs(filteredDocs);
   }, [searchValue]);
   const filterTabs = [
     { label: "All", value: "all" },
-    { label: "Investment", value: "investment" },
+    { label: "Angel", value: "angel" },
     { label: "Fund", value: "fund" },
   ];
 
