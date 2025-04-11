@@ -12,3 +12,9 @@ export const APPS_FILTER_TABS = [  { label: 'All', value: 'all' },
   { label: 'For Investors', value: 'investors' },
   { label: 'For Founders', value: 'founders' },
   { label: 'For Limited Partners', value: 'limited-partners' },]
+
+export const FUNDS_FILTER_TABS = [
+  { label: "All", value: "all" },
+  { label: "Active", value: "active" },
+  { label: "Closed", value: "closed" },
+];
