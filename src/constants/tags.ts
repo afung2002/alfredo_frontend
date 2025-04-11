@@ -5,4 +5,5 @@ export enum Tags {
   FUNDS = 'funds',
   DOCUMENTS = 'documents',
   LIMITED_PARTNERS = 'limited-partners',
+  FUND_UPDATES = 'fund-updates',
 }
