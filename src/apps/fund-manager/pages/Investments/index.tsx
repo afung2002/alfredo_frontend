@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, CircularProgress, Alert, Tab, Tabs } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { getUserInvestments } from '@services/index';
 import { InvestmentDetails, InvestmentType } from '../../../../types';
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import { userId } from '@constants/index';
 import {
-  transformInvestmentData,
   calculateTotalInvestments,
   calculateTotalInvested,
   calculateEstimatedValue,
@@ -14,50 +11,28 @@ import {
 } from '@utils/investmentUtils';
 import { FILTER_TABS, DEFAULT_TAB } from '@constants/index';
 import { Routes } from '@constants/routes';
-import { useDispatch, useSelector } from 'react-redux';
-import { addInvestmentsToUser } from '@redux/slices/user';
-import { selectUserInvestments } from '@redux/selectors/user.selector';
 import Input from '@components/Input';
 import { useForm } from 'react-hook-form';
 import Button from '@components/Button';
 import InvestmentsList from '@src/components/InvestmentsList';
+import { useGetInvestmentsQuery } from '@services/api/baseApi';
 
 
 const Investments = () => {
+  const {data: investmentsData, isLoading: isLoadingInvestments, error: errorInvestments} = useGetInvestmentsQuery();
   const { control, watch } = useForm({
     defaultValues: {
       'searchInvestments': ''
     }
   });
-  const investments = useSelector(selectUserInvestments);
 
   const searchValue = watch('searchInvestments');
-  const [filteredInvestments, setFilteredInvestments] = useState<InvestmentDetails[]>(investments || []);
+  const [filteredInvestments, setFilteredInvestments] = useState<InvestmentDetails[]>(investmentsData || []);
   const [selectedTab, setSelectedTab] = useState(DEFAULT_TAB);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
-  useEffect(() => {
-    const fetchInvestments = async () => {
-      try {
-        const data = await getUserInvestments(userId);
-        const transformedInvestments = transformInvestmentData(data);
-        dispatch(addInvestmentsToUser(transformedInvestments));
-      } catch (err) {
-        setError('Failed to fetch investments. Please try again later.');
-        console.error('Error fetching investments:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchInvestments();
-  }, [dispatch]);
-
-  const totalInvestments = calculateTotalInvestments(investments || []);
-  const totalInvested = calculateTotalInvested(investments || []);
+  const totalInvestments = calculateTotalInvestments(investmentsData || []);
+  const totalInvested = calculateTotalInvested(investmentsData || []);
   const estimatedValue = calculateEstimatedValue(totalInvested);
 
   const handleAddNew = (event: React.MouseEvent) => {
@@ -68,26 +43,27 @@ const Investments = () => {
   };
   useEffect(() => {
       if (selectedTab === 'all') {
-        setFilteredInvestments(investments || []);
+        setFilteredInvestments(investmentsData || []);
       } else if (selectedTab === 'fund') {
-        setFilteredInvestments(filterInvestmentsByType(investments || [], InvestmentType.FUND));
+        setFilteredInvestments(filterInvestmentsByType(investmentsData || [], InvestmentType.FUND));
       } else if (selectedTab === 'angel') {
-        setFilteredInvestments(filterInvestmentsByType(investments || [], InvestmentType.ANGEL));
+        setFilteredInvestments(filterInvestmentsByType(investmentsData || [], InvestmentType.ANGEL));
       }
-  }, [selectedTab, investments]);
+  }, [selectedTab, investmentsData]);
+
   useEffect(() => {
     if (searchValue) {
-      const filtered = investments?.filter(investment =>
+      const filtered = investmentsData?.filter(investment =>
         investment.companyName.toLowerCase()?.includes(searchValue.toLowerCase())
       );
       setFilteredInvestments(filtered || []);
     } else {
-      setFilteredInvestments(investments || []);
+      setFilteredInvestments(investmentsData || []);
     }
-  }, [searchValue, investments]);
+  }, [searchValue,]);
 
 
-  if (loading) {
+  if (isLoadingInvestments) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
         <CircularProgress />
@@ -95,10 +71,10 @@ const Investments = () => {
     );
   }
 
-  if (error) {
+  if (errorInvestments) {
     return (
       <Box p={3}>
-        <Alert severity="error">{error}</Alert>
+        <Alert severity="error">{errorInvestments}</Alert>
       </Box>
     );
   }
@@ -124,6 +100,7 @@ const Investments = () => {
 
       <Box sx={{ display: "flex", gap: 2, mb: 2, width: '100%' }}>
         <Input
+          disabled
           type="text"
           name="searchInvestments"
           control={control}
