@@ -35,5 +35,10 @@ export const calculateEstimatedValue = (totalInvested: string): string => {
 };
 
 export const filterInvestmentsByType = (investments: InvestmentDetails[], type: InvestmentType): InvestmentDetails[] => {
+  console.log(investments, type)
   return investments.filter(inv => inv.type === type);
+}; 
+
+export const filterInvestmentsByStatus = (funds, status) => {
+  return funds.filter(fund => fund.status === status);
 }; 
