@@ -1,18 +1,31 @@
-import { Box, Button, Paper, Typography } from "@mui/material";
+import { Box, Button, Dialog, DialogTitle, Modal, Paper, Typography } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { Document } from "../../types";
 import DownloadIcon from '@mui/icons-material/Download';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import { useState, forwardRef } from "react";
+import { TransitionProps } from '@mui/material/transitions';
+import Slide from '@mui/material/Slide';
 
+const Transition = forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>;
+  },
+  ref: React.Ref<unknown>,
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 const DocumentCard: React.FC<{ document: Document }> = ({ document }) => {
+  const [openDocViewModal, setOpenDocViewModal] = useState(false);
   const handleDelete = () => {
     console.log('file deleted');
   };
   return (
+    <>
     <Paper
       variant="outlined"
-      className="transition-shadow duration-200 flex flex-col gap-4"
+      className="transition-shadow duration-200  gap-4 overflow-wrap w-full h-28"
       sx={{
         display: "flex",
         alignItems: "center",
@@ -21,7 +34,8 @@ const DocumentCard: React.FC<{ document: Document }> = ({ document }) => {
         borderRadius: '6px',
         cursor: "pointer",
         backgroundColor: 'grey.100',
-
+        overflow: 'wrap',
+        width: '100%',
         ':hover': {
           backgroundColor: '#f5f5f5',
         }
@@ -30,12 +44,14 @@ const DocumentCard: React.FC<{ document: Document }> = ({ document }) => {
         {/* File name at the top */}
         <Typography 
           variant="subtitle2" 
+          className="break-all"
           sx={{ 
             fontWeight: 500,
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
             alignSelf: 'flex-start',
+            wordBreak: 'break-all',
           }}
         >
           {document.file}
@@ -76,7 +92,9 @@ const DocumentCard: React.FC<{ document: Document }> = ({ document }) => {
             <DeleteIcon />
           </IconButton>
             <div>
-            <Button sx={{
+            <Button 
+            onClick={() => setOpenDocViewModal(true)}
+            sx={{
               textTransform: 'none',
             }}>View</Button>
             <IconButton 
@@ -96,6 +114,20 @@ const DocumentCard: React.FC<{ document: Document }> = ({ document }) => {
           
         </Box>
     </Paper>
+    <Dialog
+    TransitionComponent={Transition}
+      open={openDocViewModal}
+      onClose={() => setOpenDocViewModal(false)}
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+       <DialogTitle>Document</DialogTitle>
+    </Dialog>
+    </>
+    
   );
 };        
 
