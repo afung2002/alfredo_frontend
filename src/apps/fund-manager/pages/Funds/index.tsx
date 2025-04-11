@@ -1,99 +1,44 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, CircularProgress, Alert } from '@mui/material';
+import { Box, Typography, CircularProgress, Alert, Tab, Tabs } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import FundListCard from '@components/FundListCard';
-import { getUserFunds } from '@services/index';
 import { Fund } from '../../../../types';
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import { userId } from '@constants/index';
+import { FUNDS_FILTER_TABS, userId } from '@constants/index';
 import { Routes } from '@constants/routes';
 import Input from '@components/Input';
 import { useForm } from 'react-hook-form';
 import Button from '@components/Button';
-import { useGetCompaniesQuery } from '@services/api/baseApi';
+import { useGetFundsQuery } from '@services/api/baseApi';
+import { filterInvestmentsByStatus, filterInvestmentsByType } from '../../../../utils/investmentUtils';
 
 const Funds = () => {
-  const {data,  isLoading} = useGetCompaniesQuery();
+  const {data: fundsData,  isLoading, error} = useGetFundsQuery()
+  console.log('fundsData:', fundsData);
+  console.log('error:', error);
+  console.log('isLoading:', isLoading);
   const { control, watch } = useForm({
       defaultValues: {
         'searchFunds': ''
       }
     });
-    console.log('data:', data);
-    console.log('isLoading:', isLoading);
+
   const searchValue = watch('searchFunds');
   const [funds, setFunds] = useState<Fund[]>([]);
   const [selectedTab, setSelectedTab] = useState("all");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
     useEffect(() => {
         setSearchQuery(searchValue)
       }, [searchValue]);
-  const filterTabs = [
-    { label: "All", value: "all" },
-    { label: "Active", value: "active" },
-    { label: "Closed", value: "closed" },
-  ];
 
-  useEffect(() => {
-    const fetchFunds = async () => {
-      try {
-        const data = await getUserFunds(userId);
-
-        // Transform the data to match the Fund type
-        const transformedFunds: Fund[] = data.map((fund: any) => ({
-          id: fund._id,
-          name: fund.name,
-          websiteUrl: fund.websiteUrl,
-          legalEntity: fund.legalEntity,
-          description: fund.description,
-          fundSize: fund.fundSize?.toString(),
-          estimatedValue: fund.estimatedValue.toString(),
-          updates: fund.updates?.map((update: any) => ({
-            id: update._id,
-            description: update.description,
-            date: update.datePosted
-          })),
-          portfolio: fund.portfolio?.map((investment: any) => ({
-            id: investment._id,
-            companyName: investment.companyName,
-            websiteUrl: investment.websiteUrl,
-            founderEmail: investment.founderEmail,
-            description: investment.description,
-            amount: investment.amount?.toString(),
-            estimatedValue: investment.estimatedValue?.toString(),
-            investmentDate: investment.investmentDate,
-            postMoneyValuation: investment.postMoneyValuation?.toString(),
-            fundInvested: investment.fundInvested,
-            type: investment.fundInvested ? 'fund' : 'angel',
-            status: investment.status
-          }))
-        }));
-        console.log('Transformed funds:', transformedFunds); // Log the transformed data
-        setFunds(transformedFunds);
-      } catch (err) {
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFunds();
-  }, []);
-
-  // Calculate total funds
-  const totalFunds = funds.length;
   
   // Calculate total fund size
   const totalFundSize = funds
     .reduce((sum, fund) => sum + parseInt(fund.fundSize.replace(/[$,]/g, '')), 0)
     .toLocaleString('en-US', { style: 'currency', currency: 'USD' });
     
-  // Calculate total estimated value
-  const totalEstimatedValue = funds
-    .reduce((sum, fund) => sum + parseInt(fund.estimatedValue.replace(/[$,]/g, '')), 0)
-    .toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 
   const handleAddNew = (event: React.MouseEvent) => {
     // Prevent navigation if clicking the add button
@@ -107,7 +52,17 @@ const Funds = () => {
     fund.name.toLowerCase()?.includes(searchQuery.toLowerCase())
   );
 
-  if (loading) {
+    // useEffect(() => {
+    //     if (selectedTab === 'all') {
+    //       setFilteredFunds(funds || []);
+    //     } else if (selectedTab === 'active') {
+    //       setFilteredFunds(filterInvestmentsByStatus(funds || [], ));
+    //     } else if (selectedTab === 'closed') {
+    //       setFilteredFunds(filterInvestmentsByStatus(funds || [], InvestmentType.ANGEL));
+    //     }
+    // }, [selectedTab]);
+
+  if (isLoading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
         <CircularProgress />
@@ -118,16 +73,17 @@ const Funds = () => {
   if (error) {
     return (
       <Box p={3}>
-        <Alert severity="error">{error}</Alert>
+        {/* <Alert severity="error">{error}</Alert> */}
       </Box>
     );
   }
+  const totalEstimatedValue = fundsData?.reduce((sum, fund) => sum + parseInt(fund.estimated_value), 0)
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
       <Box sx={{ mb: 1 }}>
         <Typography variant="h5" sx={{ mb: 1, fontWeight: 500, textAlign: 'left' }}>
-          {totalFunds} Funds
+          {fundsData?.length ?? 0} Fund(s)
         </Typography>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, minWidth:'475px' }}>
           <Typography variant="subtitle1" sx={{ color: "text.secondary" }}>
@@ -135,7 +91,7 @@ const Funds = () => {
           </Typography>
           <FiberManualRecordIcon sx={{ fontSize: 8, color: "black" }} />
           <Typography variant="subtitle1" sx={{ color: "text.secondary" }}>
-            {totalEstimatedValue} Estimated Value
+            ${totalEstimatedValue?.toLocaleString('en-US')} Estimated Value
           </Typography>
         </Box>
       </Box>
@@ -155,8 +111,8 @@ const Funds = () => {
         </Button>
       </Box>
 
-      {filteredFunds.length > 0 ? (
-        filteredFunds.map((fund, index) => (
+      {!isLoading && fundsData && fundsData?.length > 0 ? (
+        fundsData.map((fund, index) => (
           <FundListCard key={index} fund={fund} />
         ))
       ) : (
