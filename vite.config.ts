@@ -34,11 +34,13 @@ export default defineConfig(({ mode }) => {
     envDir,
     server: {
       proxy: {
-        '/api': {
-          target: 'https://c245908c-6794-43b7-bd89-cd8396e7e17a.mock.pstmn.io',
-          changeOrigin: true
-        }
-      }
-    }
+        '/api/v1': {
+          target: 'http://54.158.102.128',
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path.replace(/^\/api\/v1/, '/api/v1'),
+        },
+      },
+    },
   };
 });
