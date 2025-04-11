@@ -1,9 +1,10 @@
-import { Chip, Typography, Box, Card, IconButton, Paper } from "@mui/material";
+import { Chip, Typography } from "@mui/material";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { InvestmentDetails } from "../../types";
 import { useNavigate } from "react-router";
 import { Routes } from "@constants/routes";
+import Card from "../Card";
 
 
 interface InvestmentCardProps {
@@ -25,13 +26,36 @@ const InvestmentCard: React.FC<InvestmentCardProps> = ({ investment, onClick }) 
       currency: 'USD'
     }).format(parseInt(investment.amount))
 
+    const handleCardClick = () => {
+        navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':investmentId', investment.id))
+    }
+
     return (
-        <Paper
-        variant="outlined"
-        onClick={() => navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':investmentId', investment.id))}
+      <div className="">
+        <Card
+        onClick={() => handleCardClick}
+        title="Company Name"
+        subtitle={`$${Number(investment?.amount).toLocaleString('en-US')}`}
+        actions={[
+          {
+            label: "View Investment",
+            onClick: () => navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':investmentId', investment.id)),
+          },
+        ]}
+        tags={[
+          {
+            label: `$${Number(investment?.fund_invested)?.toLocaleString('en-US')} Invested`,
+            color: "secondary",
+            onClick: () => { },
+          },
+          {
+            label: `$${Number(investment?.estimated_value)?.toLocaleString('en-US')} EV`,
+            color: "secondary",
+            onClick: () => { },
+          },
+        ]}
         className="transition-shadow duration-200"
         sx={{
-          backgroundColor: 'grey.100',
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -39,43 +63,24 @@ const InvestmentCard: React.FC<InvestmentCardProps> = ({ investment, onClick }) 
           borderRadius: '6px',
           cursor: "pointer",
           mb: '8px',
-          ':hover':{
+          backgroundColor: 'grey.100',
+          ':hover': {
             backgroundColor: '#f5f5f5',
           }
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Typography variant="h6" sx={{ fontWeight: 500, flex: 1 }}>
-            {investment.companyName}
-          </Typography>
-          <FiberManualRecordIcon sx={{ fontSize: 8, color: "black" }} />
-          {/* <Typography
-            variant="body2"
-            sx={{ color: "text.secondary", width: "min-content" }}
-          >
-            {formattedAmount}
-          </Typography> */}
-          <Chip
-            variant="outlined"
-            color="secondary"
-            label={formattedAmount}
-            size="medium"
-          />
-        </Box>
-        <Box>
-          <Chip
-            color="secondary"
-            label={
-              investment.fundInvested ? investment.fundInvested : "Angel"
-            }
-            size="medium"
-          />
+        {investment.type && (
+          <div>
+            <Chip
+              label={investment.type}
+              size="medium"
+            />
+          </div>
 
-          <IconButton size="small" sx={{ color: "text.secondary" }}>
-            <ArrowForwardIcon />
-          </IconButton>
-        </Box>
-      </Paper>
+        )}
+
+      </Card>
+      </div>
     )
 }
 
