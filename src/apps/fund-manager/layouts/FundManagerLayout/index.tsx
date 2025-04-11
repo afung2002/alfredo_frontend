@@ -15,9 +15,11 @@ const FundManagerLayout = () => {
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }} className="bg-gray-50">
       <AppSideMenu sideMenuButtons={sideMenuButtons} />
-      <Box sx={{ flex: 1, px: "130px", pt:"100px"}}>
+      <div 
+        className="flex-1 xl:px-60 md:px-32 sm:px-16 px-4 pt-24 pb-24"
+      >
         <Outlet />
-      </Box>
+      </div>
     </Box>
   )
 }
