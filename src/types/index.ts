@@ -50,8 +50,8 @@ export interface Document {
 }
 
 export enum InvestmentType {
-  FUND = 'fund',
-  ANGEL = 'angel',
+  FUND = 'FUND',
+  ANGEL = 'ANGEL',
 }
 
 export interface Fund {
