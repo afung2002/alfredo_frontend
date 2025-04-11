@@ -13,11 +13,11 @@ createRoot(document.getElementById('root')!).render(
 
     <ClerkProvider publishableKey={clerkPubKey}>
         <Provider store={store}>
-        <ThemeProvider theme={mode === 'dark' ? darkTheme : lightTheme}>
+        {/* <ThemeProvider theme={mode === 'dark' ? darkTheme : lightTheme}> */}
             <PersistGate loading={null} persistor={persistor}>
                 <App />
             </PersistGate>
-            </ThemeProvider>
+            {/* </ThemeProvider> */}
         </Provider>
     </ClerkProvider>
 )
