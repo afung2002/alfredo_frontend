@@ -15,20 +15,53 @@ import { Link } from "@mui/icons-material";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowBack, Edit } from "@mui/icons-material";
 import InvestmentsList from "@components/InvestmentsList";
-// import LimitedPartnersListView from "./LimitedPartnersListView";
-// import FundUpdatesListView from "./FundUpdatesListView";
-import { getFundById, getUserDocuments } from "@services/index";
+import { getUserDocuments } from "@services/index";
 import { useSelector } from "react-redux";
 import { selectUserInvestments } from "@redux/selectors/user.selector";
-import DocumentsList from "../../../../components/DocumentsList";
-import Input from "../../../../components/Input";
+import DocumentsList from "@components/DocumentsList";
+import Input from "@components/Input";
 import { useForm } from "react-hook-form";
-import { searchByTitle } from "../../../../utils/uiUtils";
-import Button from "../../../../components/Button";
-import UploadDocumentModal from "../../../../components/UploadDocumentModal";
-import LimitedPartnersList from "../../../../components/LimitedPartnersList";
-import FundUpdatesList from "../../../../components/FundUpdatesList";
-import { Routes } from "../../../../constants/routes";
+import { searchByTitle } from "@utils/uiUtils";
+import Button from "@components/Button";
+import UploadDocumentModal from "@components/UploadDocumentModal";
+import LimitedPartnersList from "@components/LimitedPartnersList";
+import FundUpdatesList from "@components/FundUpdatesList";
+import { Routes } from "@constants/routes";
+import { useGetFundByIdQuery, useGetFundUpdatesQuery, useGetInvestmentsQuery } from "@services/api/baseApi";
+import useCreatePostForm from "./hooks/useCreatePostForm";
+import FundUpdateModal from "@components/FundUpdateModal";
+
+
+const limitedPartners = [
+  {
+    id: 1,
+    name: "Limited Partner 1",
+    legalEntity: "Limited Partner 1 legal entity",
+    description: "Limited Partner 1 description",
+    email: "limitedpartner1@example.com"
+  },
+  {
+    id: 2,
+    name: "Limited Partner 2",
+    legalEntity: "Limited Partner 2 legal entity",
+    description: "Limited Partner 2 description",
+    email: "limitedpartner2@example.com"
+  },
+  {
+    id: 3,
+    name: "Limited Partner 3",
+    legalEntity: "Limited Partner 3 legal entity",
+    description: "Limited Partner 3 description",
+    email: "limitedpartner3@example.com"
+  },
+  {
+    id: 4,
+    name: "Limited Partner 4",
+    legalEntity: "Limited Partner 4 legal entity",
+    description: "Limited Partner 4 description",
+    email: "limitedpartner4@example.com"
+  }
+];
 
 const filterTabs = [
   { label: "Portfolio", value: "portfolio" },
@@ -38,84 +71,58 @@ const filterTabs = [
 ];
 
 const FundView: React.FC = () => {
+  const { fundId } = useParams();
+  const { data: fundData, isLoading, error } = useGetFundByIdQuery(fundId || '');
+  const { data: fundUpdatesData, isLoading: isLoadingUpdates, error: errorUpdates } = useGetFundUpdatesQuery();
+  const { data: investmentsData, isLoading: isLoadingInvestments, error: errorInvestments } = useGetInvestmentsQuery();
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const {
+    control: postControl,
+    handleSubmit: handlePostSubmit,
+    postTitle,
+    postDescription,
+    errors: postErrors,
+    reset: resetPostForm,
+  } = useCreatePostForm(handleClose);
+
+
+  useEffect(() => {
+    if (fundId && fundUpdatesData) {
+      const filteredUpdates = fundUpdatesData.filter((update) => update.fund === +fundId);
+      setFilteredUpdates(filteredUpdates);
+    }
+  }, [fundId, fundUpdatesData]);
   const investments = useSelector(selectUserInvestments);
-  const { control, watch } = useForm({
+  const { control, watch,
+    setValue, reset, handleSubmit, formState: { errors }
+  } = useForm({
     defaultValues: {
       'searchDocuments': '',
       'searchUpdates': '',
-      'searchLimitedPartners': ''
+      'searchLimitedPartners': '',
+      'searchInvestments': ''
 
     }
   });
-  const limitedPartners = [
-    {
-      id: 1,
-      name: "Limited Partner 1",
-      legalEntity: "Limited Partner 1 legal entity",
-      description: "Limited Partner 1 description",
-      email: "limitedpartner1@example.com"
-    },
-    {
-      id: 2,
-      name: "Limited Partner 2",
-      legalEntity: "Limited Partner 2 legal entity",
-      description: "Limited Partner 2 description",
-      email: "limitedpartner2@example.com"
-    },
-    {
-      id: 3,
-      name: "Limited Partner 3",
-      legalEntity: "Limited Partner 3 legal entity",
-      description: "Limited Partner 3 description",
-      email: "limitedpartner3@example.com"
-    },
-    {
-      id: 4,
-      name: "Limited Partner 4",
-      legalEntity: "Limited Partner 4 legal entity",
-      description: "Limited Partner 4 description",
-      email: "limitedpartner4@example.com"
-    }
-  ];
-  
-  const updates = [
-    {
-      title: "LP Update",
-      date: "2025-04-19T08:14:47.765Z",
-      message: "Dear Predictive Limited Partners, Hope you’ve been doing well! Please find our latest Q1 2025 update here. More test description info to fill out more space to test the read more button on the card corresponding to this update. Need a few more words in order to reach 3 lines which is the set amount of lines before the button shows up to expand the card."
-    },
-    {
-      title: "LP Update2",
-      date: "2025-04-19T08:14:47.765Z",
-      message: "Dear Predictive Limited Partners, Our Q2 2025 summary is now available. The portfolio performance has improved significantly this quarter. Please review the attached document for complete financials and progress."
-    },
-    {
-      title: "LP Update3",
-      date: "2025-04-19T08:14:47.765Z",
-      message: "Dear Predictive Limited Partners, We're closing out the year with steady performance and strategic positioning for next year. Thank you for your ongoing support and trust."
-    },
-    {
-      title: "LP Update4",
-      date: "2025-04-19T08:14:47.765Z",
-      message: "Mid-year review shows consistent growth across key investments. Several new partnerships were formed and two companies exited profitably."
-    }
-  ];
+
   const searchDocumentsValue = watch('searchDocuments');
   const searchUpdatesValue = watch('searchUpdates');
   const searchLimitedPartnersValue = watch('searchLimitedPartners');
+  const searchInvestmentsValue = watch('searchInvestments');
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState("portfolio");
   const [fund, setFund] = useState<Fund>();
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // const [error, setError] = useState<string | null>(null);
   const [documents, setDocuments] = useState<Document[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const { fundId } = useParams<{ fundId: string }>();
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [filteredDocs, setFilteredDocs] = useState<Document[]>([]);
   const [open, setOpen] = useState(false);
-  const [filteredUpdates, setFilteredUpdates] = useState<FundUpdate[]>(updates);
+  const [filteredUpdates, setFilteredUpdates] = useState<FundUpdate[]>();
   const [filteredLimitedPartners, setFilteredLimitedPartners] = useState<FundUpdate[]>(limitedPartners);
+  const [filteredInvestments, setFilteredInvestments] = useState<FundUpdate[]>(investments);
   const handleEdit = () => {
     navigate(Routes.FUND_MANAGER_FUND_EDIT.replace(':fundId', fundId || ''));
   }
@@ -125,22 +132,25 @@ const FundView: React.FC = () => {
     setFilteredDocs(filteredDocs);
   }, [searchDocumentsValue, documents]);
 
-  useEffect(() => {
-    if (!searchUpdatesValue) return setFilteredUpdates(updates);
-    const filteredUpdates = searchByTitle(updates, searchUpdatesValue, 'title');
-    setFilteredUpdates(filteredUpdates);
-  }, [searchUpdatesValue, updates]);
+  // useEffect(() => {
+  //   if (!searchUpdatesValue) return setFilteredUpdates(updates);
+  //   const filteredUpdates = searchByTitle(updates, searchUpdatesValue, 'title');
+  //   setFilteredUpdates(filteredUpdates);
+  // }, [searchUpdatesValue]);
 
   useEffect(() => {
     if (!searchLimitedPartnersValue) return setFilteredLimitedPartners(limitedPartners);
     const filteredLimitedPartners = searchByTitle(limitedPartners, searchLimitedPartnersValue, 'name');
     setFilteredLimitedPartners(filteredLimitedPartners);
-  }, [searchLimitedPartnersValue, limitedPartners]);
+  }, [searchLimitedPartnersValue]);
 
-const handleAddNew = (event: React.MouseEvent) => {
-    // if ((event.target as HTMLElement).closest('.MuiIconButton-root')) {
-    //   return;
-    // }
+  useEffect(() => {
+    if (!searchInvestmentsValue) return setFilteredInvestments(investments);
+    const filteredInvestments = searchByTitle(investments, searchInvestmentsValue, 'companyName');
+    setFilteredInvestments(filteredInvestments);
+  }, [searchInvestmentsValue, investments]);
+  console.log('Filtered investments:', filteredInvestments); // Log the filtered investments data
+  const handleAddNew = () => {
     navigate(Routes.FUND_MANAGER_NEW_INVESTMENT);
   };
   useEffect(() => {
@@ -177,34 +187,34 @@ const handleAddNew = (event: React.MouseEvent) => {
   const formattedAmount = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
-  }).format(parseInt(fund?.fundSize || "0"));
+  }).format(parseInt(fundData?.fundSize || "0"));
 
   const formattedEstimatedValue = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
-  }).format(parseInt(fund?.estimatedValue || "0"));
+  }).format(parseInt(fundData?.estimatedValue || "0"));
 
-  useEffect(() => {
-    const fetchFund = async () => {
-      try {
-        if (fundId) {
-          const data = await getFundById(fundId);
-          setFund(data);
-        } else {
-          console.error('Fund ID is required');
-        }
-      } catch (err) {
-        setError('Failed to fetch fund. Please try again later.');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchFund();
-  }, [fundId]);
+  // useEffect(() => {
+  //   const fetchFund = async () => {
+  //     try {
+  //       if (fundId) {
+  //         const data = await getFundById(fundId);
+  //         setFund(data);
+  //       } else {
+  //         console.error('Fund ID is required');
+  //       }
+  //     } catch (err) {
+  //       setError('Failed to fetch fundData. Please try again later.');
+  //       console.error(err);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchFund();
+  // }, [fundId]);
 
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
         <CircularProgress />
@@ -220,10 +230,9 @@ const handleAddNew = (event: React.MouseEvent) => {
     );
   }
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
 
-  if (!fund) {
+
+  if (error) {
     return <div>Fund not found</div>;
   }
 
@@ -287,10 +296,10 @@ const handleAddNew = (event: React.MouseEvent) => {
           >
             <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
               <Typography variant="h6" sx={{ fontWeight: 500 }}>
-                {fund?.name}
+                {fundData?.name}
               </Typography>
               <IconButton
-                onClick={() => window.open(fund.websiteUrl, "_blank")}
+                onClick={() => window.open(fundData.website_url, "_blank")}
                 size="small"
                 sx={{ color: "text.secondary" }}
                 title="Open website"
@@ -307,28 +316,28 @@ const handleAddNew = (event: React.MouseEvent) => {
             <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
               <Typography variant="body2">Legal Entity:</Typography>
               <Typography variant="body2" color="text.secondary">
-                {fund?.legalEntity}
+                {fundData?.legal_entity}
               </Typography>
             </Box>
 
             <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
               <Typography variant="body2">Description:</Typography>
               <Typography variant="body2" color="text.secondary">
-                {fund?.description}
+                {fundData?.description}
               </Typography>
             </Box>
 
             <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
               <Typography variant="body2">Fund Size:</Typography>
               <Typography variant="body2" color="text.secondary">
-                {formattedAmount}
+                ${Number(fundData.fund_size).toLocaleString("en-US")} AUM
               </Typography>
             </Box>
 
             <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
               <Typography variant="body2">Estimated Value:</Typography>
               <Typography variant="body2" color="text.secondary">
-                {formattedEstimatedValue}
+                ${Number(fundData.fund_size).toLocaleString("en-US")}
               </Typography>
             </Box>
           </Box>
@@ -369,25 +378,25 @@ const handleAddNew = (event: React.MouseEvent) => {
       </Tabs>
       {selectedTab === "portfolio" && (
         <>
-        <Box className="flex gap-2 my-4">
-        <Input
-          type="text"
-          name="searchInvestments"
-          control={control}
-          placeholder="Search investments..."
-          className="flex flex-col w-full"
-        />
-        <Button
-          onClick={handleAddNew}
-        >
-          Add New
-        </Button>
-      </Box>
-      <InvestmentsList
-          investments={investments}
-        />
+          <Box className="flex gap-2 my-4">
+            <Input
+              type="text"
+              name="searchInvestments"
+              control={control}
+              placeholder="Search investments..."
+              className="flex flex-col w-full"
+            />
+            <Button
+              onClick={handleAddNew}
+            >
+              Add New
+            </Button>
+          </Box>
+          <InvestmentsList
+            investments={investmentsData}
+          />
         </>
-      
+
       )}
       {selectedTab === "limited-partners" &&
         (
@@ -437,62 +446,13 @@ const handleAddNew = (event: React.MouseEvent) => {
             </Button>
           </Box>
           <FundUpdatesList updates={filteredUpdates} />
-          <Modal
+          <FundUpdateModal
             open={open}
             onClose={handleClose}
-            aria-labelledby="create-fund-update-modal"
-          >
-            <Box sx={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: 400,
-              bgcolor: 'background.paper',
-              boxShadow: 24,
-              p: 4,
-              borderRadius: 1,
-            }}>
-              <Typography variant="h6" component="h2" sx={{ mb: 3, color: "black" }}>
-                Create Fund Update
-              </Typography>
-
-
-              <div className="mb-4">
-                <Input
-                  name="title"
-                  control={control}
-                  placeholder="Title"
-                />
-              </div>
-
-              <Input
-                rounded={false}
-                rows={5}
-                multiline
-                name="description"
-                control={control}
-                placeholder="Message"
-              />
-
-              <Box className="mt-4" sx={{ display: "flex", justifyContent: "flex-end" }}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  sx={{
-                    bgcolor: "black",
-                    color: "white",
-                    "&:hover": {
-                      bgcolor: "rgba(0, 0, 0, 0.8)",
-                    },
-                  }}
-                >
-                  Post
-                </Button>
-              </Box>
-
-            </Box>
-          </Modal>
+            onSubmit={handlePostSubmit}
+            control={postControl}
+            errors={postErrors}
+          />
 
         </>
 
