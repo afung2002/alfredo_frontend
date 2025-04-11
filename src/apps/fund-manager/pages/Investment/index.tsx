@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from "react";
 import {
   Box,
-  Card,
   Typography,
   Chip,
   Button,
@@ -10,36 +8,15 @@ import {
   Alert,
   Paper,
 } from "@mui/material";
-import { InvestmentDetails } from "../../../../types";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowBack, Edit, Link } from "@mui/icons-material";
-import { selectUserInvestments } from "@redux/selectors/user.selector";
-import { useSelector } from "react-redux";
 import { Routes } from "../../../../constants/routes";
-// import DocumentsListView from "./DocumentsListView";
-// import { getInvestmentById } from "@services/index";
+import { useGetInvestmentByIdQuery } from "../../../../services/api/baseApi";
+
 const Investment: React.FC = () => {
-  const investments = useSelector(selectUserInvestments);
-  const [investment, setInvestment] = useState<InvestmentDetails | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
   const { investmentId } = useParams<{ investmentId: string }>();
-  useEffect(() => {
+  const {data: investmentData, isLoading: investmentLoading, isError: investmentError} = useGetInvestmentByIdQuery(investmentId || "")
 
-    if (investmentId && investments) {
-      const foundInvestment = investments.find(
-        (inv) => inv.id === investmentId
-      );
-      if (foundInvestment) {
-        setInvestment(foundInvestment);
-        setLoading(false);
-      } else {
-        setError("Investment not found");
-      }
-    }
-  }, [investments])
-  console.log("investment", investment);
   const navigate = useNavigate();
 
   const handleEdit = () => {
@@ -49,37 +26,20 @@ const Investment: React.FC = () => {
   const formattedAmount = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
-  }).format(parseInt(investment?.amount || "0"));
+  }).format(parseInt(investmentData?.amount || "0"));
 
   const formattedEstimatedValue = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
-  }).format(parseInt(investment?.estimatedValue || "0"));
+  }).format(parseInt(investmentData?.estimatedValue || "0"));
 
   const formattedPostMoneyValuation = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
-  }).format(parseInt(investment?.postMoneyValuation || "0"));
+  }).format(parseInt(investmentData?.postMoneyValuation || "0"));
 
-  // useEffect(() => {
-  //   const fetchInvestment = async () => {
-  //     try {
-  //       if (investmentId) {
-  //         const data = await getInvestmentById(investmentId);
-  //         setInvestment(data);
-  //       } else {
-  //         console.error("Investment ID is required");
-  //       }
-  //     } catch (err) {
-  //       setError("Failed to fetch investment. Please try again later.");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //   fetchInvestment();
-  // }, [investmentId]);
 
-  if (loading) {
+  if (investmentLoading) {
     return (
       <Box
         display="flex"
@@ -92,15 +52,15 @@ const Investment: React.FC = () => {
     );
   }
 
-  if (error) {
+  if (investmentError) {
     return (
       <Box p={3}>
-        <Alert severity="error">{error}</Alert>
+        <Alert severity="error">{investmentError}</Alert>
       </Box>
     );
   }
 
-  if (!investment) {
+  if (!investmentData) {
     return (
       <Box sx={{ p: 3, maxWidth: 800, mx: "auto" }}>
         <Typography variant="h5">Investment not found</Typography>
@@ -167,16 +127,16 @@ const Investment: React.FC = () => {
           >
             <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
               <Typography variant="h6" sx={{ fontWeight: 500 }}>
-                {investment.companyName}
+                Company Name
               </Typography>
-              <IconButton
-                onClick={() => window.open(investment.websiteUrl, "_blank")}
+              {/* <IconButton
+                onClick={() => window.open(investmentData.websiteUrl, "_blank")}
                 size="small"
                 sx={{ color: "text.secondary" }}
                 title="Open website"
               >
                 <Link fontSize="small" />
-              </IconButton>
+              </IconButton> */}
             </Box>
             <IconButton
               onClick={handleEdit}
@@ -191,8 +151,8 @@ const Investment: React.FC = () => {
             <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
               <Typography variant="body2">Type:</Typography>
               <Typography variant="body2" color="text.secondary">
-                {investment.type.charAt(0).toUpperCase() +
-                  investment.type.slice(1).toLowerCase()}{" "}
+                {investmentData.type.charAt(0).toUpperCase() +
+                  investmentData.type.slice(1).toLowerCase()}{" "}
                 Investment
               </Typography>
             </Box>
@@ -200,35 +160,35 @@ const Investment: React.FC = () => {
             <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
               <Typography variant="body2">Description:</Typography>
               <Typography variant="body2" color="text.secondary">
-                {investment.description}
+                {investmentData.description}
               </Typography>
             </Box>
 
             <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
               <Typography variant="body2">Founder Email:</Typography>
               <Typography variant="body2" color="text.secondary">
-                {investment.founderEmail}
+                {investmentData.founderEmail}
               </Typography>
             </Box>
 
             <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
               <Typography variant="body2">Amount Invested:</Typography>
               <Typography variant="body2" color="text.secondary">
-                {formattedAmount}
+                ${Number(investmentData.fund_invested).toLocaleString("en-US")}
               </Typography>
             </Box>
 
             <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
               <Typography variant="body2">Estimated Value Now:</Typography>
               <Typography variant="body2" color="text.secondary">
-                {formattedEstimatedValue}
+                ${Number(investmentData.estimated_value).toLocaleString("en-US")}
               </Typography>
             </Box>
 
             <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
               <Typography variant="body2">Investment Date:</Typography>
               <Typography variant="body2" color="text.secondary">
-                {new Date(investment.investmentDate).toLocaleDateString(
+                {new Date(investmentData.investment_date).toLocaleDateString(
                   "en-US",
                   {
                     year: "numeric",
@@ -242,11 +202,11 @@ const Investment: React.FC = () => {
             <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
               <Typography variant="body2">Valuation at Investment:</Typography>
               <Typography variant="body2" color="text.secondary">
-                {formattedPostMoneyValuation}
+              ${Number(investmentData.post_money_valuation).toLocaleString("en-US")}
               </Typography>
             </Box>
             <Chip
-              label={investment.fundInvested ? investment.fundInvested : ""}
+              label={investmentData.fundInvested ? investmentData.fundInvested : ""}
               sx={{
                 bgcolor: "grey.100",
                 color: "grey.700",
@@ -281,34 +241,7 @@ const Investment: React.FC = () => {
             LATEST STATUS
           </Typography>
           <Typography variant="body2" color="text.secondary" align="left">
-            {investment.status}
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            gap: "5px",
-            width: "100%",
-            borderTop: "1px solid",
-            borderColor: "grey.200",
-            pt: 0,
-          }}
-        >
-          <Typography
-            variant="body2"
-            sx={{
-              color: "primary.main",
-              fontWeight: 500,
-              mb: 1,
-              mt: 2,
-            }}
-          >
-            UPDATES
-          </Typography>
-          <Typography variant="body2" color="text.secondary" align="left">
-            {investment.updates}
+            {investmentData.status}
           </Typography>
         </Box>
       </Paper>
