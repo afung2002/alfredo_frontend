@@ -10,13 +10,13 @@ import Input from '@components/Input';
 import { useForm } from 'react-hook-form';
 import Button from '@components/Button';
 import { useGetFundsQuery } from '@services/api/baseApi';
-import { filterInvestmentsByStatus, filterInvestmentsByType } from '../../../../utils/investmentUtils';
+import { calculateFundTotals, formatNumberString } from '../../../../utils';
+import { FundDetail } from '../../../../services/api/baseApi/types';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const Funds = () => {
   const {data: fundsData,  isLoading, error} = useGetFundsQuery()
-  console.log('fundsData:', fundsData);
-  console.log('error:', error);
-  console.log('isLoading:', isLoading);
+
   const { control, watch } = useForm({
       defaultValues: {
         'searchFunds': ''
@@ -33,13 +33,6 @@ const Funds = () => {
         setSearchQuery(searchValue)
       }, [searchValue]);
 
-  
-  // Calculate total fund size
-  const totalFundSize = funds
-    .reduce((sum, fund) => sum + parseInt(fund.fundSize.replace(/[$,]/g, '')), 0)
-    .toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-    
-
   const handleAddNew = (event: React.MouseEvent) => {
     // Prevent navigation if clicking the add button
     if ((event.target as HTMLElement).closest('.MuiIconButton-root')) {
@@ -47,20 +40,26 @@ const Funds = () => {
     }
     navigate(Routes.FUND_MANAGER_NEW_FUND);
   };
-
-  const filteredFunds = funds.filter(fund =>
-    fund.name.toLowerCase()?.includes(searchQuery.toLowerCase())
-  );
-
-    // useEffect(() => {
-    //     if (selectedTab === 'all') {
-    //       setFilteredFunds(funds || []);
-    //     } else if (selectedTab === 'active') {
-    //       setFilteredFunds(filterInvestmentsByStatus(funds || [], ));
-    //     } else if (selectedTab === 'closed') {
-    //       setFilteredFunds(filterInvestmentsByStatus(funds || [], InvestmentType.ANGEL));
-    //     }
-    // }, [selectedTab]);
+  const {totalFundSize, totalEstimatedValue} = calculateFundTotals(fundsData || []);
+  useEffect(() => {
+    if (searchQuery === '') {
+      setFunds(fundsData || []);
+      return;
+    }
+    const filteredFunds = funds.filter(fund =>
+      fund.name.toLowerCase()?.includes(searchQuery.toLowerCase())
+    );
+    setFunds(filteredFunds || []);
+  }, [searchQuery, fundsData]);
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.3, ease: "easeOut" },
+    },
+    exit: { opacity: 0, y: -10, transition: { duration: 0.2 } },
+  };
 
   if (isLoading) {
     return (
@@ -77,7 +76,6 @@ const Funds = () => {
       </Box>
     );
   }
-  const totalEstimatedValue = fundsData?.reduce((sum, fund) => sum + parseInt(fund.estimated_value), 0)
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
@@ -86,12 +84,12 @@ const Funds = () => {
           {fundsData?.length ?? 0} Fund(s)
         </Typography>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, minWidth:'475px' }}>
-          <Typography variant="subtitle1" sx={{ color: "text.secondary" }}>
-            {totalFundSize} AUM
+          <Typography variant="subtitle1" sx={{ color: "text.secondary", fontWeight: 500 }}>
+            {formatNumberString(totalFundSize)} AUM
           </Typography>
           <FiberManualRecordIcon sx={{ fontSize: 8, color: "black" }} />
-          <Typography variant="subtitle1" sx={{ color: "text.secondary" }}>
-            ${totalEstimatedValue?.toLocaleString('en-US')} Estimated Value
+          <Typography variant="subtitle1" sx={{ color: "text.secondary", fontWeight: 500 }}>
+            {formatNumberString(totalEstimatedValue)} ESV
           </Typography>
         </Box>
       </Box>
@@ -110,11 +108,25 @@ const Funds = () => {
           Add New
         </Button>
       </Box>
-
-      {!isLoading && fundsData && fundsData?.length > 0 ? (
-        fundsData.map((fund, index) => (
+      {!isLoading && funds && funds?.length > 0 ? (
+    <AnimatePresence mode="popLayout">
+      {
+        funds.map((fund, index) => (
+          <motion.div
+              key={fund.id}
+              layout
+              variants={itemVariants} 
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+            >
           <FundListCard key={index} fund={fund} />
+          </motion.div>
         ))
+      }
+        
+        </AnimatePresence>
+
       ) : (
         <Typography variant="body1" sx={{ textAlign: 'center', color: 'text.secondary' }}>
           No funds found.
