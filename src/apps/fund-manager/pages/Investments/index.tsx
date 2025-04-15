@@ -4,11 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { InvestmentDetails, InvestmentType } from '../../../../types';
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import {
-  calculateTotalInvestments,
-  calculateTotalInvested,
-  calculateEstimatedValue,
   filterInvestmentsByType
-} from '@utils/investmentUtils';
+} from '@utils/index';
 import { FILTER_TABS, DEFAULT_TAB } from '@constants/index';
 import { Routes } from '@constants/routes';
 import Input from '@components/Input';
@@ -16,6 +13,7 @@ import { useForm } from 'react-hook-form';
 import Button from '@components/Button';
 import InvestmentsList from '@src/components/InvestmentsList';
 import { useGetInvestmentsQuery } from '@services/api/baseApi';
+import { calculateInvestmentTotals, formatNumberString } from '../../../../utils';
 
 
 const Investments = () => {
@@ -31,9 +29,8 @@ const Investments = () => {
   const [selectedTab, setSelectedTab] = useState(DEFAULT_TAB);
   const navigate = useNavigate();
 
-  const totalInvestments = calculateTotalInvestments(investmentsData || []);
-  const totalInvested = calculateTotalInvested(investmentsData || []);
-  const estimatedValue = calculateEstimatedValue(totalInvested);
+  const {totalInvestments, totalFundInvested, totalEstimatedValue } = calculateInvestmentTotals(investmentsData);
+
 
   const handleAddNew = (event: React.MouseEvent) => {
     if ((event.target as HTMLElement).closest('.MuiIconButton-root')) {
@@ -53,8 +50,8 @@ const Investments = () => {
 
   useEffect(() => {
     if (searchValue) {
-      const filtered = investmentsData?.filter(investment =>
-        investment.companyName.toLowerCase()?.includes(searchValue.toLowerCase())
+      const filtered = filteredInvestments?.filter(investment =>
+        investment.company.name.toLowerCase()?.includes(searchValue.toLowerCase())
       );
       setFilteredInvestments(filtered || []);
     } else {
@@ -80,7 +77,6 @@ const Investments = () => {
   }
 
 
-
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
       <Box sx={{ mb: 1 }}>
@@ -88,19 +84,18 @@ const Investments = () => {
           {totalInvestments} Investments
         </Typography>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: '475px' }}>
-          <Typography variant="subtitle1" sx={{ color: "text.secondary" }}>
-            {totalInvested} invested
+          <Typography variant="subtitle1" sx={{ color: "text.secondary", fontWeight: 500 }}>
+            {formatNumberString(totalFundInvested)} invested
           </Typography>
           <FiberManualRecordIcon sx={{ fontSize: 8, color: "black" }} />
-          <Typography variant="subtitle1" sx={{ color: "text.secondary" }}>
-            {estimatedValue} est value
+          <Typography variant="subtitle1" sx={{ color: "text.secondary", fontWeight: 500 }}>
+            {formatNumberString(totalEstimatedValue)} ESV
           </Typography>
         </Box>
       </Box>
 
       <Box sx={{ display: "flex", gap: 2, mb: 2, width: '100%' }}>
         <Input
-          disabled
           type="text"
           name="searchInvestments"
           control={control}
