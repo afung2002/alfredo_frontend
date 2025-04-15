@@ -2,41 +2,68 @@ import {
   Box,
   Typography,
   Chip,
-  Button,
   IconButton,
   CircularProgress,
   Alert,
   Paper,
 } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowBack, Edit, Link } from "@mui/icons-material";
+import { ArrowBack, Edit } from "@mui/icons-material";
 import { Routes } from "../../../../constants/routes";
-import { useGetInvestmentByIdQuery } from "../../../../services/api/baseApi";
+import { useGetCompaniesQuery, useGetCompanyByIdQuery, useGetDocumentsQuery, useGetInvestmentByIdQuery, useLazyGetCompanyByIdQuery } from "../../../../services/api/baseApi";
+import DocumentsList from "../../../../components/DocumentsList";
+import Input from "../../../../components/Input";
+import { useForm } from "react-hook-form";
+import Button from "../../../../components/Button";
+import UploadDocumentModal from "../../../../components/UploadDocumentModal";
+import { useEffect, useState } from "react";
+import { searchByTitle } from "../../../../utils/uiUtils";
+import { formatNumberString } from "../../../../utils";
 
 const Investment: React.FC = () => {
   const { investmentId } = useParams<{ investmentId: string }>();
-  const {data: investmentData, isLoading: investmentLoading, isError: investmentError} = useGetInvestmentByIdQuery(investmentId || "")
+  const { data: investmentData, isLoading: investmentLoading, isError: investmentError } = useGetInvestmentByIdQuery(investmentId || "")
+  const { data: documentsData, isLoading: isLoadingDocuments, error: errorDocuments } = useGetDocumentsQuery();
+  const [getCompany, {data: companyData, isLoading: companyLoading, error: companyError}] = useLazyGetCompanyByIdQuery();
+  const [companyDocs, setCompanyDocs] = useState<any[]>([]);
+  useEffect(() => {
+    if (investmentError || investmentLoading) {
+      return
+    }
+    getCompany(investmentData?.company || "").unwrap()
+  }, [investmentData]);
 
+  useEffect(() => {
+    if (companyError || companyLoading || !companyData) {
+      return
+    }
+    const companyDocs = documentsData?.filter((doc: any) => doc.company_name === companyData?.name);
+    setCompanyDocs(companyDocs || []);
+  }, [documentsData, isLoadingDocuments, errorDocuments, companyData]);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [filteredDocs, setFilteredDocs] = useState<any[]>(companyDocs || []);
+  const { control, watch } = useForm({
+    defaultValues: {
+      'searchDocuments': ''
+    }
+  });
+  const searchValue = watch('searchDocuments');
+
+  useEffect(() => {
+    if (searchValue === '') {
+      setFilteredDocs(companyDocs || []);
+      return;
+    }
+    const filteredDocs = searchByTitle(companyDocs, searchValue, 'name');
+    setFilteredDocs(filteredDocs);
+  }, [searchValue, documentsData, companyDocs]);
   const navigate = useNavigate();
-
+  const handleModalClose = () => {
+    setIsUploadModalOpen(false);
+  }
   const handleEdit = () => {
     navigate(Routes.FUND_MANAGER_INVESTMENT_EDIT.replace(":investmentId", investmentId || ""));
   };
-
-  const formattedAmount = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(parseInt(investmentData?.amount || "0"));
-
-  const formattedEstimatedValue = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(parseInt(investmentData?.estimatedValue || "0"));
-
-  const formattedPostMoneyValuation = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(parseInt(investmentData?.postMoneyValuation || "0"));
 
 
   if (investmentLoading) {
@@ -69,7 +96,7 @@ const Investment: React.FC = () => {
   }
 
   return (
-    <Box sx={{ p: 3, }}>
+    <Box>
       <Button
         variant="text"
         onClick={() => navigate(-1)}
@@ -127,7 +154,7 @@ const Investment: React.FC = () => {
           >
             <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
               <Typography variant="h6" sx={{ fontWeight: 500 }}>
-                Company Name
+                {companyData?.name}
               </Typography>
               {/* <IconButton
                 onClick={() => window.open(investmentData.websiteUrl, "_blank")}
@@ -151,37 +178,36 @@ const Investment: React.FC = () => {
             <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
               <Typography variant="body2">Type:</Typography>
               <Typography variant="body2" color="text.secondary">
-                {investmentData.type.charAt(0).toUpperCase() +
-                  investmentData.type.slice(1).toLowerCase()}{" "}
+                {investmentData?.type === "FUND" ? "Fund " : "Angel "}
                 Investment
               </Typography>
             </Box>
 
-            <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
+            {/* <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
               <Typography variant="body2">Description:</Typography>
               <Typography variant="body2" color="text.secondary">
                 {investmentData.description}
               </Typography>
-            </Box>
+            </Box> */}
 
-            <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
+            {/* <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
               <Typography variant="body2">Founder Email:</Typography>
               <Typography variant="body2" color="text.secondary">
                 {investmentData.founderEmail}
               </Typography>
-            </Box>
+            </Box> */}
 
             <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
               <Typography variant="body2">Amount Invested:</Typography>
               <Typography variant="body2" color="text.secondary">
-                ${Number(investmentData.fund_invested).toLocaleString("en-US")}
+                {formatNumberString(investmentData?.fund_invested)}
               </Typography>
             </Box>
 
             <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
               <Typography variant="body2">Estimated Value Now:</Typography>
               <Typography variant="body2" color="text.secondary">
-                ${Number(investmentData.estimated_value).toLocaleString("en-US")}
+              {formatNumberString(investmentData?.estimated_value)}
               </Typography>
             </Box>
 
@@ -202,11 +228,12 @@ const Investment: React.FC = () => {
             <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
               <Typography variant="body2">Valuation at Investment:</Typography>
               <Typography variant="body2" color="text.secondary">
-              ${Number(investmentData.post_money_valuation).toLocaleString("en-US")}
+              {formatNumberString(investmentData?.post_money_valuation)}
+
               </Typography>
             </Box>
             <Chip
-              label={investmentData.fundInvested ? investmentData.fundInvested : ""}
+              label={investmentData.fund_invested ? formatNumberString(investmentData?.fund_invested) : ""}
               sx={{
                 bgcolor: "grey.100",
                 color: "grey.700",
@@ -241,15 +268,35 @@ const Investment: React.FC = () => {
             LATEST STATUS
           </Typography>
           <Typography variant="body2" color="text.secondary" align="left">
-            {investmentData.status}
+            {investmentData?.status}
           </Typography>
         </Box>
       </Paper>
-      {/* <DocumentsListView
-        showFilters={false}
-        showUploadNew={true}
-        showHeader={true}
-      /> */}
+      <Typography variant="h5" sx={{ mb: 2, fontWeight: 500 }}>
+        Documents
+      </Typography>
+      <Box sx={{ display: "flex", gap: 2, mb: 2, width: '100%' }}>
+
+        <Input
+          type="text"
+          name="searchDocuments"
+          control={control}
+          placeholder="Search documents..."
+          className="flex flex-col w-full"
+        />
+        <Button
+          onClick={() => setIsUploadModalOpen(true)}>
+          Upload New
+        </Button>
+
+      </Box>
+      <DocumentsList documents={filteredDocs} isLoading={isLoadingDocuments} />
+      <UploadDocumentModal
+        open={isUploadModalOpen}
+        onClose={handleModalClose}
+        onDocumentUploaded={() => {
+        }}
+      />
     </Box>
   );
 };
