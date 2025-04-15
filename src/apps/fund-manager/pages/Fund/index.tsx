@@ -27,41 +27,10 @@ import UploadDocumentModal from "@components/UploadDocumentModal";
 import LimitedPartnersList from "@components/LimitedPartnersList";
 import FundUpdatesList from "@components/FundUpdatesList";
 import { Routes } from "@constants/routes";
-import { useGetFundByIdQuery, useGetFundUpdatesQuery, useGetInvestmentsQuery } from "@services/api/baseApi";
+import { useGetFundByIdQuery, useGetFundUpdatesQuery, useGetInvestmentsQuery, useGetLimitedPartnersQuery } from "@services/api/baseApi";
 import useCreatePostForm from "./hooks/useCreatePostForm";
 import FundUpdateModal from "@components/FundUpdateModal";
 
-
-const limitedPartners = [
-  {
-    id: 1,
-    name: "Limited Partner 1",
-    legalEntity: "Limited Partner 1 legal entity",
-    description: "Limited Partner 1 description",
-    email: "limitedpartner1@example.com"
-  },
-  {
-    id: 2,
-    name: "Limited Partner 2",
-    legalEntity: "Limited Partner 2 legal entity",
-    description: "Limited Partner 2 description",
-    email: "limitedpartner2@example.com"
-  },
-  {
-    id: 3,
-    name: "Limited Partner 3",
-    legalEntity: "Limited Partner 3 legal entity",
-    description: "Limited Partner 3 description",
-    email: "limitedpartner3@example.com"
-  },
-  {
-    id: 4,
-    name: "Limited Partner 4",
-    legalEntity: "Limited Partner 4 legal entity",
-    description: "Limited Partner 4 description",
-    email: "limitedpartner4@example.com"
-  }
-];
 
 const filterTabs = [
   { label: "Portfolio", value: "portfolio" },
@@ -75,6 +44,7 @@ const FundView: React.FC = () => {
   const { data: fundData, isLoading, error } = useGetFundByIdQuery(fundId || '');
   const { data: fundUpdatesData, isLoading: isLoadingUpdates, error: errorUpdates } = useGetFundUpdatesQuery();
   const { data: investmentsData, isLoading: isLoadingInvestments, error: errorInvestments } = useGetInvestmentsQuery();
+  const { data: limitedPartners, isLoading: isLoadingLimitedPartners, error: errorLimitedPartners } = useGetLimitedPartnersQuery();
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -94,7 +64,7 @@ const FundView: React.FC = () => {
       setFilteredUpdates(filteredUpdates);
     }
   }, [fundId, fundUpdatesData]);
-  const investments = useSelector(selectUserInvestments);
+
   const { control, watch,
     setValue, reset, handleSubmit, formState: { errors }
   } = useForm({
@@ -122,7 +92,7 @@ const FundView: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [filteredUpdates, setFilteredUpdates] = useState<FundUpdate[]>();
   const [filteredLimitedPartners, setFilteredLimitedPartners] = useState<FundUpdate[]>(limitedPartners);
-  const [filteredInvestments, setFilteredInvestments] = useState<FundUpdate[]>(investments);
+  const [filteredInvestments, setFilteredInvestments] = useState<FundUpdate[]>(investmentsData || []);
   const handleEdit = () => {
     navigate(Routes.FUND_MANAGER_FUND_EDIT.replace(':fundId', fundId || ''));
   }
@@ -145,13 +115,17 @@ const FundView: React.FC = () => {
   }, [searchLimitedPartnersValue]);
 
   useEffect(() => {
-    if (!searchInvestmentsValue) return setFilteredInvestments(investments);
-    const filteredInvestments = searchByTitle(investments, searchInvestmentsValue, 'companyName');
+    if (!searchInvestmentsValue) return setFilteredInvestments(investmentsData);
+
+    const filteredInvestments = searchByTitle(investmentsData, searchInvestmentsValue, 'company');
     setFilteredInvestments(filteredInvestments);
-  }, [searchInvestmentsValue, investments]);
-  console.log('Filtered investments:', filteredInvestments); // Log the filtered investments data
+  }, [searchInvestmentsValue, investmentsData]);
   const handleAddNew = () => {
     navigate(Routes.FUND_MANAGER_NEW_INVESTMENT);
+  };
+
+  const handleAddLimitedPartner = () => {
+    navigate(Routes.FUND_MANAGER_NEW_LIMITED_PARTNER);
   };
   useEffect(() => {
     const fetchDocuments = async () => {
@@ -237,7 +211,7 @@ const FundView: React.FC = () => {
   }
 
   return (
-    <Box sx={{ p: 3, width: '100%' }}>
+    <Box sx={{ width: '100%' }}>
       <Button
         variant="text"
         onClick={() => navigate(-1)}
@@ -393,7 +367,7 @@ const FundView: React.FC = () => {
             </Button>
           </Box>
           <InvestmentsList
-            investments={investmentsData}
+            investments={filteredInvestments}
           />
         </>
 
@@ -409,22 +383,22 @@ const FundView: React.FC = () => {
                 placeholder="Search..."
                 className="flex flex-col w-full"
               />
-              {/* <Button
-          onClick={handleAddNew}
-          variant="contained"
-          sx={{
-            bgcolor: "black",
-            color: "white",
-            borderRadius: "5px",
-            "&:hover": {
-              bgcolor: "rgba(0, 0, 0, 0.8)",
-            },
-          }}
-        >
-          Add New
-        </Button> */}
+              <Button
+                onClick={handleAddLimitedPartner}
+                variant="contained"
+                sx={{
+                  bgcolor: "black",
+                  color: "white",
+                  borderRadius: "5px",
+                  "&:hover": {
+                    bgcolor: "rgba(0, 0, 0, 0.8)",
+                  },
+                }}
+              >
+                Add New
+              </Button>
             </Box>
-            <LimitedPartnersList limitedPartners={filteredLimitedPartners} />
+            <LimitedPartnersList limitedPartners={filteredLimitedPartners} isLoading={isLoadingLimitedPartners} />
 
           </>
         )
