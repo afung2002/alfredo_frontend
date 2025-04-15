@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Box, Typography, Button, Card, CircularProgress, Alert, IconButton } from "@mui/material";
 import { LimitedPartnerType } from "../../../../types/index";
 import { useNavigate, useParams } from "react-router-dom";
-import DocumentsList from "@components/DocumentsList";
 import { ArrowBack, Edit } from "@mui/icons-material";
 import { getLimitedPartnerById } from "@services/index";
 
