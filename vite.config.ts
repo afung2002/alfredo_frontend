@@ -32,15 +32,5 @@ export default defineConfig(({ mode }) => {
       },
     },
     envDir,
-    server: {
-      proxy: {
-        '/api/v1': {
-          target: 'http://54.158.102.128',
-          changeOrigin: true,
-          secure: false,
-          rewrite: (path) => path.replace(/^\/api\/v1/, '/api/v1'),
-        },
-      },
-    },
   };
 });
