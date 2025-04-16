@@ -14,6 +14,7 @@ import Button from '@components/Button';
 import InvestmentsList from '@src/components/InvestmentsList';
 import { useGetInvestmentsQuery } from '@services/api/baseApi';
 import { calculateInvestmentTotals, formatNumberString } from '../../../../utils';
+import { InvestmentResponse } from '../../../../services/api/baseApi/types';
 
 
 const Investments = () => {
@@ -25,7 +26,7 @@ const Investments = () => {
   });
 
   const searchValue = watch('searchInvestments');
-  const [filteredInvestments, setFilteredInvestments] = useState<InvestmentDetails[]>(investmentsData || []);
+  const [filteredInvestments, setFilteredInvestments] = useState<InvestmentResponse[]>(investmentsData || []);
   const [selectedTab, setSelectedTab] = useState(DEFAULT_TAB);
   const navigate = useNavigate();
 
@@ -71,7 +72,7 @@ const Investments = () => {
   if (errorInvestments) {
     return (
       <Box p={3}>
-        <Alert severity="error">{errorInvestments}</Alert>
+        <Alert severity="error"><>{errorInvestments}</></Alert>
       </Box>
     );
   }

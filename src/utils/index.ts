@@ -1,3 +1,4 @@
+import { InvestmentResponse } from "../services/api/baseApi/types";
 import { InvestmentDetails } from "../types";
 
 export type InvestmentTotals = {
@@ -11,7 +12,7 @@ export function calculateInvestmentTotals(investments: InvestmentDetails[]): Inv
   }
   return investments.reduce(
     (totals, investment) => {
-      totals.totalFundInvested += parseFloat(investment.fund_invested || '0');
+      totals.totalFundInvested += parseFloat(investment.amount || '0');
       totals.totalEstimatedValue += parseFloat(investment.estimated_value || '0');
       totals.totalInvestments += 1;
       return totals;
@@ -52,7 +53,7 @@ export function formatNumberString(value: string | number | null): string {
 import { InvestmentType } from '../types';
 
 
-export const filterInvestmentsByType = (investments: InvestmentDetails[], type: InvestmentType): InvestmentDetails[] => {
+export const filterInvestmentsByType = (investments: InvestmentResponse[], type: InvestmentType): InvestmentResponse[] => {
   console.log(investments, type)
   return investments.filter(inv => inv.type === type);
 }; 

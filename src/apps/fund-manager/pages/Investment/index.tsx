@@ -203,7 +203,7 @@ const Investment: React.FC = () => {
             <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
               <Typography variant="body2">Amount Invested:</Typography>
               <Typography variant="body2" color="text.secondary">
-                {formatNumberString(investmentData?.fund_invested)}
+                {formatNumberString(investmentData?.amount)}
               </Typography>
             </Box>
 
@@ -236,7 +236,7 @@ const Investment: React.FC = () => {
               </Typography>
             </Box>
             <Chip
-              label={investmentData.fund_invested ? formatNumberString(investmentData?.fund_invested) : ""}
+              label={investmentData.amount ? formatNumberString(investmentData?.amount) : ""}
               sx={{
                 bgcolor: "grey.100",
                 color: "grey.700",

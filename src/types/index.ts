@@ -9,7 +9,6 @@ export interface InvestmentDetails {
   estimated_value: string;
   investment_date: string;
   post_money_valuation: string;
-  fund_invested: string;
   type: 'ANGEL' | 'FUND';
   status: string;
   user_id?: string | null;
@@ -23,6 +22,10 @@ export interface LimitedPartnerType {
   website_url?: string | null;
   legal_entity?: string | null;
   description?: string | null;
+  name: string;
+  legalEntity: string;
+  email: string;
+  id: string;
 }
 
 // Aligned with FundResponse + additional fields (updates and portfolio)

@@ -18,9 +18,9 @@ import NewInvestment from '../apps/fund-manager/pages/NewInvestment';
 import LimitedPartner from '../apps/fund-manager/pages/LimitedPartner';
 import NewLimitedPartner from '../apps/fund-manager/pages/NewLimitedPartner';
 const LandingLayout = lazy(() => import('@layouts/LandingLayout'));
-const LandingPage = lazy(() => import('@pages/LandingPage'));
 const Page404 = lazy(() => import('@pages/Page404'));
 
+import LandingPage from '@pages/LandingPage';
 
 export const routes: RouteObject[] = [
   {

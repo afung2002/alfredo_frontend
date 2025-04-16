@@ -45,7 +45,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
                 label="Company Name"
                 name="companyName"
                 control={uploadControl}
-                error={uploadErrors.companyName?.message}
+                error={!!uploadErrors.companyName?.message}
               />
             </Grid>
 
@@ -57,7 +57,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
                 control={uploadControl}
                 multiline
                 rows={4}
-                error={uploadErrors.description?.message}
+                error={!!uploadErrors.description?.message}
               />
             </Grid>
 
@@ -67,7 +67,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
                 label="Upload File"
                 name="file"
                 control={uploadControl}
-                error={uploadErrors.file?.message}
+                error={!!uploadErrors.file?.message}
               />
             </Grid>
           </Grid>

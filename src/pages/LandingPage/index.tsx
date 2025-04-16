@@ -1,6 +1,6 @@
 import { Box, Container } from '@mui/material';
 import { SignIn, useUser } from '@clerk/clerk-react';
-import { useNavigate } from 'react-router';
+import { Navigate, useNavigate } from 'react-router';
 import Loader from '../../components/Loader';
 import { useEffect } from 'react';
 
@@ -14,7 +14,7 @@ const LandingPage = () => {
   , [isSignedIn, isLoaded]);
   const navigate = useNavigate();
   if (!isLoaded) return <Loader />;
-  if (isSignedIn) return navigate('/apps');
+  if (isSignedIn) return <Navigate to="/apps" />;
 
   return (
     <Box

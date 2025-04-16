@@ -6,6 +6,7 @@ import { Routes } from "@constants/routes";
 import { useSelector } from "react-redux";
 import { selectUserInvestments } from "../../redux/selectors/user.selector";
 import PageviewOutlinedIcon from '@mui/icons-material/PageviewOutlined';
+import { JSX } from "react";
 
 
 type SideMenuButton = {
