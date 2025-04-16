@@ -4,8 +4,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useUploadDocumentMutation } from '@services/api/baseApi';
 
 const schema = z.object({
+  docTitle: z.string().min(1, 'Document title is required'),
   companyName: z.string().min(1, 'Company name is required'),
-  description: z.string().min(1, 'Description is required'),
+  description: z.string().optional(),
   file: z
     .custom<FileList>((val) => val instanceof FileList && val.length > 0, {
       message: 'File is required',
@@ -26,6 +27,7 @@ const useUploadDocumentForm = (onSuccess: () => void) => {
   } = useForm<UploadDocumentFormData>({
     resolver: zodResolver(schema),
     defaultValues: {
+      docTitle: '',
       companyName: '',
       description: '',
       file: undefined,
@@ -41,8 +43,9 @@ const useUploadDocumentForm = (onSuccess: () => void) => {
         await uploadDocument({
           company_name: data.companyName,
           description: data.description,
-          name: file.name,
+          name: data.docTitle,
           file,
+          fund_manager_id: "1", // TODO: Replace with actual fund manager ID
         }).unwrap();
 
         reset();

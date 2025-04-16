@@ -11,6 +11,8 @@ import {
 import Input from '@components/Input';
 import Button from '@components/Button';
 import useUploadDocumentForm from './hooks/useUploadDocumentForm';
+import Select from '../Select';
+import { useGetCompaniesQuery } from '../../services/api/baseApi';
 
 interface UploadDocumentModalProps {
   open: boolean;
@@ -23,6 +25,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
   onClose,
   onDocumentUploaded,
 }) => {
+  const {data: companies, isLoading: isCompaniesLoading, error } = useGetCompaniesQuery();
   const {
     uploadControl,
     submitForm,
@@ -39,17 +42,45 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
       <DialogContent>
         <Box component="form" sx={{ mt: 2 }}>
           <Grid container spacing={3}>
-          <Grid  size={{xs: 12}}>
+            <Grid size={{ xs: 12 }}>
               <Input
                 rounded={false}
-                label="Company Name"
+                label="Doc Title *"
+                name="docTitle"
+                control={uploadControl}
+                error={!!uploadErrors.docTitle?.message}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <Input
+                rounded={false}
+                label="Company Name *"
                 name="companyName"
                 control={uploadControl}
                 error={!!uploadErrors.companyName?.message}
               />
+              <Select
+                rounded={false}
+                label="Fund"
+                name="fund"
+                control={uploadControl}
+                // disabled={investmentType === 'ANGEL'}
+                options={
+                  isCompaniesLoading
+                    ? [{ value: '', label: 'Loading companies...' }]
+                    : companies && companies.length > 0
+                      ? [
+                        ...companies.map((company) => ({
+                          value: company.id.toString(),
+                          label: company.name ?? 'Unknown',
+                        })),
+                      ]
+                      : [{ value: 'no_companies', label: 'No companies found' }]
+                }
+              />
             </Grid>
 
-            <Grid  size={{xs: 12}}>
+            <Grid size={{ xs: 12 }}>
               <Input
                 rounded={false}
                 label="Description"
@@ -61,7 +92,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
               />
             </Grid>
 
-            <Grid  size={{xs: 12}}>
+            <Grid size={{ xs: 12 }}>
               <Input
                 type="file"
                 label="Upload File"

@@ -22,7 +22,7 @@ const NewInvestment: React.FC = () => {
     isLoading,
     watch,
   } = useNewInvestmentForm(params?.investmentId || null);
-  
+
   const {
     newFundControl,
     submitNewFund,
@@ -32,28 +32,28 @@ const NewInvestment: React.FC = () => {
 
   const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
+
     try {
       let fundId: number | null = null;
-  
+
       if (fund === 'add_new_fund') {
         const success = await submitNewFund();
         if (!success) return;
         fundId = success; // assuming this returns fund ID
       }
-  
+
       const wrapped = handleSubmit((data) => onSubmit(data, fundId.toString()));
       await wrapped(e); // this will now work correctly
-  
+
     } catch (error) {
       console.error('Error in full form submission:', error);
     }
   };
-  
-  
-  
-  
-  
+
+
+
+
+
   const investmentType = watch('investmentType');
   const company = watch('company');
   const fund = watch('fund');
@@ -167,54 +167,27 @@ const NewInvestment: React.FC = () => {
             </Grid>
 
             <Grid size={{ xs: 12 }}>
-              {
-                investmentType === 'ANGEL' && (
-                  <Select
-                    rounded={false}
-                    label="Limited Partner"
-                    name="limitedPartner"
-                    control={control}
-                    // disabled={investmentType === 'FUND'}
-                    options={
-                      isLimitedPartnersLoading
-                        ? [{ value: '', label: 'Loading limited partners...' }]
-                        : limitedPartners && limitedPartners.length > 0
-                          ? [
-                            ...limitedPartners.map((partner) => ({
-                              value: partner.fund_manager_id.toString(),
-                              label: partner.legal_entity ?? 'Unknown',
-                            })),
-                            { value: 'add_new', label: '➕ Add new LP' },
-                          ]
-                          : [{ value: 'add_new', label: '➕ Add new LP' }]
-                    }
-                  />
-                )
-              }
-              {
-                investmentType === 'FUND' && (
-                  <Select
-                    rounded={false}
-                    label="Fund"
-                    name="fund"
-                    control={control}
-                    // disabled={investmentType === 'ANGEL'}
-                    options={
-                      isFundsLoading
-                        ? [{ value: '', label: 'Loading funds...' }]
-                        : funds && funds.length > 0
-                          ? [
-                            ...funds.map((fund) => ({
-                              value: fund.id.toString(),
-                              label: fund.name ?? 'Unknown',
-                            })),
-                            { value: 'add_new_fund', label: '➕ Add new fund' },
-                          ]
-                          : [{ value: 'add_new_fund', label: '➕ Add new fund' }]
-                    }
-                  />
-                )
-              }
+
+              <Select
+                rounded={false}
+                label="Fund"
+                name="fund"
+                control={control}
+                disabled={investmentType === 'ANGEL'}
+                options={
+                  isFundsLoading
+                    ? [{ value: '', label: 'Loading funds...' }]
+                    : funds && funds.length > 0
+                      ? [
+                        ...funds.map((fund) => ({
+                          value: fund.id.toString(),
+                          label: fund.name ?? 'Unknown',
+                        })),
+                        { value: 'add_new_fund', label: '➕ Add new fund' },
+                      ]
+                      : [{ value: 'add_new_fund', label: '➕ Add new fund' }]
+                }
+              />
             </Grid>
             <Collapse in={fund === 'add_new_fund'} timeout="auto" unmountOnExit>
               <Grid container spacing={3}>

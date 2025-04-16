@@ -95,6 +95,7 @@ export type InvestmentWithDocuments = InvestmentResponse & {
 
 // DOCUMENTS
 export type DocumentUploadRequest = {
+  fund_manager_id: string;
   name: string;
   company_name: string;
   description?: string | null;
