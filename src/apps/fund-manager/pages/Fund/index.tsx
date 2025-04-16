@@ -8,16 +8,15 @@ import {
   CircularProgress,
   Alert,
   Paper,
-  Modal,
+  SxProps,
+  Theme
 } from "@mui/material";
-import { Fund } from "../../../../types";
+import { Fund, Document, FundUpdate, LimitedPartner, Investment } from "../../../../types";
 import { Link } from "@mui/icons-material";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowBack, Edit } from "@mui/icons-material";
 import InvestmentsList from "@components/InvestmentsList";
 import { getUserDocuments } from "@services/index";
-import { useSelector } from "react-redux";
-import { selectUserInvestments } from "@redux/selectors/user.selector";
 import DocumentsList from "@components/DocumentsList";
 import Input from "@components/Input";
 import { useForm } from "react-hook-form";
@@ -26,11 +25,47 @@ import Button from "@components/Button";
 import UploadDocumentModal from "@components/UploadDocumentModal";
 import LimitedPartnersList from "@components/LimitedPartnersList";
 import FundUpdatesList from "@components/FundUpdatesList";
-import { Routes } from "@constants/routes";
 import { useGetFundByIdQuery, useGetFundUpdatesQuery, useGetInvestmentsQuery, useGetLimitedPartnersQuery } from "@services/api/baseApi";
 import useCreatePostForm from "./hooks/useCreatePostForm";
 import FundUpdateModal from "@components/FundUpdateModal";
 
+// Utility function for standardized number formatting
+const formatCurrency = (value: string | number | undefined) => {
+  if (!value) return '$0';
+  return `$${Number(value).toLocaleString("en-US")}`;
+};
+
+// Style constants
+const commonButtonStyles: SxProps<Theme> = {
+  textAlign: "left" as const,
+  color: "gray",
+  display: "flex",
+  justifyContent: "flex-start",
+  "&:hover": {
+    color: "black",
+  },
+};
+
+const blackButtonStyles: SxProps<Theme> = {
+  bgcolor: "black",
+  color: "white",
+  borderRadius: "5px",
+  "&:hover": {
+    bgcolor: "rgba(0, 0, 0, 0.8)",
+  },
+};
+
+const boxRowStyles: SxProps<Theme> = {
+  display: "flex", 
+  flexDirection: "row" as const, 
+  gap: "5px"
+};
+
+const commonInputStyles: SxProps<Theme> = {
+  display: 'flex',
+  flexDirection: 'column',
+  width: '100%'
+};
 
 const filterTabs = [
   { label: "Portfolio", value: "portfolio" },
@@ -38,25 +73,21 @@ const filterTabs = [
   { label: "Updates", value: "updates" },
   { label: "Documents", value: "documents" },
 ];
-
 const FundView: React.FC = () => {
   const { fundId } = useParams();
-  const { data: fundData, isLoading, error } = useGetFundByIdQuery(fundId || '');
-  const { data: fundUpdatesData, isLoading: isLoadingUpdates, error: errorUpdates } = useGetFundUpdatesQuery();
-  const { data: investmentsData, isLoading: isLoadingInvestments, error: errorInvestments } = useGetInvestmentsQuery();
-  const { data: limitedPartners, isLoading: isLoadingLimitedPartners, error: errorLimitedPartners } = useGetLimitedPartnersQuery();
+  const { data: fundData, isLoading, error } = useGetFundByIdQuery(fundId || '') as {
+    data: Fund | undefined;
+    isLoading: boolean;
+    error: Error | null;
+  };
+  const { data: fundUpdatesData } = useGetFundUpdatesQuery();
+  const { data: investmentsData } = useGetInvestmentsQuery();
+  const { data: limitedPartners, isLoading: isLoadingLimitedPartners } = useGetLimitedPartnersQuery();
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const {
-    control: postControl,
-    handleSubmit: handlePostSubmit,
-    postTitle,
-    postDescription,
-    errors: postErrors,
-    reset: resetPostForm,
-  } = useCreatePostForm(handleClose);
 
+  const { control: postControl, handleSubmit: handlePostSubmit, errors: postErrors } = useCreatePostForm(handleClose);
 
   useEffect(() => {
     if (fundId && fundUpdatesData) {
@@ -65,128 +96,76 @@ const FundView: React.FC = () => {
     }
   }, [fundId, fundUpdatesData]);
 
-  const { control, watch,
-    setValue, reset, handleSubmit, formState: { errors }
-  } = useForm({
+  const { control, watch } = useForm({
     defaultValues: {
-      'searchDocuments': '',
-      'searchUpdates': '',
-      'searchLimitedPartners': '',
-      'searchInvestments': ''
-
+      searchDocuments: '',
+      searchUpdates: '',
+      searchLimitedPartners: '',
+      searchInvestments: ''
     }
   });
 
   const searchDocumentsValue = watch('searchDocuments');
-  const searchUpdatesValue = watch('searchUpdates');
   const searchLimitedPartnersValue = watch('searchLimitedPartners');
   const searchInvestmentsValue = watch('searchInvestments');
   const navigate = useNavigate();
+  
   const [selectedTab, setSelectedTab] = useState("portfolio");
-  const [fund, setFund] = useState<Fund>();
-  const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState<string | null>(null);
+  const [errorMsg, setError] = useState<string | null>(null);
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-  const [filteredDocs, setFilteredDocs] = useState<Document[]>([]);
   const [open, setOpen] = useState(false);
-  const [filteredUpdates, setFilteredUpdates] = useState<FundUpdate[]>();
-  const [filteredLimitedPartners, setFilteredLimitedPartners] = useState<FundUpdate[]>(limitedPartners);
-  const [filteredInvestments, setFilteredInvestments] = useState<FundUpdate[]>(investmentsData || []);
+  const [filteredDocs, setFilteredDocs] = useState<Document[]>([]);
+  const [filteredUpdates, setFilteredUpdates] = useState<FundUpdate[]>([]);
+  const [filteredLimitedPartners, setFilteredLimitedPartners] = useState<LimitedPartner[]>([]);
+  const [filteredInvestments, setFilteredInvestments] = useState<Investment[]>([]);
+  
   const handleEdit = () => {
-    navigate(Routes.FUND_MANAGER_FUND_EDIT.replace(':fundId', fundId || ''));
-  }
+    navigate(`/fund-manager/fund/edit/${fundId}`);
+  };
+
   useEffect(() => {
     if (!searchDocumentsValue) return setFilteredDocs(documents);
     const filteredDocs = searchByTitle(documents, searchDocumentsValue, 'file');
     setFilteredDocs(filteredDocs);
   }, [searchDocumentsValue, documents]);
 
-  // useEffect(() => {
-  //   if (!searchUpdatesValue) return setFilteredUpdates(updates);
-  //   const filteredUpdates = searchByTitle(updates, searchUpdatesValue, 'title');
-  //   setFilteredUpdates(filteredUpdates);
-  // }, [searchUpdatesValue]);
-
   useEffect(() => {
     if (!searchLimitedPartnersValue) return setFilteredLimitedPartners(limitedPartners);
     const filteredLimitedPartners = searchByTitle(limitedPartners, searchLimitedPartnersValue, 'name');
     setFilteredLimitedPartners(filteredLimitedPartners);
-  }, [searchLimitedPartnersValue]);
+  }, [searchLimitedPartnersValue, limitedPartners]);
 
   useEffect(() => {
-    if (!searchInvestmentsValue) return setFilteredInvestments(investmentsData);
-
-    const filteredInvestments = searchByTitle(investmentsData, searchInvestmentsValue, 'company');
-    setFilteredInvestments(filteredInvestments);
+    if (!searchInvestmentsValue) {
+      setFilteredInvestments(investmentsData || []);
+      return;
+    }
+    const filtered = searchByTitle(investmentsData || [], searchInvestmentsValue, 'company');
+    setFilteredInvestments(filtered);
   }, [searchInvestmentsValue, investmentsData]);
+  
   const handleAddNew = () => {
-    navigate(Routes.FUND_MANAGER_NEW_INVESTMENT);
+    navigate('/fund-manager/investment/new');
   };
 
   const handleAddLimitedPartner = () => {
-    navigate(Routes.FUND_MANAGER_NEW_LIMITED_PARTNER);
+    navigate('/fund-manager/limited-partner/new');
   };
-  useEffect(() => {
-    const fetchDocuments = async () => {
-      try {
-        const data = await getUserDocuments();
-        // Transform the data to match the Document type
-        const transformedDocuments: Document[] = data.map((doc: any) => ({
-          id: doc._id,
-          file: doc.file,
-          companyName: doc.companyName,
-          description: doc.description,
-          uploadDate: doc.uploadDate,
-          type: doc.type,
-          size: doc.size,
-          fileType: doc.fileType,
-        }));
-        setDocuments(transformedDocuments);
-      } catch (err) {
-        setError('Failed to fetch documents. Please try again later.');
-        console.error('Error fetching documents:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  
+  const fetchDocuments = async () => {
+    try {
+      const docs = await getUserDocuments(fundId);
+      setDocuments(docs);
+      setFilteredDocs(docs);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch documents');
+    }
+  };
 
-    fetchDocuments();
-  }, []);
   const handleModalClose = () => {
     setIsUploadModalOpen(false);
-    // Refresh documents list
-    // setDocuments([]);
-  }
-  const formattedAmount = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(parseInt(fundData?.fundSize || "0"));
-
-  const formattedEstimatedValue = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(parseInt(fundData?.estimatedValue || "0"));
-
-  // useEffect(() => {
-  //   const fetchFund = async () => {
-  //     try {
-  //       if (fundId) {
-  //         const data = await getFundById(fundId);
-  //         setFund(data);
-  //       } else {
-  //         console.error('Fund ID is required');
-  //       }
-  //     } catch (err) {
-  //       setError('Failed to fetch fundData. Please try again later.');
-  //       console.error(err);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //   fetchFund();
-  // }, [fundId]);
-
+  };
 
   if (isLoading) {
     return (
@@ -204,26 +183,14 @@ const FundView: React.FC = () => {
     );
   }
 
-
-
-  if (error) {
-    return <div>Fund not found</div>;
-  }
-
   return (
     <Box sx={{ width: '100%' }}>
       <Button
         variant="text"
         onClick={() => navigate(-1)}
         sx={{
-          textAlign: "left",
-          color: "gray",
-          display: "flex",
-          justifyContent: "flex-start",
+          ...commonButtonStyles,
           ml: "-12px",
-          "&:hover": {
-            color: "black",
-          },
         }}
       >
         <ArrowBack fontSize="small" sx={{ mr: "3px", }} />
@@ -241,9 +208,7 @@ const FundView: React.FC = () => {
         variant="outlined"
         sx={{
           p: 3,
-          // width: "500px",
           border: "1px solid",
-          borderColor: "grey.200",
           borderRadius: "10px",
           display: "flex",
           flexDirection: "column",
@@ -273,7 +238,7 @@ const FundView: React.FC = () => {
                 {fundData?.name}
               </Typography>
               <IconButton
-                onClick={() => window.open(fundData.website_url, "_blank")}
+                onClick={() => window.open(fundData?.website_url, "_blank")}
                 size="small"
                 sx={{ color: "text.secondary" }}
                 title="Open website"
@@ -287,31 +252,31 @@ const FundView: React.FC = () => {
           </Box>
 
           <Box sx={{ display: "flex", flexDirection: "column", gap: 0 }}>
-            <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
+            <Box sx={boxRowStyles}>
               <Typography variant="body2">Legal Entity:</Typography>
               <Typography variant="body2" color="text.secondary">
                 {fundData?.legal_entity}
               </Typography>
             </Box>
 
-            <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
+            <Box sx={boxRowStyles}>
               <Typography variant="body2">Description:</Typography>
               <Typography variant="body2" color="text.secondary">
                 {fundData?.description}
               </Typography>
             </Box>
 
-            <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
+            <Box sx={boxRowStyles}>
               <Typography variant="body2">Fund Size:</Typography>
               <Typography variant="body2" color="text.secondary">
-                ${Number(fundData.fund_size).toLocaleString("en-US")} AUM
+                {formatCurrency(fundData?.fund_size)} AUM
               </Typography>
             </Box>
 
-            <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
+            <Box sx={boxRowStyles}>
               <Typography variant="body2">Estimated Value:</Typography>
               <Typography variant="body2" color="text.secondary">
-                ${Number(fundData.fund_size).toLocaleString("en-US")}
+                {formatCurrency(fundData?.estimated_value || fundData?.fund_size)}
               </Typography>
             </Box>
           </Box>
@@ -352,16 +317,17 @@ const FundView: React.FC = () => {
       </Tabs>
       {selectedTab === "portfolio" && (
         <>
-          <Box className="flex gap-2 my-4">
+          <Box sx={{ display: 'flex', gap: 2, my: 4 }}>
             <Input
               type="text"
               name="searchInvestments"
               control={control}
               placeholder="Search investments..."
-              className="flex flex-col w-full"
+              sx={commonInputStyles}
             />
             <Button
               onClick={handleAddNew}
+              sx={blackButtonStyles}
             >
               Add New
             </Button>
@@ -372,37 +338,27 @@ const FundView: React.FC = () => {
         </>
 
       )}
-      {selectedTab === "limited-partners" &&
-        (
-          <>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
-              <Input
-                type="text"
-                name="searchLimitedPartners"
-                control={control}
-                placeholder="Search..."
-                className="flex flex-col w-full"
-              />
-              <Button
-                onClick={handleAddLimitedPartner}
-                variant="contained"
-                sx={{
-                  bgcolor: "black",
-                  color: "white",
-                  borderRadius: "5px",
-                  "&:hover": {
-                    bgcolor: "rgba(0, 0, 0, 0.8)",
-                  },
-                }}
-              >
-                Add New
-              </Button>
-            </Box>
-            <LimitedPartnersList limitedPartners={filteredLimitedPartners} isLoading={isLoadingLimitedPartners} />
-
-          </>
-        )
-      }
+      {selectedTab === "limited-partners" && (
+        <>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
+            <Input
+              type="text"
+              name="searchLimitedPartners"
+              control={control}
+              placeholder="Search..."
+              sx={commonInputStyles}
+            />
+            <Button
+              onClick={handleAddLimitedPartner}
+              variant="contained"
+              sx={blackButtonStyles}
+            >
+              Add New
+            </Button>
+          </Box>
+          <LimitedPartnersList limitedPartners={filteredLimitedPartners} isLoading={isLoadingLimitedPartners} />
+        </>
+      )}
       {selectedTab === "updates" && (
         <>
           <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
@@ -411,10 +367,11 @@ const FundView: React.FC = () => {
               name="searchUpdates"
               control={control}
               placeholder="Search updates..."
-              className="flex flex-col w-full"
+              sx={commonInputStyles}
             />
             <Button
               onClick={handleOpen}
+              sx={blackButtonStyles}
             >
               Add New
             </Button>
@@ -427,27 +384,26 @@ const FundView: React.FC = () => {
             control={postControl}
             errors={postErrors}
           />
-
         </>
-
       )}
+      
       {selectedTab === "documents" && (
         <>
-          <div className="flex gap-2 my-4">
+          <Box sx={{ display: 'flex', gap: 2, my: 4 }}>
             <Input
               type="text"
               name="searchDocuments"
               control={control}
               placeholder="Search documents..."
-              className="flex flex-col w-full"
+              sx={commonInputStyles}
             />
             <Button
               onClick={() => setIsUploadModalOpen(true)}
+              sx={blackButtonStyles}
             >
               Upload New
             </Button>
-          </div>
-
+          </Box>
           <DocumentsList
             documents={filteredDocs}
           />
@@ -455,15 +411,14 @@ const FundView: React.FC = () => {
             open={isUploadModalOpen}
             onClose={handleModalClose}
             onDocumentUploaded={() => {
-              // Refresh documents list
-              // setDocuments([]);
+              handleModalClose();
+              fetchDocuments();
             }}
           />
         </>
-
       )}
     </Box>
   );
 };
 
-export default FundView
+export default FundView;

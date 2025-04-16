@@ -1,21 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, CircularProgress, Alert, Tab, Tabs } from '@mui/material';
+import { Box, Typography, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import FundListCard from '@components/FundListCard';
 import { Fund } from '../../../../types';
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import { FUNDS_FILTER_TABS, userId } from '@constants/index';
 import { Routes } from '@constants/routes';
 import Input from '@components/Input';
 import { useForm } from 'react-hook-form';
 import Button from '@components/Button';
 import { useGetFundsQuery } from '@services/api/baseApi';
 import { calculateFundTotals, formatNumberString } from '../../../../utils';
-import { FundDetail } from '../../../../services/api/baseApi/types';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const Funds = () => {
-  const {data: fundsData,  isLoading, error} = useGetFundsQuery()
+  const {data: fundsData, isLoading, error}: {data: Fund[] | undefined, isLoading: boolean, error: any} = useGetFundsQuery()
 
   const { control, watch } = useForm({
       defaultValues: {
@@ -25,8 +23,6 @@ const Funds = () => {
 
   const searchValue = watch('searchFunds');
   const [funds, setFunds] = useState<Fund[]>([]);
-  const [selectedTab, setSelectedTab] = useState("all");
-  // const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
     useEffect(() => {
@@ -46,10 +42,10 @@ const Funds = () => {
       setFunds(fundsData || []);
       return;
     }
-    const filteredFunds = funds.filter(fund =>
+    const filteredFunds = fundsData?.filter(fund =>
       fund.name.toLowerCase()?.includes(searchQuery.toLowerCase())
-    );
-    setFunds(filteredFunds || []);
+    ) || [];
+    setFunds(filteredFunds);
   }, [searchQuery, fundsData]);
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -72,7 +68,7 @@ const Funds = () => {
   if (error) {
     return (
       <Box p={3}>
-        {/* <Alert severity="error">{error}</Alert> */}
+        <Typography color="error">Error loading funds: {error.toString()}</Typography>
       </Box>
     );
   }
@@ -120,7 +116,7 @@ const Funds = () => {
               animate="visible"
               exit="exit"
             >
-          <FundListCard key={index} fund={fund} />
+          <FundListCard key={fund.id} fund={fund} />
           </motion.div>
         ))
       }

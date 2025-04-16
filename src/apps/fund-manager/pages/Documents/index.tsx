@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, CircularProgress, Alert, Tab, Tabs, Grid } from '@mui/material';
+import { Box, Typography, CircularProgress, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Document } from '../../../../types';
 import UploadDocumentModal from '@components/UploadDocumentModal';
@@ -20,8 +20,8 @@ const Documents = () => {
     }
   });
   const searchValue = watch('searchDocuments');
-  const [documents, setDocuments] = useState<Document[]>(documentsData || []);
-  const [selectedTab, setSelectedTab] = useState("all");
+  const [documents] = useState<Document[]>(documentsData || []);
+  const [selectedTab] = useState("all");
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [filteredDocs, setFilteredDocs] = useState<Document[]>(documentsData || []);
   const navigate = useNavigate();
@@ -34,11 +34,6 @@ const Documents = () => {
     setFilteredDocs(filteredDocs);
   }, [searchValue, documentsData]);
 
-  const filterTabs = [
-    { label: "All", value: "all" },
-    { label: "Angel", value: "angel" },
-    { label: "Fund", value: "fund" },
-  ];
 
   useEffect(() => {
     const filteredDocs = documents.filter((doc) => {
@@ -47,24 +42,10 @@ const Documents = () => {
     });
     setFilteredDocs(filteredDocs);
     setValue('searchDocuments', '');
-  }, [selectedTab, documents]);
+  }, [selectedTab, documents, setValue]);
   const handleModalClose = () => {
     setIsUploadModalOpen(false);
   }
-  // Calculate total documents
-  const totalDocuments = documents.length;
-
-  // Calculate total documents by type
-  const investmentDocuments = documents.filter(doc => doc.companyName?.includes('Investment')).length;
-  const fundDocuments = documents.filter(doc => doc.companyName?.includes('Fund')).length;
-
-  const handleAddNew = (event: React.MouseEvent) => {
-    // Prevent navigation if clicking the add button
-    if ((event.target as HTMLElement).closest('.MuiIconButton-root')) {
-      return;
-    }
-    navigate(Routes.FUND_MANAGER_NEW_DOCUMENT);
-  };
 
   if (isLoadingDocuments) {
     return (
@@ -108,38 +89,6 @@ const Documents = () => {
 
       </Box>
 
-      {/* <Tabs
-        value={selectedTab}
-        onChange={(_, newValue) => setSelectedTab(newValue)}
-        variant="scrollable"
-        scrollButtons={false}
-        TabIndicatorProps={{ style: { display: 'none' } }}
-      >
-        {filterTabs.map((tab) => (
-          <Tab
-          sx={{
-            minHeight: 32,
-            minWidth: 'auto',
-            px: 4,
-            borderRadius: '50px',
-            textTransform: 'none',
-            bgcolor: tab.value === selectedTab ? 'primary.main' : 'grey.200',
-            color: tab.value === selectedTab ? 'white' : 'black',
-            mx: 1,
-            fontSize: 14,
-            fontWeight: 500,
-            '&.Mui-selected': {
-              bgcolor: 'primary.main',
-              color: 'white',
-            },
-          }}
-            key={tab.value}
-            label={tab.label}
-            value={tab.value}
-            disableRipple
-          />
-        ))}
-      </Tabs> */}
 
       <DocumentsList documents={filteredDocs} isLoading={isLoadingDocuments} />
 
@@ -148,6 +97,7 @@ const Documents = () => {
         open={isUploadModalOpen}
         onClose={handleModalClose}
         onDocumentUploaded={() => {
+          // No action needed after document upload - component will re-render with refreshed data
         }}
       />
     </Box>
