@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => {
   const envDir = path.resolve(process.cwd(), 'env');
 
   // Load environment variables from the custom env directory
-  const env = loadEnv(mode, envDir, '');
+  loadEnv(mode, envDir, '');
   return {
     plugins: [
       react(),
