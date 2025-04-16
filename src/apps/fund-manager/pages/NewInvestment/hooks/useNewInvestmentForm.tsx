@@ -3,9 +3,8 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 import { Routes } from '@constants/routes';
-import { useCreateInvestmentMutation, useGetInvestmentByIdQuery, useGetInvestmentsQuery, useLazyGetCompanyByIdQuery, useUpdateInvestmentMutation } from '@services/api/baseApi'; // make sure this exists
-import { useEffect, useState } from 'react';
-import { updateInvestment } from '../../../../../services/index';
+import { useCreateInvestmentMutation, useGetInvestmentByIdQuery,  useLazyGetCompanyByIdQuery, useUpdateInvestmentMutation } from '@services/api/baseApi'; // make sure this exists
+import { useEffect } from 'react';
 
 const schema = z.object({
   company: z.string().min(1, 'Company is required'),
@@ -22,13 +21,13 @@ const schema = z.object({
   limitedPartner: z.string().optional(), // Assuming this is a string, adjust if necessary
 });
 
-export type NewInvestmentFormData = z.infer<typeof schema>;
+
 
 const useNewInvestmentForm = (id: string | null) => {
   const navigate = useNavigate();
   const [createInvestment, { isLoading }] = useCreateInvestmentMutation();
   const [updateInvestment, { isLoading: isUpdateLoading }] = useUpdateInvestmentMutation();
-  const {data: investmentData, isLoading: isInvestmentLoading, error: isInvestmentError} = useGetInvestmentByIdQuery(id, {
+  const {data: investmentData, isLoading: isInvestmentLoading, error: isInvestmentError} = useGetInvestmentByIdQuery(+id, {
     skip: id === null,
   });
   const [getCompany, {data: companyData, isLoading: companyLoading, error: companyError}] = useLazyGetCompanyByIdQuery();
@@ -36,7 +35,7 @@ const useNewInvestmentForm = (id: string | null) => {
   useEffect(() => {
     if (investmentData) {
       console.log('Investment Data:', investmentData);
-      getCompany(investmentData?.company).unwrap()
+      getCompany(investmentData?.company?.id).unwrap()
     }
   }, [investmentData]);
 
@@ -52,14 +51,14 @@ const useNewInvestmentForm = (id: string | null) => {
         websiteUrl: companyData.website_url,
         founderEmail: companyData.founder_email,
         description: companyData.description,
-        investedAmount: investmentData.fund_invested,
+        investedAmount: investmentData.amount,
         estimatedValue: investmentData.estimated_value,
         postMoneyValuation: investmentData.post_money_valuation,
         investmentDate: investmentData.investment_date,
         investmentType: investmentData.type,
         fund: investmentData.fund.toString() || '',
         status: investmentData.status,
-        limitedPartner: investmentData.user_id || '',
+        limitedPartner: investmentData.fund_manager_id || '',
       });
     }
   }, [isInvestmentLoading, investmentData, isInvestmentError, companyData]);
@@ -70,7 +69,7 @@ const useNewInvestmentForm = (id: string | null) => {
     formState: { errors },
     reset,
     watch,
-  } = useForm<NewInvestmentFormData>({
+  } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
       company: '',
@@ -89,16 +88,12 @@ const useNewInvestmentForm = (id: string | null) => {
     mode: 'onChange',
   });
 
-  const onSubmit = async (data: NewInvestmentFormData, fundId: string | null = null) => {
+  const onSubmit = async (data: any, fundId: string | null = null) => {
     try {
       if (investmentData) {
         await updateInvestment({
           id: investmentData.id,
-          company: Number(data.company),
-          website_url: data.websiteUrl,
-          founder_email: data.founderEmail,
-          description: data.description,
-          fund_invested: data.investedAmount,
+          company: data.company,
           estimated_value: data.estimatedValue,
           post_money_valuation: data.postMoneyValuation,
           investment_date: data.investmentDate,
@@ -106,15 +101,11 @@ const useNewInvestmentForm = (id: string | null) => {
           fund: data.investmentType === 'FUND' ? (fundId || data.fund) : null,
           status: data.status,
           amount: data.investedAmount,
-          user_id: data.limitedPartner || null,
+          fund_manager_id: data.limitedPartner || null,
         }).unwrap();
       } else {
         await createInvestment({
-          company: Number(data.company),
-          website_url: data.websiteUrl,
-          founder_email: data.founderEmail,
-          description: data.description,
-          fund_invested: data.investedAmount,
+          company: data.company,
           estimated_value: data.estimatedValue,
           post_money_valuation: data.postMoneyValuation,
           investment_date: data.investmentDate,
@@ -122,7 +113,7 @@ const useNewInvestmentForm = (id: string | null) => {
           fund: data.investmentType === 'FUND' ? (fundId || data.fund) : null,
           status: data.status,
           amount: data.investedAmount,
-          user_id: data.limitedPartner || null,
+          fund_manager_id: data.limitedPartner || null,
         }).unwrap();
       }
       

@@ -2,8 +2,7 @@
 import { fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { RootState } from '@redux/store';
-import { removeUser, setUser } from '@redux/slices/user';
-import { setToken } from '../../../redux/slices/configs';
+import { removeUser } from '@redux/slices/user';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_BASE_URL,
@@ -25,13 +24,7 @@ export const baseQueryWithReauth: BaseQueryFn<
 
   if (result.error && result.error.status === 403) {
     // 🔁 Handle token refresh or other side-effect
-    const token = await window.Clerk?.session?.getToken();
-    console.log('Token:', token); // Log the token for debugging
-    if (token) {
-      api.dispatch(setToken(token)); // Dispatch the new token to the store
-    } else {
-      api.dispatch(removeUser()); // Remove user if token is not available
-    }
+
     console.warn('403 detected — attempting token refresh or logout');
 
     // Example: call your refreshToken logic or dispatch logout

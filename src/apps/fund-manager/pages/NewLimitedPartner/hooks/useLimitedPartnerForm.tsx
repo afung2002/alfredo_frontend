@@ -6,7 +6,7 @@ import { useRegisterLimitedPartnerMutation } from '@services/api/baseApi';
 import { Routes } from '@constants/routes';
 
 const schema = z.object({
-  user_id: z.string().min(1, 'User ID is required').max(50),
+  fund_manager_id: z.string().optional().or(z.literal('')),
   website_url: z.string().url('Invalid URL').max(200).optional().or(z.literal('')),
   legal_entity: z.string().max(255).optional().or(z.literal('')),
   description: z.string().optional().or(z.literal('')),
@@ -27,7 +27,7 @@ const useLimitedPartnerForm = () => {
   } = useForm<LimitedPartnerFormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      user_id: '',
+      fund_manager_id: '',
       website_url: '',
       legal_entity: '',
       description: '',
@@ -37,12 +37,15 @@ const useLimitedPartnerForm = () => {
 
   const onSubmit = async (data: LimitedPartnerFormData) => {
     try {
-      await createLimitedPartner(data).unwrap();
+      if (!data.fund_manager_id) {
+        throw new Error('fund_manager_id is required');
+      }
+      await createLimitedPartner(data as Required<LimitedPartnerFormData>).unwrap();
       reset();
       navigate(Routes.FUND_MANAGER);
     } catch (error: any) {
       const message = error?.data?.message || 'Submission failed';
-      setError('user_id', { message });
+      setError('fund_manager_id', { message });
     }
   };
 

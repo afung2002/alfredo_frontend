@@ -38,7 +38,7 @@ const InvestmentCard: React.FC<InvestmentCardProps> = ({ investment }) => {
         ]}
         tags={[
           {
-            label: `$${Number(investment?.fund_invested)?.toLocaleString('en-US')} Invested`,
+            label: `$${Number(investment?.amount)?.toLocaleString('en-US')} Invested`,
             color: "secondary",
             onClick: () => { },
           },

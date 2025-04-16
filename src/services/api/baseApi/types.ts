@@ -66,16 +66,15 @@ export type CompanyPayload = BaseCompany & {
 
 // INVESTMENTS
 export type BaseInvestment = {
-  amount: string;
+  amount: string; // stored as string (possibly decimal in backend)
   estimated_value: string;
-  investment_date: string; // YYYY-MM-DD
+  investment_date: string; // format: YYYY-MM-DD
   post_money_valuation: string;
-  fund_invested: string;
-  type: 'ANGEL' | 'FUND';
+  type: 'FUND' | 'ANGEL'; // Adjust enum if needed
   status: string;
-  user_id?: string | null;
-  fund?: number | null;
-  company?: CompanyResponse | null; // Aligned with your backend type
+  fund_manager_id: string | null;
+  fund: number;
+  company: CompanyResponse;
 };
 
 export type InvestmentRequest = BaseInvestment;
@@ -124,7 +123,7 @@ export type FundDetail = FundResponse & {
 
 // LIMITED PARTNER
 export type LimitedPartner = {
-  user_id: string;
+  fund_manager_id: string;
   website_url?: string | null;
   legal_entity?: string | null;
   description?: string | null;

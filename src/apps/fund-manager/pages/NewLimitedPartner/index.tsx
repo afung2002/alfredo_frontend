@@ -44,7 +44,7 @@ const NewLimitedPartner: React.FC = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={3}>
             <Grid size={{xs: 12}}>
-              <Input rounded={false} label="User ID" name="user_id" control={control} error={!!errors.user_id?.message} />
+              <Input rounded={false} label="User ID" name="fund_manager_id" control={control} error={!!errors.fund_manager_id?.message} />
             </Grid>
             <Grid size={{xs: 12}}>
               <Input rounded={false} label="Website URL" name="website_url" control={control} error={!!errors.website_url?.message} />

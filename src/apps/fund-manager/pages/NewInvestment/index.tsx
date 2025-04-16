@@ -34,7 +34,7 @@ const NewInvestment: React.FC = () => {
     e.preventDefault();
   
     try {
-      let fundId: string | null = null;
+      let fundId: number | null = null;
   
       if (fund === 'add_new_fund') {
         const success = await submitNewFund();
@@ -42,7 +42,7 @@ const NewInvestment: React.FC = () => {
         fundId = success; // assuming this returns fund ID
       }
   
-      const wrapped = handleSubmit((data) => onSubmit(data, fundId));
+      const wrapped = handleSubmit((data) => onSubmit(data, fundId.toString()));
       await wrapped(e); // this will now work correctly
   
     } catch (error) {
@@ -181,7 +181,7 @@ const NewInvestment: React.FC = () => {
                         : limitedPartners && limitedPartners.length > 0
                           ? [
                             ...limitedPartners.map((partner) => ({
-                              value: partner.user_id.toString(),
+                              value: partner.fund_manager_id.toString(),
                               label: partner.legal_entity ?? 'Unknown',
                             })),
                             { value: 'add_new', label: '➕ Add new LP' },

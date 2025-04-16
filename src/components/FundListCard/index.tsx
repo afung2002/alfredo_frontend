@@ -18,7 +18,7 @@ const FundListCard: React.FC<FundListCardProps> = ({ fund }) => {
     // if ((event.target as HTMLElement).closest('.MuiIconButton-root')) {
     //   return;
     // }
-    navigate(Routes.FUND_MANAGER_FUND.replace(':fundId', fund.id));
+    navigate(Routes.FUND_MANAGER_FUND.replace(':fundId', fund.id.toString()));
   };
   const handleFundDelete = (fundId: number) => {
     // Implement the delete functionality here
@@ -35,7 +35,7 @@ const FundListCard: React.FC<FundListCardProps> = ({ fund }) => {
         actions={[
           {
             label: "View Fund",
-            onClick: () => navigate(Routes.FUND_MANAGER_FUND.replace(':fundId', fund.id)),
+            onClick: () => navigate(Routes.FUND_MANAGER_FUND.replace(':fundId', fund.id.toString())),
           },
         ]}
         tags={[
