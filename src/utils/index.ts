@@ -21,13 +21,10 @@ export function calculateInvestmentTotals(investments: InvestmentDetails[]): Inv
 }
 
 // Define interface for the fund object
-interface FundData {
-  fund_size: string | null;
-  estimated_value: string | null;
-}
+
 
 // Utility function to calculate totals
-export const calculateFundTotals = (funds: FundData[]) => {
+export const calculateFundTotals = (funds: any[]) => {
   let totalFundSize = 0;
   let totalEstimatedValue = 0;
 
@@ -47,7 +44,7 @@ export const calculateFundTotals = (funds: FundData[]) => {
 
 
 
-export function formatNumberString(value: string | number): string {
+export function formatNumberString(value: string | number | null): string {
   const number = Number(value);
   return isNaN(number) ? '$0' : `$${number.toLocaleString('en-US')}`;
 }

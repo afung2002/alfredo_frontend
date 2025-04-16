@@ -24,14 +24,6 @@ export const handleNumberInputChange = <T extends Record<string, any>>(
   }));
 };
 
-export const formatCurrency = (value: number | string): string => {
-  const numericValue = typeof value === 'string' ? parseFloat(value) : value;
-  return isNaN(numericValue) ? '' : numericValue.toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
-};
-
 export const parseCurrency = (value: string): number => {
   return parseFloat(value.replace(/[^0-9.-]+/g, '')) || 0;
 }; 

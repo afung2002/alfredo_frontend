@@ -9,20 +9,23 @@ import {
 } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowBack, Edit } from "@mui/icons-material";
-import { Routes } from "../../../../constants/routes";
-import { useGetCompaniesQuery, useGetCompanyByIdQuery, useGetDocumentsQuery, useGetInvestmentByIdQuery, useLazyGetCompanyByIdQuery } from "../../../../services/api/baseApi";
-import DocumentsList from "../../../../components/DocumentsList";
-import Input from "../../../../components/Input";
+import { Routes } from "@constants/routes";
+import { useGetDocumentsQuery, useGetInvestmentByIdQuery, useLazyGetCompanyByIdQuery } from "@services/api/baseApi";
+import DocumentsList from "@components/DocumentsList";
+import Input from "@components/Input";
 import { useForm } from "react-hook-form";
-import Button from "../../../../components/Button";
-import UploadDocumentModal from "../../../../components/UploadDocumentModal";
+import Button from "@components/Button";
+import UploadDocumentModal from "@components/UploadDocumentModal";
 import { useEffect, useState } from "react";
-import { searchByTitle } from "../../../../utils/uiUtils";
+import { searchByTitle } from "@utils/uiUtils";
 import { formatNumberString } from "../../../../utils";
 
 const Investment: React.FC = () => {
   const { investmentId } = useParams<{ investmentId: string }>();
-  const { data: investmentData, isLoading: investmentLoading, isError: investmentError } = useGetInvestmentByIdQuery(investmentId || "")
+  const { data: investmentData, isLoading: investmentLoading, isError: investmentError } = useGetInvestmentByIdQuery(
+    investmentId ? +investmentId : 0,
+    { skip: !investmentId || !+investmentId }
+  );
   const { data: documentsData, isLoading: isLoadingDocuments, error: errorDocuments } = useGetDocumentsQuery();
   const [getCompany, {data: companyData, isLoading: companyLoading, error: companyError}] = useLazyGetCompanyByIdQuery();
   const [companyDocs, setCompanyDocs] = useState<any[]>([]);
@@ -30,7 +33,7 @@ const Investment: React.FC = () => {
     if (investmentError || investmentLoading) {
       return
     }
-    getCompany(investmentData?.company || "").unwrap()
+    getCompany(investmentData?.company?.id || 0).unwrap()
   }, [investmentData]);
 
   useEffect(() => {
@@ -55,7 +58,7 @@ const Investment: React.FC = () => {
       return;
     }
     const filteredDocs = searchByTitle(companyDocs, searchValue, 'name');
-    setFilteredDocs(filteredDocs);
+    setFilteredDocs(filteredDocs || []);
   }, [searchValue, documentsData, companyDocs]);
   const navigate = useNavigate();
   const handleModalClose = () => {

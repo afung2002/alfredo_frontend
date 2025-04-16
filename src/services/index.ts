@@ -194,16 +194,7 @@ export const getFundFundUpdates = async (fundId: string) => {
   }
 };
 
-// User documents
-export const getUserDocuments = async () => {
-  try {
-    const response = await api.get('/users/documents');
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching user documents:', error);
-    throw error;
-  }
-};
+
 
 // Create new document
 export const createDocument = async (documentData: any) => {

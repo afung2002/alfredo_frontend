@@ -102,7 +102,6 @@ const NewInvestment: React.FC = () => {
         <form onSubmit={onSubmitHandler}>
           <Grid container spacing={3}>
             <Grid size={{ xs: 12 }}>
-              {/* <Input rounded={false} label="Company Name" name="companyName" control={control} error={errors.companyName?.message} /> */}
               <Select
                 rounded={false}
                 label="Company"
@@ -121,38 +120,37 @@ const NewInvestment: React.FC = () => {
                       ]
                       : [{ value: 'add_new_company', label: '➕ Add new company' }]
                 }
-                error={errors.fund?.message}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
-              <Input disabled={!isNewCompany} rounded={false} label="New Company" name="newCompany" control={control} error={errors.newCompany?.message} />
+              <Input disabled={!isNewCompany} rounded={false} label="New Company" name="newCompany" control={control} error={!!errors.company?.message} />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
-              <Input rounded={false} label="Website URL" name="websiteUrl" control={control} error={errors.websiteUrl?.message} />
-            </Grid>
-
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Input rounded={false} label="Founder Email" name="founderEmail" control={control} error={errors.founderEmail?.message} />
+              <Input rounded={false} label="Website URL" name="websiteUrl" control={control} error={!!errors.websiteUrl?.message} />
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }}>
-              <Input startAdornment={usd} rounded={false} label="Invested Amount" name="investedAmount" control={control} error={errors.investedAmount?.message} />
+              <Input rounded={false} label="Founder Email" name="founderEmail" control={control} error={!!errors.founderEmail?.message} />
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }}>
-              <Input startAdornment={usd} rounded={false} label="Estimated Current Value" name="estimatedValue" control={control} error={errors.estimatedValue?.message} />
+              <Input startAdornment={usd} rounded={false} label="Invested Amount" name="investedAmount" control={control} error={!!errors.investedAmount?.message} />
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }}>
-              <Input startAdornment={usd} rounded={false} label="Post Money Valuation" name="postMoneyValuation" control={control} error={errors.postMoneyValuation?.message} />
+              <Input startAdornment={usd} rounded={false} label="Estimated Current Value" name="estimatedValue" control={control} error={!!errors.estimatedValue?.message} />
+            </Grid>
+
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Input startAdornment={usd} rounded={false} label="Post Money Valuation" name="postMoneyValuation" control={control} error={!!errors.postMoneyValuation?.message} />
             </Grid>
 
             <Grid size={{ xs: 12 }}>
-              <Input rounded={false} label="Description" name="description" multiline rows={4} control={control} error={errors.description?.message} />
+              <Input rounded={false} label="Description" name="description" multiline rows={4} control={control} error={!!errors.description?.message} />
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }}>
-              <Input rounded={false} label="Investment Date" type="date" name="investmentDate" control={control} error={errors.investmentDate?.message} />
+              <Input rounded={false} label="Investment Date" type="date" name="investmentDate" control={control} error={!!errors.investmentDate?.message} />
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }}>
@@ -165,7 +163,6 @@ const NewInvestment: React.FC = () => {
                   { value: 'FUND', label: 'Fund' },
                   { value: 'ANGEL', label: 'Angel' },
                 ]}
-                error={errors.investmentType?.message}
               />
             </Grid>
 
@@ -191,7 +188,6 @@ const NewInvestment: React.FC = () => {
                           ]
                           : [{ value: 'add_new', label: '➕ Add new LP' }]
                     }
-                    error={errors.fund?.message}
                   />
                 )
               }
@@ -216,7 +212,6 @@ const NewInvestment: React.FC = () => {
                           ]
                           : [{ value: 'add_new_fund', label: '➕ Add new fund' }]
                     }
-                    error={errors.fund?.message}
                   />
                 )
               }
@@ -230,7 +225,7 @@ const NewInvestment: React.FC = () => {
                     type="text"
                     name="name"
                     control={newFundControl}
-                    error={newFundErrors.name?.message}
+                    error={!!newFundErrors.name?.message}
                   />
                 </Grid>
 
@@ -292,7 +287,7 @@ const NewInvestment: React.FC = () => {
               </Grid>
             </Collapse>
             <Grid size={{ xs: 12 }}>
-              <Input rounded={false} label="Status" name="status" multiline rows={4} control={control} error={errors.status?.message} />
+              <Input rounded={false} label="Status" name="status" multiline rows={4} control={control} error={!!errors.status?.message} />
             </Grid>
 
             <Grid size={{ xs: 12 }}>

@@ -1,48 +1,43 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { Box, Typography, CircularProgress, Alert } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import { Document } from '../../../../types';
 import UploadDocumentModal from '@components/UploadDocumentModal';
-import { Routes } from '../../../../constants/routes';
-import { searchByTitle } from '../../../../utils/uiUtils';
-import Input from '../../../../components/Input';
+import { searchByTitle } from '@utils/uiUtils';
+import Input from '@components/Input';
 import { useForm } from 'react-hook-form';
 import Button from '@components/Button';
-import DocumentsList from '../../../../components/DocumentsList';
+import DocumentsList from '@components/DocumentsList';
 import { useGetDocumentsQuery } from '@services/api/baseApi';
 
 const Documents = () => {
   const { data: documentsData, isLoading: isLoadingDocuments, error: errorDocuments } = useGetDocumentsQuery();
 
-  const { control, watch, setValue } = useForm({
+  const { control, watch } = useForm({
     defaultValues: {
       'searchDocuments': ''
     }
   });
   const searchValue = watch('searchDocuments');
-  const [documents] = useState<Document[]>(documentsData || []);
-  const [selectedTab] = useState("all");
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [filteredDocs, setFilteredDocs] = useState<Document[]>(documentsData || []);
-  const navigate = useNavigate();
   useEffect(() => {
     if (searchValue === '') {
       setFilteredDocs(documentsData || []);
       return;
     }
-    const filteredDocs = searchByTitle(documentsData, searchValue, 'name');
+    const filteredDocs = searchByTitle(documentsData, searchValue, 'name') || [];
     setFilteredDocs(filteredDocs);
   }, [searchValue, documentsData]);
 
 
-  useEffect(() => {
-    const filteredDocs = documents.filter((doc) => {
-      if (selectedTab === 'all') return true;
-      return doc.type === selectedTab;
-    });
-    setFilteredDocs(filteredDocs);
-    setValue('searchDocuments', '');
-  }, [selectedTab, documents, setValue]);
+  // useEffect(() => {
+  //   const filteredDocs = documents.filter((doc) => {
+  //     if (selectedTab === 'all') return true;
+  //     return doc.type === selectedTab;
+  //   });
+  //   setFilteredDocs(filteredDocs);
+  //   setValue('searchDocuments', '');
+  // }, [selectedTab, documents, setValue]);
   const handleModalClose = () => {
     setIsUploadModalOpen(false);
   }
@@ -58,7 +53,8 @@ const Documents = () => {
   if (errorDocuments) {
     return (
       <Box p={3}>
-        <Alert severity="error">{errorDocuments}</Alert>
+        <Alert severity="error">
+          <>{errorDocuments}</></Alert>
       </Box>
     );
   }

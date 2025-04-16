@@ -1,8 +1,5 @@
-import { Box, Button, Paper, Typography } from "@mui/material";
-import { IconButton } from "@mui/material";
+import { Typography } from "@mui/material";
 import { Document } from "../../types";
-import DownloadIcon from '@mui/icons-material/Download';
-import DeleteIcon from '@mui/icons-material/Delete';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 
 import Card from "../Card";
@@ -20,7 +17,7 @@ const DocumentCard: React.FC<{ document: Document }> = ({ document: doc }) => {
     }
   }
 
-  const handleDocDownload = async (id) => {
+  const handleDocDownload = async (id: any) => {
     console.log('Downloading document with ID:', id);
     try {
       const result = await triggerDownload(id).unwrap();

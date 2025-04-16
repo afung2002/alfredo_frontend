@@ -75,7 +75,7 @@ export type BaseInvestment = {
   status: string;
   user_id?: string | null;
   fund?: number | null;
-  company?: number | null;
+  company?: CompanyResponse | null; // Aligned with your backend type
 };
 
 export type InvestmentRequest = BaseInvestment;

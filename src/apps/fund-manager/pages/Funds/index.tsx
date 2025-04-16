@@ -13,7 +13,7 @@ import { calculateFundTotals, formatNumberString } from '../../../../utils';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const Funds = () => {
-  const {data: fundsData, isLoading, error}: {data: Fund[] | undefined, isLoading: boolean, error: any} = useGetFundsQuery()
+  const { data: fundsData, isLoading, error } = useGetFundsQuery();
 
   const { control, watch } = useForm({
       defaultValues: {

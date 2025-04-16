@@ -50,11 +50,11 @@ const useNewFundForm = (fundId: string | null) => {
     if (fundData) {
       reset({
         name: fundData.name,
-        websiteUrl: fundData.website_url,
-        description: fundData.description,
-        legalEntity: fundData.legal_entity,
-        fundSize: fundData.fund_size,
-        estimatedValue: fundData.estimated_value,
+        websiteUrl: fundData.website_url?? '',
+        description: fundData.description?? '',
+        legalEntity: fundData.legal_entity?? '',
+        fundSize: fundData.fund_size?? '',
+        estimatedValue: fundData.estimated_value ?? '',
       });
     }
   }, [isFundLoading, fundData]);

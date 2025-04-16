@@ -1,14 +1,7 @@
-import { Box, CircularProgress, Grid } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import DocumentCard from "../DocumentCard";
 import { AnimatePresence, motion } from "framer-motion";
-
-type Document = {
-  id: string;
-  file: string;
-  companyName: string;
-  description: string;
-  uploadDate: string;
-};
+import { Document } from "../../types";
 
 type DocumentsListProps = {
   documents: Document[] | undefined;
@@ -39,7 +32,7 @@ const DocumentsList = ({ documents, isLoading }: DocumentsListProps) => {
 
         <div className="w-full flex flex-col gap-4">
           <AnimatePresence mode="popLayout">
-            {documents.map((document, index) => (
+            {documents.map((document) => (
               <motion.div
                 key={document.id}
                 layout

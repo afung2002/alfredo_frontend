@@ -65,13 +65,13 @@ export const errorContainerStyles: SxProps<Theme> = {
   p: 3,
 }; 
 
-export const searchByTitle = (cards: AppType[], searchTerm: string, searchBy: string): AppType[] => {
+export const searchByTitle = (cards: any[] | undefined, searchTerm: string, searchBy: string): any[] | undefined => {
   if (!searchTerm.trim()) return cards;
-  if (searchBy === 'company') return cards.filter((card) =>
+  if (searchBy === 'company') return cards?.filter((card) =>
     card.company.name.toLowerCase().includes(searchTerm.trim().toLowerCase())
   );
 
-  return cards.filter((card) =>
+  return cards?.filter((card) =>
     card[searchBy].toLowerCase().includes(searchTerm.trim().toLowerCase())
   );
 };

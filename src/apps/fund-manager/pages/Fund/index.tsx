@@ -11,12 +11,11 @@ import {
   SxProps,
   Theme
 } from "@mui/material";
-import { Fund, Document, FundUpdate, LimitedPartner, Investment } from "../../../../types";
+import { FundUpdate, } from "../../../../types";
 import { Link } from "@mui/icons-material";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowBack, Edit } from "@mui/icons-material";
 import InvestmentsList from "@components/InvestmentsList";
-import { getUserDocuments } from "@services/index";
 import DocumentsList from "@components/DocumentsList";
 import Input from "@components/Input";
 import { useForm } from "react-hook-form";
@@ -25,15 +24,14 @@ import Button from "@components/Button";
 import UploadDocumentModal from "@components/UploadDocumentModal";
 import LimitedPartnersList from "@components/LimitedPartnersList";
 import FundUpdatesList from "@components/FundUpdatesList";
-import { useGetFundByIdQuery, useGetFundUpdatesQuery, useGetInvestmentsQuery, useGetLimitedPartnersQuery } from "@services/api/baseApi";
+import { useGetDocumentsQuery, 
+  useGetFundByIdQuery, 
+  useGetFundUpdatesQuery, 
+  useGetInvestmentsQuery, useGetLimitedPartnersQuery } from "@services/api/baseApi";
 import useCreatePostForm from "./hooks/useCreatePostForm";
 import FundUpdateModal from "@components/FundUpdateModal";
-
-// Utility function for standardized number formatting
-const formatCurrency = (value: string | number | undefined) => {
-  if (!value) return '$0';
-  return `$${Number(value).toLocaleString("en-US")}`;
-};
+import { formatNumberString } from "../../../../utils";
+import { DocumentResponse, InvestmentResponse, LimitedPartnerResponse } from "@services/api/baseApi/types";
 
 // Style constants
 const commonButtonStyles: SxProps<Theme> = {
@@ -75,11 +73,9 @@ const filterTabs = [
 ];
 const FundView: React.FC = () => {
   const { fundId } = useParams();
-  const { data: fundData, isLoading, error } = useGetFundByIdQuery(fundId || '') as {
-    data: Fund | undefined;
-    isLoading: boolean;
-    error: Error | null;
-  };
+  const { data: fundData, isLoading, error } = useGetFundByIdQuery(fundId ? Number(fundId) : 0, {skip: !fundId});
+  const { data: documentsData, isLoading: isLoadingDocuments, error: errorDocuments } = useGetDocumentsQuery()
+
   const { data: fundUpdatesData } = useGetFundUpdatesQuery();
   const { data: investmentsData } = useGetInvestmentsQuery();
   const { data: limitedPartners, isLoading: isLoadingLimitedPartners } = useGetLimitedPartnersQuery();
@@ -111,29 +107,27 @@ const FundView: React.FC = () => {
   const navigate = useNavigate();
   
   const [selectedTab, setSelectedTab] = useState("portfolio");
-  const [errorMsg, setError] = useState<string | null>(null);
-  const [documents, setDocuments] = useState<Document[]>([]);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [open, setOpen] = useState(false);
-  const [filteredDocs, setFilteredDocs] = useState<Document[]>([]);
+  const [filteredDocs, setFilteredDocs] = useState<DocumentResponse[] | []>(documentsData || []);
   const [filteredUpdates, setFilteredUpdates] = useState<FundUpdate[]>([]);
-  const [filteredLimitedPartners, setFilteredLimitedPartners] = useState<LimitedPartner[]>([]);
-  const [filteredInvestments, setFilteredInvestments] = useState<Investment[]>([]);
+  const [filteredLimitedPartners, setFilteredLimitedPartners] = useState<LimitedPartnerResponse[]>([]);
+  const [filteredInvestments, setFilteredInvestments] = useState<InvestmentResponse[]>([]);
   
   const handleEdit = () => {
     navigate(`/fund-manager/fund/edit/${fundId}`);
   };
 
   useEffect(() => {
-    if (!searchDocumentsValue) return setFilteredDocs(documents);
-    const filteredDocs = searchByTitle(documents, searchDocumentsValue, 'file');
-    setFilteredDocs(filteredDocs);
-  }, [searchDocumentsValue, documents]);
+    if (!searchDocumentsValue) return setFilteredDocs(documentsData || []);
+    const filteredDocs = searchByTitle(documentsData, searchDocumentsValue, 'file');
+    setFilteredDocs(filteredDocs || []);
+  }, [searchDocumentsValue, documentsData]);
 
   useEffect(() => {
-    if (!searchLimitedPartnersValue) return setFilteredLimitedPartners(limitedPartners);
+    if (!searchLimitedPartnersValue) return setFilteredLimitedPartners(limitedPartners || []);
     const filteredLimitedPartners = searchByTitle(limitedPartners, searchLimitedPartnersValue, 'name');
-    setFilteredLimitedPartners(filteredLimitedPartners);
+    setFilteredLimitedPartners(filteredLimitedPartners || []);
   }, [searchLimitedPartnersValue, limitedPartners]);
 
   useEffect(() => {
@@ -142,7 +136,7 @@ const FundView: React.FC = () => {
       return;
     }
     const filtered = searchByTitle(investmentsData || [], searchInvestmentsValue, 'company');
-    setFilteredInvestments(filtered);
+    setFilteredInvestments(filtered || []);
   }, [searchInvestmentsValue, investmentsData]);
   
   const handleAddNew = () => {
@@ -152,16 +146,7 @@ const FundView: React.FC = () => {
   const handleAddLimitedPartner = () => {
     navigate('/fund-manager/limited-partner/new');
   };
-  
-  const fetchDocuments = async () => {
-    try {
-      const docs = await getUserDocuments(fundId);
-      setDocuments(docs);
-      setFilteredDocs(docs);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch documents');
-    }
-  };
+
 
   const handleModalClose = () => {
     setIsUploadModalOpen(false);
@@ -178,7 +163,7 @@ const FundView: React.FC = () => {
   if (error) {
     return (
       <Box p={3}>
-        <Alert severity="error">{error}</Alert>
+        <Alert severity="error"><>{error}</></Alert>
       </Box>
     );
   }
@@ -238,7 +223,7 @@ const FundView: React.FC = () => {
                 {fundData?.name}
               </Typography>
               <IconButton
-                onClick={() => window.open(fundData?.website_url, "_blank")}
+                onClick={() => window.open(fundData?.website_url as string, "_blank")}
                 size="small"
                 sx={{ color: "text.secondary" }}
                 title="Open website"
@@ -269,14 +254,14 @@ const FundView: React.FC = () => {
             <Box sx={boxRowStyles}>
               <Typography variant="body2">Fund Size:</Typography>
               <Typography variant="body2" color="text.secondary">
-                {formatCurrency(fundData?.fund_size)} AUM
+                {formatNumberString(fundData?.fund_size ?? null)} AUM
               </Typography>
             </Box>
 
             <Box sx={boxRowStyles}>
               <Typography variant="body2">Estimated Value:</Typography>
               <Typography variant="body2" color="text.secondary">
-                {formatCurrency(fundData?.estimated_value || fundData?.fund_size)}
+                {formatNumberString(fundData?.estimated_value ?? fundData?.fund_size ?? null)}
               </Typography>
             </Box>
           </Box>
@@ -411,8 +396,7 @@ const FundView: React.FC = () => {
             open={isUploadModalOpen}
             onClose={handleModalClose}
             onDocumentUploaded={() => {
-              handleModalClose();
-              fetchDocuments();
+              
             }}
           />
         </>

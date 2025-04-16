@@ -1,21 +1,21 @@
 import { Chip } from "@mui/material";
-import { InvestmentDetails } from "../../types";
 import { useNavigate } from "react-router";
 import { Routes } from "@constants/routes";
 import Card from "../Card";
 import { useDeleteInvestmentMutation } from "../../services/api/baseApi";
+import { InvestmentResponse } from "../../services/api/baseApi/types";
 
 
 interface InvestmentCardProps {
-  investment: InvestmentDetails;
+  investment: InvestmentResponse;
   onClick?: () => void;
 }
 
 const InvestmentCard: React.FC<InvestmentCardProps> = ({ investment }) => {
   const navigate = useNavigate();
-  const [deleteInvestment, { isLoading, isSuccess, isError, error }] = useDeleteInvestmentMutation();
+  const [deleteInvestment] = useDeleteInvestmentMutation();
   const handleCardClick = () => {
-    navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':investmentId', investment.id))
+    navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':investmentId', investment.id.toString()))
   }
 
   const handleInvestmentDelete = (investmentId: number) => {
@@ -28,12 +28,12 @@ const InvestmentCard: React.FC<InvestmentCardProps> = ({ investment }) => {
       <Card
         onClick={() => handleCardClick}
         onDelete={() => handleInvestmentDelete(investment.id)}
-        title={investment?.company?.name}
+        title={investment?.company?.name || ''}
         subtitle={`$${Number(investment?.amount).toLocaleString('en-US')}`}
         actions={[
           {
             label: "View Investment",
-            onClick: () => navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':investmentId', investment.id)),
+            onClick: () => navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':investmentId', investment.id.toString())),
           },
         ]}
         tags={[

@@ -20,7 +20,7 @@ const NewFundForm = ({ isChildForm, fundId }: NewFundFormProps) => {
   } = useNewFundForm(fundId || null);
   const handleSubmit = (e) => {
     e.preventDefault();
-    submitNewFund(e).then((result) => {
+    submitNewFund().then((result) => {
       if (result) {
         navigate(Routes.FUND_MANAGER_FUNDS);
       }
@@ -36,7 +36,7 @@ const NewFundForm = ({ isChildForm, fundId }: NewFundFormProps) => {
             type="text"
             name="name"
             control={newFundControl}
-            error={newFundErrors.name?.message}
+            error={!!newFundErrors.name?.message}
           />
         </Grid>
 

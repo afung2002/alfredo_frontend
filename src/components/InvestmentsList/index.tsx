@@ -3,11 +3,11 @@ import InvestmentCard from "../InvestmentCard";
 import { useNavigate } from "react-router";
 import { noDataMessageStyles } from "@src/utils/uiUtils";
 import { Routes } from "@src/constants/routes";
-import { InvestmentDetails } from "@src/types";
 import { AnimatePresence, motion } from "framer-motion";
+import { InvestmentResponse } from "../../services/api/baseApi/types";
 
 type InvestmentsListProps = {
-  investments: InvestmentDetails[] | undefined;
+  investments: InvestmentResponse[] | undefined;
 };
 
 const itemVariants = {
@@ -42,7 +42,7 @@ const InvestmentsList = ({ investments }: InvestmentsListProps) => {
                   navigate(
                     Routes.FUND_MANAGER_INVESTMENT.replace(
                       ":investmentId",
-                      investment.id
+                      investment.id.toString()
                     )
                   )
                 }
