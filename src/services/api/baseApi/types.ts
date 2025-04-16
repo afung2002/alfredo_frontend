@@ -1,5 +1,6 @@
-// FUNDS
+// types.ts
 
+// FUNDS
 export type BaseFund = {
   name: string;
   website_url?: string | null;
@@ -7,8 +8,8 @@ export type BaseFund = {
   description?: string | null;
   fund_size?: string | null;
   estimated_value?: string | null;
-  start_date?: string | null;
-  end_date?: string | null;
+  start_date?: string | null; // format: YYYY-MM-DD
+  end_date?: string | null;   // format: YYYY-MM-DD
 };
 
 export type FundRequest = BaseFund;
@@ -23,9 +24,7 @@ export type FundPayload = FundRequest & {
   id: number;
 };
 
-
 // FUND UPDATES
-
 export type BaseFundUpdate = {
   title: string;
   description?: string | null;
@@ -37,8 +36,8 @@ export type FundUpdatePostRequest = BaseFundUpdate;
 
 export type FundUpdateResponse = BaseFundUpdate & {
   id: number;
-  created_at: string;   // ISO 8601 date-time
-  updated_at: string;   // ISO 8601 date-time
+  created_at: string;
+  updated_at: string;
 };
 
 export type FundUpdatePayload = BaseFundUpdate & {
@@ -46,7 +45,6 @@ export type FundUpdatePayload = BaseFundUpdate & {
 };
 
 // COMPANIES
-
 export type BaseCompany = {
   name: string;
   website_url?: string | null;
@@ -67,7 +65,6 @@ export type CompanyPayload = BaseCompany & {
 };
 
 // INVESTMENTS
-
 export type BaseInvestment = {
   amount: string;
   estimated_value: string;
@@ -93,13 +90,16 @@ export type InvestmentPayload = BaseInvestment & {
   id: number;
 };
 
-// DOCUMENTS
+export type InvestmentWithDocuments = InvestmentResponse & {
+  documents: DocumentResponse[];
+};
 
+// DOCUMENTS
 export type DocumentUploadRequest = {
   name: string;
   company_name: string;
   description?: string | null;
-  upload_date?: string | null; // format: YYYY-MM-DD
+  upload_date?: string | null; // YYYY-MM-DD
   investment?: number | null;
   fund?: number | null;
   file: File;
@@ -114,4 +114,22 @@ export type DocumentResponse = {
   file: string; // file URL
   created_at: string;
   updated_at: string;
+};
+
+// FUND DETAIL
+export type FundDetail = FundResponse & {
+  documents: DocumentResponse[];
+  investments: InvestmentWithDocuments[];
+};
+
+// LIMITED PARTNER
+export type LimitedPartner = {
+  user_id: string;
+  website_url?: string | null;
+  legal_entity?: string | null;
+  description?: string | null;
+};
+
+export type LimitedPartnerResponse = LimitedPartner & {
+  created_at?: string;
 };

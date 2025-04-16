@@ -16,6 +16,7 @@ import SavedApps from '../pages/SavedApps';
 import Investment from '../apps/fund-manager/pages/Investment';
 import NewInvestment from '../apps/fund-manager/pages/NewInvestment';
 import LimitedPartner from '../apps/fund-manager/pages/LimitedPartner';
+import NewLimitedPartner from '../apps/fund-manager/pages/NewLimitedPartner';
 const LandingLayout = lazy(() => import('@layouts/LandingLayout'));
 const LandingPage = lazy(() => import('@pages/LandingPage'));
 const Page404 = lazy(() => import('@pages/Page404'));
@@ -67,6 +68,10 @@ export const routes: RouteObject[] = [
         element: <NewInvestment />,
       },
       {
+        path: Routes.FUND_MANAGER_INVESTMENT_EDIT,
+        element: <NewInvestment />,
+      },
+      {
         path: Routes.FUND_MANAGER_FUNDS,
         element: <Funds />,
       },
@@ -89,6 +94,10 @@ export const routes: RouteObject[] = [
       {
         path: Routes.FUND_MANAGER_LIMITED_PARTNER,
         element: <LimitedPartner />,
+      },
+      {
+        path: Routes.FUND_MANAGER_NEW_LIMITED_PARTNER,
+        element: <NewLimitedPartner />,
       }
     ],
   },

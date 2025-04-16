@@ -1,134 +1,96 @@
-import { Box, Button, Dialog, DialogTitle, Modal, Paper, Typography } from "@mui/material";
+import { Box, Button, Paper, Typography } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { Document } from "../../types";
 import DownloadIcon from '@mui/icons-material/Download';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
-import { useState, forwardRef } from "react";
-import { TransitionProps } from '@mui/material/transitions';
-import Slide from '@mui/material/Slide';
 
-const Transition = forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement<any, any>;
-  },
-  ref: React.Ref<unknown>,
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-const DocumentCard: React.FC<{ document: Document }> = ({ document }) => {
-  const [openDocViewModal, setOpenDocViewModal] = useState(false);
-  const handleDelete = () => {
-    console.log('file deleted');
+import Card from "../Card";
+import { useDeleteDocumentMutation, useLazyDownloadDocumentQuery } from "../../services/api/baseApi";
+
+const DocumentCard: React.FC<{ document: Document }> = ({ document: doc }) => {
+  const [deleteDoc, { isLoading: isDeleting }] = useDeleteDocumentMutation();
+  const [triggerDownload, { isFetching }] = useLazyDownloadDocumentQuery();
+  const handleDocDelete = async (id) => {
+    console.log('Deleting document with ID:', id);
+    try {
+      await deleteDoc(Number(id)).unwrap();
+    } catch (error) {
+      console.error("Failed to delete document:", error);
+    }
+  }
+
+  const handleDocDownload = async (id) => {
+    console.log('Downloading document with ID:', id);
+    try {
+      const result = await triggerDownload(id).unwrap();
+
+      const fileUrl = (result as any).file_url;
+      const fileName = (result as any).file_name || 'document';
+
+      if (fileUrl) {
+        const link = document.createElement('a');
+        link.href = fileUrl;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      } else {
+        console.error('Missing file URL in API response.');
+      }
+    } catch (err) {
+      console.error('Failed to download the document:', err);
+    }
   };
+
   return (
-    <>
-    <Paper
-      variant="outlined"
-      className="transition-shadow duration-200  gap-4 overflow-wrap w-full h-28"
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        p: '16px',
-        borderRadius: '6px',
-        cursor: "pointer",
-        backgroundColor: 'grey.100',
-        overflow: 'wrap',
-        width: '100%',
-        ':hover': {
-          backgroundColor: '#f5f5f5',
+    <div >
+      <Card
+        onClick={() => { }}
+        onDelete={() => handleDocDelete(doc.id)}
+        onDownload={ () => handleDocDownload(doc.id)}
+        // title={document.name}
+        // subtitle={document.company_name}
+        avatar={
+          <DescriptionOutlinedIcon sx={{ fontSize: 40, color: 'text.primary' }} />
         }
-      }}
-    >
-        {/* File name at the top */}
-        <Typography 
-          variant="subtitle2" 
-          className="break-all"
-          sx={{ 
-            fontWeight: 500,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-            alignSelf: 'flex-start',
-            wordBreak: 'break-all',
-          }}
-        >
-          {document.file}
+        className="transition-shadow duration-200"
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          p: '24px',
+          borderRadius: '6px',
+          cursor: "pointer",
+          mb: '8px',
+          backgroundColor: 'grey.100',
+          ':hover': {
+            backgroundColor: '#f5f5f5',
+          }
+        }}
+      >
+        <Typography variant="body1" component="h2" sx={{
+          fontWeight: '500', mb: 1, overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          display: '-webkit-box',
+          WebkitLineClamp: '1',
+          WebkitBoxOrient: 'vertical',
+        }}>
+          {doc.name}
         </Typography>
-
-        {/* Centered icon */}
-        <Box sx={{ 
-          flex: 1,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
+        <Typography variant="subtitle2" component="p" sx={{
+          color: 'text.secondary', fontWeight: '500', overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          display: '-webkit-box',
+          WebkitLineClamp: '1',
+          WebkitBoxOrient: 'vertical',
         }}>
-          <DescriptionOutlinedIcon sx={{ 
-            fontSize: 48,
-            // color: 'black'
-          }} />
-        </Box>
+          {doc.company_name}
+        </Typography>
+      </Card>
+    </div>
 
-        {/* Bottom actions row */}
-        <Box sx={{ 
-          display: 'flex', 
-          justifyContent: 'space-between',
-          mt: 'auto',
-          width: '100%',
-        }}>
-          {/* Delete button */}
-          <IconButton 
-            size="small"
-            onClick={handleDelete}
-            sx={{
-              color: 'black',
-              bgcolor: 'rgba(0, 0, 0, 0.04)',
-              '&:hover': {
-                bgcolor: 'rgba(0, 0, 0, 0.08)'
-              }
-            }}
-          >
-            <DeleteIcon />
-          </IconButton>
-            <div>
-            <Button 
-            onClick={() => setOpenDocViewModal(true)}
-            sx={{
-              textTransform: 'none',
-            }}>View</Button>
-            <IconButton 
-            size="small" 
-            color="primary"
-            sx={{
-              bgcolor: 'rgba(0, 0, 0, 0.04)',
-              '&:hover': {
-                bgcolor: 'rgba(0, 0, 0, 0.08)'
-              }
-            }}
-          >
-            <DownloadIcon />
-          </IconButton>
-            </div>
-          {/* Download button */}
-          
-        </Box>
-    </Paper>
-    <Dialog
-    TransitionComponent={Transition}
-      open={openDocViewModal}
-      onClose={() => setOpenDocViewModal(false)}
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-       <DialogTitle>Document</DialogTitle>
-    </Dialog>
-    </>
-    
   );
-};        
+};
 
 export default DocumentCard;

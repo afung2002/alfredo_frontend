@@ -1,5 +1,6 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, CircularProgress, Grid } from "@mui/material";
 import DocumentCard from "../DocumentCard";
+import { AnimatePresence, motion } from "framer-motion";
 
 type Document = {
   id: string;
@@ -11,24 +12,50 @@ type Document = {
 
 type DocumentsListProps = {
   documents: Document[] | undefined;
+  isLoading?: boolean;
 };
-const DocumentsList = ({documents}: DocumentsListProps) => {
+const DocumentsList = ({ documents, isLoading }: DocumentsListProps) => {
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.3, ease: "easeOut" },
+    },
+    exit: { opacity: 0, y: -10, transition: { duration: 0.2 } },
+  };
+
+  if (isLoading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
     <>
-    {documents && documents?.length > 0 ? (
-        <Grid container spacing={3}>
-          {documents.map((document, index) => (
-            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }} key={index}>
-              <DocumentCard document={document} />
-            </Grid>
-          ))}
-        </Grid>
-      ) : (
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
-          <Typography variant="body1">
-            {(!documents || documents.length === 0) && "No documents found"}
-          </Typography>
-        </Box>
+      {documents && documents?.length > 0 && (
+
+        <div className="w-full flex flex-col gap-4">
+          <AnimatePresence mode="popLayout">
+            {documents.map((document, index) => (
+              <motion.div
+                key={document.id}
+                layout
+                variants={itemVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+              >
+                <div className="w-full">
+                  <DocumentCard document={document} />
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+
+        </div>
       )}
     </>
   )

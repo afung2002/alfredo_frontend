@@ -1,19 +1,28 @@
 
 export interface InvestmentDetails {
-  id: string;
-  companyName: string;
-  websiteUrl: string;
-  founderEmail: string;
-  description: string;
+  id: number;
+  created_at: string;
+  updated_at: string;
   amount: string;
-  estimatedValue: string;
-  investmentDate: string;
-  postMoneyValuation: string;
-  fundInvested: string;
-  type: InvestmentType;
-  status: string;
-  updates: string
+  estimated_value: string;
+  investment_date: string;
+  post_money_valuation: string;
+  fund_invested: string;
+  type: 'ANGEL' | 'FUND';
+  status: 'active' | 'inactive' | string;
+  user_id: string | null;
+  fund: number | null;
+  company: {
+    id: number;
+    created_at: string;
+    updated_at: string;
+    name: string;
+    website_url: string;
+    founder_email: string;
+    description: string;
+  };
 }
+
 
 export interface LimitedPartnerType {
   _id: string;

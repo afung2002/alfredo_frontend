@@ -16,6 +16,7 @@ export enum Routes {
   FUND_MANAGER_FUND = `${Routes.FUND_MANAGER}/funds/:fundId`,
   FUND_MANAGER_FUND_EDIT = `${Routes.FUND_MANAGER}/funds/:fundId/edit`,
 
+  FUND_MANAGER_NEW_LIMITED_PARTNER = `${Routes.FUND_MANAGER}/limited-partners/new-limited-partner`,
   FUND_MANAGER_LIMITED_PARTNER = `${Routes.FUND_MANAGER}/limited-partners/:limitedPartnerId`,
   FUND_MANAGER_LIMITED_PARTNER_EDIT = `${Routes.FUND_MANAGER}/limited-partners/:limitedPartnerId/edit`,
 }

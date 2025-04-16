@@ -1,40 +1,34 @@
-import { Chip, Typography } from "@mui/material";
-import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { Chip } from "@mui/material";
 import { InvestmentDetails } from "../../types";
 import { useNavigate } from "react-router";
 import { Routes } from "@constants/routes";
 import Card from "../Card";
+import { useDeleteInvestmentMutation } from "../../services/api/baseApi";
 
 
 interface InvestmentCardProps {
-    investment: InvestmentDetails;
-    onClick?: () => void;
+  investment: InvestmentDetails;
+  onClick?: () => void;
 }
-  
-const InvestmentCard: React.FC<InvestmentCardProps> = ({ investment, onClick }) => {
+
+const InvestmentCard: React.FC<InvestmentCardProps> = ({ investment }) => {
   const navigate = useNavigate();
-    // const handleCardClick = (event: React.MouseEvent) => {
-    //     // Prevent navigation if clicking the add button
-    //     if ((event.target as HTMLElement).closest('.MuiIconButton-root')) {
-    //         return;
-    //     }
-    //     onClick?.();
-    // };
-    const formattedAmount = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(parseInt(investment.amount))
+  const [deleteInvestment, { isLoading, isSuccess, isError, error }] = useDeleteInvestmentMutation();
+  const handleCardClick = () => {
+    navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':investmentId', investment.id))
+  }
 
-    const handleCardClick = () => {
-        navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':investmentId', investment.id))
-    }
-
-    return (
-      <div className="">
-        <Card
+  const handleInvestmentDelete = (investmentId: number) => {
+    // Implement the delete functionality here
+    deleteInvestment(investmentId)
+      .unwrap()
+  }
+  return (
+    <div className="">
+      <Card
         onClick={() => handleCardClick}
-        title="Company Name"
+        onDelete={() => handleInvestmentDelete(investment.id)}
+        title={investment?.company?.name}
         subtitle={`$${Number(investment?.amount).toLocaleString('en-US')}`}
         actions={[
           {
@@ -76,12 +70,10 @@ const InvestmentCard: React.FC<InvestmentCardProps> = ({ investment, onClick }) 
               size="medium"
             />
           </div>
-
         )}
-
       </Card>
-      </div>
-    )
+    </div>
+  )
 }
 
 export default InvestmentCard;

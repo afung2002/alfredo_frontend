@@ -67,6 +67,9 @@ export const errorContainerStyles: SxProps<Theme> = {
 
 export const searchByTitle = (cards: AppType[], searchTerm: string, searchBy: string): AppType[] => {
   if (!searchTerm.trim()) return cards;
+  if (searchBy === 'company') return cards.filter((card) =>
+    card.company.name.toLowerCase().includes(searchTerm.trim().toLowerCase())
+  );
 
   return cards.filter((card) =>
     card[searchBy].toLowerCase().includes(searchTerm.trim().toLowerCase())

@@ -10,13 +10,8 @@ interface LimitedPartnerCardProps {
   limitedPartner: LimitedPartnerType;
 }
 const LimitedPartnerCard = ({limitedPartner}:LimitedPartnerCardProps ) => {
-  console.log('LimitedPartnerCard:', limitedPartner);
   const navigate = useNavigate();
   const handleCardClick = (event: React.MouseEvent) => {
-    // Prevent navigation if clicking the add button
-    // if ((event.target as HTMLElement).closest('.MuiIconButton-root')) {
-    //   return;
-    // }
     navigate(Routes.FUND_MANAGER_LIMITED_PARTNER.replace(':limitedPartnerId', limitedPartner.id));
   };
   return (
