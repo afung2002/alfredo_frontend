@@ -6,11 +6,10 @@ import Card from "../Card";
 import { useDeleteDocumentMutation, useLazyDownloadDocumentQuery } from "../../services/api/baseApi";
 import DocIcon from '@assets/doc.svg';
 
-const DocumentCard: React.FC<{ document: Document }> = ({ document: doc }) => {
+const DocumentCard: React.FC<{ document: Document, orientation: "row" | "grid" }> = ({ document: doc, orientation }) => {
   const [deleteDoc, { isLoading: isDeleting }] = useDeleteDocumentMutation();
   const [triggerDownload, { isFetching }] = useLazyDownloadDocumentQuery();
   const handleDocDelete = async (id) => {
-    console.log('Deleting document with ID:', id);
     try {
       await deleteDoc(Number(id)).unwrap();
     } catch (error) {
@@ -19,7 +18,6 @@ const DocumentCard: React.FC<{ document: Document }> = ({ document: doc }) => {
   }
 
   const handleDocDownload = async (id: any) => {
-    console.log('Downloading document with ID:', id);
     try {
       const result = await triggerDownload(id).unwrap();
 
@@ -48,7 +46,7 @@ const DocumentCard: React.FC<{ document: Document }> = ({ document: doc }) => {
         onDelete={() => handleDocDelete(doc.id)}
         onDownload={ () => handleDocDownload(doc.id)}
         title={doc.name}
-        
+        orientation={orientation}
         subtitle={
           <Typography variant="subtitle2" component="p" sx={{
             color: 'text.secondary', fontWeight: '500', overflow: 'hidden',
