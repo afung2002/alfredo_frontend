@@ -1,5 +1,6 @@
 import { InvestmentResponse } from "../services/api/baseApi/types";
 import { InvestmentDetails } from "../types";
+import { Clerk } from '@clerk/clerk-js';
 
 export type InvestmentTotals = {
   totalFundInvested: number;
@@ -57,3 +58,11 @@ export const filterInvestmentsByType = (investments: InvestmentResponse[], type:
   console.log(investments, type)
   return investments.filter(inv => inv.type === type);
 }; 
+
+const clerk = new Clerk( import.meta.env.VITE_PUBLIC_CLERK_FRONTEND_API_KEY!);
+
+export const getClerkToken = async (template?: string) => {
+  await clerk.load();
+  const token = await clerk.session?.getToken({ template });
+  return token;
+};
