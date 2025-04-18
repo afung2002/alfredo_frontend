@@ -5,21 +5,21 @@ import { useNavigate } from 'react-router-dom';
 import { formContainerStyles } from '@utils/uiUtils';
 import Input from '@components/Input';
 import Button from '@components/Button';
-import useLimitedPartnerForm from './hooks/useLimitedPartnerForm';
+// import useLimitedPartnerForm from './hooks/useLimitedPartnerForm';
 
 const NewLimitedPartner: React.FC = () => {
   const navigate = useNavigate();
-  const {
-    control,
-    handleSubmit,
-    onSubmit,
-    errors,
-    isLoading,
-  } = useLimitedPartnerForm();
+  // const {
+  //   control,
+  //   handleSubmit,
+  //   onSubmit,
+  //   errors,
+  //   isLoading,
+  // } = useLimitedPartnerForm();
 
   return (
     <Box sx={formContainerStyles}>
-      <Button
+      {/* <Button
         variant="text"
         onClick={() => navigate(-1)}
         sx={{
@@ -44,7 +44,7 @@ const NewLimitedPartner: React.FC = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={3}>
             <Grid size={{xs: 12}}>
-              <Input rounded={false} label="User ID" name="fund_manager_id" control={control} error={!!errors.fund_manager_id?.message} />
+              <Input rounded={false} label="User ID" name="user_id" control={control} error={!!errors.user_id?.message} />
             </Grid>
             <Grid size={{xs: 12}}>
               <Input rounded={false} label="Website URL" name="website_url" control={control} error={!!errors.website_url?.message} />
@@ -68,7 +68,7 @@ const NewLimitedPartner: React.FC = () => {
             </Grid>
           </Grid>
         </form>
-      </Card>
+      </Card> */}
     </Box>
   );
 };
