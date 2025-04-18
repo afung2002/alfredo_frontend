@@ -14,7 +14,7 @@ import Input from '@components/Input';
 import Button from '@components/Button';
 import useUploadDocumentForm from './hooks/useUploadDocumentForm';
 import Select from '../Select';
-import { useGetFundsQuery, useGetInvestmentsQuery } from '@services/api/baseApi';
+import { useGetCompaniesQuery, useGetFundsQuery, useGetInvestmentsQuery } from '@services/api/baseApi';
 
 interface UploadDocumentModalProps {
   open: boolean;
@@ -29,9 +29,10 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
   investment,
   fund
 }) => {
-  console.log(investment, 'investment')
   const { data: funds, isLoading: isFundsLoading, error: fundsError } = useGetFundsQuery();
   const { data: investments, isLoading: isInvestmentsLoading, error: investmentsError } = useGetInvestmentsQuery();
+  const { data: companies, isLoading: isCompaniesLoading, error: companiesError } = useGetCompaniesQuery();
+  
   const {
     uploadControl,
     submitForm,
@@ -57,7 +58,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
                 error={!!uploadErrors.docTitle?.message}
               />
             </Grid>
-            {/* <Grid size={{ xs: 12 }}>
+            <Grid size={{ xs: 12 }}>
               <label>Document Type</label>
               <RadioGroup
                 name="documentType"
@@ -70,7 +71,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
                 <FormControlLabel value="investment" control={<Radio size="small" />} label="Investment" />
                 <FormControlLabel value="fund" control={<Radio size="small" />} label="Fund" />
               </RadioGroup>
-            </Grid> */}
+            </Grid>
 
 
             {/* <Grid size={{ xs: 12 }}>
@@ -95,7 +96,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
               />
             </Grid> */}
             {
-              (!fund && !investment) && (
+              (!fund && !investment) &&  (
                 <Grid size={{ xs: 12 }}>
                   <Select
                     // disabled={watch('documentType') === 'investment'}
@@ -117,6 +118,30 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
                     }
                   />
                 </Grid>
+              )
+            }
+            {
+              (!fund && !investment) && watch('documentType') === 'investment' && (
+                <Grid size={{ xs: 12 }}>
+              <Select
+                rounded={false}
+                label="Company"
+                name="company"
+                control={uploadControl}
+                options={
+                  isCompaniesLoading
+                    ? [{ value: '', label: 'Loading companies...' }]
+                    : companies && companies.length > 0
+                      ? [
+                        ...companies.map((company) => ({
+                          value: company.name,
+                          label: company.name,
+                        })),
+                      ]
+                      : [{ value: 'no_companies', label: 'No companies found' }]
+                }
+              />
+            </Grid>
               )
             }
 
