@@ -25,7 +25,6 @@ const NewLimitedPartnerFundForm = ({fundId, closeModal}: NewLimitedPartnerFundFo
       addedLimitedPartner,
     } = useLimitedPartnerFundForm(fundId);
     useEffect(() => {
-      console.log('addedLimitedPartner', addedLimitedPartner);
       if (isLoading) return;
       if (addedLimitedPartner) {
 
