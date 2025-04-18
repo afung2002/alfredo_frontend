@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Grid, CircularProgress, Card, Collapse } from '@mui/material';
+import { Box, Typography, Grid, CircularProgress, Card, Collapse, Modal, Dialog, DialogTitle, DialogContent } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import { useNavigate, useParams } from 'react-router-dom';
 import useNewInvestmentForm from './hooks/useNewInvestmentForm';
@@ -9,7 +9,9 @@ import Button from '@components/Button';
 import { Routes } from '@constants/routes';
 import { formContainerStyles } from '@utils/uiUtils';
 import { useGetCompaniesQuery, useGetFundsQuery, useGetLimitedPartnersQuery } from '../../../../services/api/baseApi';
-import useNewFundForm from '../../../../hooks/useNewFundForm';
+import useNewFundForm from '@hooks/useNewFundForm';
+import NewFundForm from '@components/NewFundForm';
+import NewCompanyForm from '../../../../components/NewCompanyForm';
 
 const NewInvestment: React.FC = () => {
   const params = useParams();
@@ -17,42 +19,13 @@ const NewInvestment: React.FC = () => {
   const {
     control,
     handleSubmit,
-    onSubmit,
     errors,
     isLoading,
     watch,
+    setFundValue,
+    setCompanyValue,
+
   } = useNewInvestmentForm(params?.investmentId || null);
-
-  const {
-    newFundControl,
-    submitNewFund,
-    newFundErrors,
-    newFundIsLoading,
-  } = useNewFundForm(null);
-
-  const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    try {
-      let fundId: number | null = null;
-
-      if (fund === 'add_new_fund') {
-        const success = await submitNewFund();
-        if (!success) return;
-        fundId = success; // assuming this returns fund ID
-      }
-
-      const wrapped = handleSubmit((data) => onSubmit(data, fundId.toString()));
-      await wrapped(e); // this will now work correctly
-
-    } catch (error) {
-      console.error('Error in full form submission:', error);
-    }
-  };
-
-
-
-
 
   const investmentType = watch('investmentType');
   const company = watch('company');
@@ -61,14 +34,28 @@ const NewInvestment: React.FC = () => {
   const { data: funds, isLoading: isFundsLoading, error: fundsError } = useGetFundsQuery()
   const { data: limitedPartners, isLoading: isLimitedPartnersLoading, error: limitedPartnersError } = useGetLimitedPartnersQuery();
   const [isNewCompany, setIsNewCompany] = useState(false);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false);
   useEffect(() => {
     if (company === 'add_new_company') {
-      setIsNewCompany(true);
+      setIsCompanyModalOpen(true);
     } else {
-      setIsNewCompany(false);
+      setIsCompanyModalOpen(false);
     }
   }, [company]);
+
+  useEffect(() => {
+    if (fund === 'add_new_fund') {
+      setIsModalOpen(true);
+    } else {
+      setIsModalOpen(false);
+    }
+  }, [fund]);
+
+  const handleSelectCreatedFund = (createdFund) => {
+    setFundValue(createdFund.id.toString());
+    setIsModalOpen(false);
+  }
 
   const usd = (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -99,7 +86,7 @@ const NewInvestment: React.FC = () => {
       </Typography>
 
       <Card sx={{ border: '1px solid', borderColor: 'grey.200', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', p: '30px' }}>
-        <form onSubmit={onSubmitHandler}>
+        <form onSubmit={handleSubmit}>
           <Grid container spacing={3}>
             <Grid size={{ xs: 12 }}>
               <Select
@@ -122,16 +109,7 @@ const NewInvestment: React.FC = () => {
                 }
               />
             </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Input disabled={!isNewCompany} rounded={false} label="New Company" name="newCompany" control={control} error={!!errors.company?.message} />
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Input rounded={false} label="Website URL" name="websiteUrl" control={control} error={!!errors.websiteUrl?.message} />
-            </Grid>
 
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Input rounded={false} label="Founder Email" name="founderEmail" control={control} error={!!errors.founderEmail?.message} />
-            </Grid>
 
             <Grid size={{ xs: 12, md: 6 }}>
               <Input startAdornment={usd} rounded={false} label="Invested Amount" name="investedAmount" control={control} error={!!errors.investedAmount?.message} />
@@ -144,10 +122,13 @@ const NewInvestment: React.FC = () => {
             <Grid size={{ xs: 12, md: 6 }}>
               <Input startAdornment={usd} rounded={false} label="Post Money Valuation" name="postMoneyValuation" control={control} error={!!errors.postMoneyValuation?.message} />
             </Grid>
-
-            <Grid size={{ xs: 12 }}>
-              <Input rounded={false} label="Description" name="description" multiline rows={4} control={control} error={!!errors.description?.message} />
-            </Grid>
+            <Dialog open={isCompanyModalOpen}>
+              <DialogTitle>Add New Company</DialogTitle>
+              <DialogContent>
+                <NewCompanyForm onClose={() => setIsCompanyModalOpen(false)} 
+                  selectCreatedCompany={setCompanyValue} />
+              </DialogContent>
+            </Dialog>
 
             <Grid size={{ xs: 12, md: 6 }}>
               <Input rounded={false} label="Investment Date" type="date" name="investmentDate" control={control} error={!!errors.investmentDate?.message} />
@@ -166,8 +147,7 @@ const NewInvestment: React.FC = () => {
               />
             </Grid>
 
-            <Grid size={{ xs: 12 }}>
-
+            <Grid size={{ xs: 12, md: 6 }}>
               <Select
                 rounded={false}
                 label="Fund"
@@ -189,76 +169,12 @@ const NewInvestment: React.FC = () => {
                 }
               />
             </Grid>
-            <Collapse in={fund === 'add_new_fund'} timeout="auto" unmountOnExit>
-              <Grid container spacing={3}>
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Input
-                    rounded={false}
-                    label='Fund Name'
-                    type="text"
-                    name="name"
-                    control={newFundControl}
-                    error={!!newFundErrors.name?.message}
-                  />
-                </Grid>
-
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Input
-                    rounded={false}
-                    label='Website URL'
-                    type="text"
-                    name="websiteUrl"
-                    control={newFundControl}
-                    error={!!newFundErrors.websiteUrl?.message}
-                  />
-                </Grid>
-
-                <Grid size={{ xs: 12 }}>
-                  <Input
-                    rounded={false}
-                    label='Legal Entity'
-                    type="text"
-                    name="legalEntity"
-                    control={newFundControl}
-                    error={!!newFundErrors.legalEntity?.message}
-                  />
-                </Grid>
-
-                <Grid size={{ xs: 12 }}>
-                  <Input
-                    rounded={false}
-                    label='Description'
-                    multiline
-                    rows={5}
-                    name="description"
-                    control={newFundControl}
-                    error={!!newFundErrors.description?.message}
-                  />
-                </Grid>
-
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Input
-                    rounded={false}
-                    label='Fund Size'
-                    type="text"
-                    name="fundSize"
-                    control={newFundControl}
-                    error={!!newFundErrors.fundSize?.message}
-                  />
-                </Grid>
-
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Input
-                    rounded={false}
-                    label="Estimated Value"
-                    type="text"
-                    name="estimatedValue"
-                    control={newFundControl}
-                    error={!!newFundErrors.estimatedValue?.message}
-                  />
-                </Grid>
-              </Grid>
-            </Collapse>
+            <Dialog open={isModalOpen}>
+              <DialogTitle>Add New Fund</DialogTitle>
+              <DialogContent>
+                <NewFundForm onSave={() => setIsModalOpen(false)} onClose={() => setFundValue('')} selectCreatedFund={handleSelectCreatedFund} />
+              </DialogContent>
+            </Dialog>
             <Grid size={{ xs: 12 }}>
               <Input rounded={false} label="Status" name="status" multiline rows={4} control={control} error={!!errors.status?.message} />
             </Grid>
@@ -273,7 +189,7 @@ const NewInvestment: React.FC = () => {
                   variant="contained"
                   disabled={isLoading}
                 >
-                  {isLoading || newFundIsLoading ? <CircularProgress size={24} /> : 'Save'}
+                  {isLoading ? <CircularProgress size={24} /> : 'Save'}
                 </Button>
               </Box>
             </Grid>
