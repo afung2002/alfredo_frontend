@@ -31,7 +31,6 @@ const useNewInvestmentForm = (id: string | null) => {
 
   useEffect(() => {
     if (investmentData) {
-      console.log('Investment Data:', investmentData);
       getCompany(investmentData?.company?.id).unwrap()
     }
   }, [investmentData]);
@@ -80,7 +79,6 @@ const useNewInvestmentForm = (id: string | null) => {
     },
     mode: 'onChange',
   });
-  console.log('Form Errors:', errors);
   const onSubmit = async (data: any, fundId: string | null = null) => {
     try {
       if (investmentData) {
