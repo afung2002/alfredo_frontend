@@ -33,7 +33,6 @@ const useLimitedPartnerFundForm = (fundId) => {
     },
     mode: 'onChange',
   });
-  console.log('err0ors', errors);
   const onSubmit = async (data: LimitedPartnerFundFormData) => {
     try {
       await createLimitedPartner({
