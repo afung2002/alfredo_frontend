@@ -15,13 +15,14 @@ type CardPropsType = CardProps & {
   actions?: any[];
   avatar?: React.ReactNode;
   sideImage?: string;
+  orientation?: "row" | "grid";
   tags?: {
     label: string | React.ReactNode;
     color?: "default" | "primary" | "secondary" | "error" | "success" | "warning" | "info";
     onClick?: () => void;
   }[];
 }
-const Card = ({ children, onClick, className, title, subtitle, actions, tags, onDelete, onDownload, avatar, sideImage }: CardPropsType) => {
+const Card = ({ children, onClick, className, title, subtitle, actions, tags, onDelete, onDownload, avatar, sideImage, orientation = 'row' }: CardPropsType) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleDownloadClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -46,11 +47,11 @@ const Card = ({ children, onClick, className, title, subtitle, actions, tags, on
   };
   return (
     <>
-      <MuiCard variant="outlined" sx={{ borderRadius: '8px' }} className={` flex !border-none ${className}`} onClick={onClick}>
+      <MuiCard variant="outlined" sx={{ borderRadius: '8px' }} className={`flex !border-none ${orientation === 'grid' ? 'flex-col' : ''} ${className}`} onClick={onClick}>
         {
           sideImage && (
-            <div className="h-auto w-1/3 bg-slate-200 flex justify-center items-center">
-              <img src={sideImage} alt="sideImage" className="w-1/2 h-1/2" />
+            <div className={` bg-slate-200 flex justify-center items-center ${orientation === 'grid' ? 'h-32 w-full' : 'h-auto w-1/3'}`}>
+              <img src={sideImage} alt="sideImage" className={`${orientation === 'grid' ? 'w-1/2 h-2/3' : 'w-1/2 h-full'}`} />
             </div>
           )
         }
