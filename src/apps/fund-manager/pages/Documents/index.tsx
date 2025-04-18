@@ -1,5 +1,5 @@
-import  { useEffect, useState } from 'react';
-import { Box, Typography, CircularProgress, Alert, Chip } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Box, Typography, CircularProgress, Alert, Chip, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { Document } from '../../../../types';
 import UploadDocumentModal from '@components/UploadDocumentModal';
 import { searchByTitle } from '@utils/uiUtils';
@@ -8,6 +8,8 @@ import { useForm } from 'react-hook-form';
 import Button from '@components/Button';
 import DocumentsList from '@components/DocumentsList';
 import { useGetDocumentsQuery } from '@services/api/baseApi';
+import TableRowsIcon from '@mui/icons-material/TableRows';
+import AppsIcon from '@mui/icons-material/Apps';
 
 const Documents = () => {
   const { data: documentsData, isLoading: isLoadingDocuments, error: errorDocuments } = useGetDocumentsQuery();
@@ -20,6 +22,12 @@ const Documents = () => {
   const searchValue = watch('searchDocuments');
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [filteredDocs, setFilteredDocs] = useState<Document[]>(documentsData || []);
+  const [selectedOrientation, setSelectedOrientation] = useState<"row" | "grid">('row');
+  const handleOrientationChange = (event: React.MouseEvent<HTMLElement>, newOrientation: "row" | "grid") => {
+    if (newOrientation !== null) {
+      setSelectedOrientation(newOrientation);
+    }
+  };
   useEffect(() => {
     if (searchValue === '') {
       setFilteredDocs(documentsData || []);
@@ -69,7 +77,7 @@ const Documents = () => {
         <Chip
           label={documentsData?.length}
           color="secondary"
-          sx={{ fontSize: '0.875rem',  fontWeight: 700, borderRadius: '4px' }}
+          sx={{ fontSize: '0.875rem', fontWeight: 700, borderRadius: '4px' }}
         />
       </Box>
 
@@ -89,9 +97,18 @@ const Documents = () => {
         </Button>
 
       </Box>
+      {/* <div className="flex justify-end mb-2">
+        <ToggleButtonGroup  color="secondary" value={selectedOrientation} exclusive onChange={handleOrientationChange}>
+          <ToggleButton  value="grid" onClick={() => setSelectedOrientation('grid')} sx={{ textTransform: 'none' }}>
+            <AppsIcon sx={{ fontSize: '1.2rem' }} />
+          </ToggleButton>
+          <ToggleButton value="row" onClick={() => setSelectedOrientation('row')} sx={{ textTransform: 'none' }}>
+            <TableRowsIcon sx={{ fontSize: '1.2rem' }} />
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </div> */}
 
-
-      <DocumentsList documents={filteredDocs} isLoading={isLoadingDocuments} />
+      <DocumentsList selectedOrientation={selectedOrientation}  documents={filteredDocs} isLoading={isLoadingDocuments} />
 
       {/* Upload Modal */}
       <UploadDocumentModal
