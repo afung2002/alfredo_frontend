@@ -4,7 +4,7 @@ import { Routes } from "@constants/routes";
 import Card from "../Card";
 import { useDeleteInvestmentMutation } from "../../services/api/baseApi";
 import { InvestmentResponse } from "../../services/api/baseApi/types";
-
+import InvestmentIcon from "@assets/investment.svg";
 
 interface InvestmentCardProps {
   investment: InvestmentResponse;
@@ -30,6 +30,7 @@ const InvestmentCard: React.FC<InvestmentCardProps> = ({ investment }) => {
         onDelete={() => handleInvestmentDelete(investment.id)}
         title={investment?.company?.name || ''}
         subtitle={`$${Number(investment?.amount).toLocaleString('en-US')}`}
+        sideImage={InvestmentIcon}
         actions={[
           {
             label: "View Investment",
