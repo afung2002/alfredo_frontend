@@ -6,8 +6,9 @@ import { Document } from "../../types";
 type DocumentsListProps = {
   documents: Document[] | undefined;
   isLoading?: boolean;
+  selectedOrientation?: "row" | "grid";
 };
-const DocumentsList = ({ documents, isLoading }: DocumentsListProps) => {
+const DocumentsList = ({ documents, isLoading, selectedOrientation }: DocumentsListProps) => {
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -33,12 +34,13 @@ const DocumentsList = ({ documents, isLoading }: DocumentsListProps) => {
       </Box>
     )
   }
+  console.log(selectedOrientation, 'selectedOrientation')
 
   return (
     <>
       {documents && documents?.length > 0 && (
 
-        <div className="w-full flex flex-col gap-4">
+        <div className={`w-full ${selectedOrientation === 'grid' ? 'grid grid-cols-3 gap-4' : 'flex flex-col gap-4'}`}>
           <AnimatePresence mode="popLayout">
             {documents.map((document) => (
               <motion.div
@@ -50,7 +52,7 @@ const DocumentsList = ({ documents, isLoading }: DocumentsListProps) => {
                 exit="exit"
               >
                 <div className="w-full">
-                  <DocumentCard document={document} />
+                  <DocumentCard orientation={selectedOrientation} document={document} />
                 </div>
               </motion.div>
             ))}
