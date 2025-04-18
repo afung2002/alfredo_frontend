@@ -4,28 +4,39 @@ import Button from "../Button";
 import useNewFundForm from "@hooks/useNewFundForm";
 import { useNavigate } from "react-router";
 import { Routes } from "@constants/routes";
+import { useEffect } from "react";
 
 type NewFundFormProps = {
-  isChildForm?: boolean;
-  fundId: string | null;
+  fundId?: string;
+  onClose?: () => void;
+  selectCreatedFund?: (fund: any) => void;
+  onSave?: () => void;
 };
-const NewFundForm = ({ isChildForm, fundId }: NewFundFormProps) => {
+const NewFundForm = ({ fundId, onClose, selectCreatedFund, onSave  }: NewFundFormProps) => {
   const navigate = useNavigate();
   const {
     newFundControl,
     submitNewFund,
     newFundErrors,
     newFundIsLoading,
-    newFundIsUpdateLoading
+    newFundIsUpdateLoading,
+    newFundCreated,
   } = useNewFundForm(fundId || null);
   const handleSubmit = (e) => {
     e.preventDefault();
     submitNewFund().then((result) => {
       if (result) {
-        navigate(Routes.FUND_MANAGER_FUNDS);
+        // navigate(Routes.FUND_MANAGER_FUNDS);
+        onSave()
       }
     })
   }
+  useEffect(() => {
+    if (newFundCreated) {
+      onClose?.();
+      selectCreatedFund(newFundCreated);
+    }
+  }, [newFundCreated]);
   return (
     <form onSubmit={handleSubmit}>
       <Grid container spacing={3}>
@@ -95,12 +106,11 @@ const NewFundForm = ({ isChildForm, fundId }: NewFundFormProps) => {
             error={!!newFundErrors.estimatedValue?.message}
           />
         </Grid>
-        {!isChildForm && (
           <Grid size={{ xs: 12 }}>
             <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
               <Button
                 variant="outlined"
-                onClick={() => navigate(Routes.FUND_MANAGER_FUNDS)}
+                onClick={onClose}
                 disabled={newFundIsLoading}
               >
                 Cancel
@@ -118,7 +128,6 @@ const NewFundForm = ({ isChildForm, fundId }: NewFundFormProps) => {
               </Button>
             </Box>
           </Grid>
-        )}
       </Grid>
     </form>
   )
