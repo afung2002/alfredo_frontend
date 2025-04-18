@@ -1,11 +1,9 @@
-import { Button, Chip, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
-import { ButtonGroup } from "@mui/material";
+import { List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import { Box } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Routes } from "@constants/routes";
 import { useSelector } from "react-redux";
-import { selectUserInvestments } from "../../redux/selectors/user.selector";
-import PageviewOutlinedIcon from '@mui/icons-material/PageviewOutlined';
+import { selectUserInvestments } from "@redux/selectors/user.selector";
 import { JSX } from "react";
 
 
