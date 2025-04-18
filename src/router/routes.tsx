@@ -21,6 +21,8 @@ const LandingLayout = lazy(() => import('@layouts/LandingLayout'));
 const Page404 = lazy(() => import('@pages/Page404'));
 
 import LandingPage from '@pages/LandingPage';
+import LimitedPartnerLayout from '../apps/limited-partner/layouts/LimitedPartnerLayout';
+import LimitedPartnerFunds from '../apps/limited-partner/pages/LimitedPartnerFunds';
 
 export const routes: RouteObject[] = [
   {
@@ -100,6 +102,16 @@ export const routes: RouteObject[] = [
         element: <NewLimitedPartner />,
       }
     ],
+  },
+  {
+    path: Routes.LIMITED_PARTNER_FUNDS,
+    element: <ProtectedRoute><LimitedPartnerLayout /></ProtectedRoute>,
+    children: [
+      {
+        path: Routes.LIMITED_PARTNER_FUNDS,
+        element: <LimitedPartnerFunds />,
+      }
+    ]
   },
   { path: '*', element: React.createElement(Page404) },
 ]
