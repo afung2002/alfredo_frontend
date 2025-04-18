@@ -52,7 +52,9 @@ export type BaseCompany = {
   description?: string | null;
 };
 
-export type CompanyRequest = BaseCompany;
+export type CompanyRequest = BaseCompany & {
+  fund_manager_id: string | null; // TODO: REMOVE AFTER BACKEND FIX
+};
 
 export type CompanyResponse = BaseCompany & {
   id: number;
@@ -97,11 +99,10 @@ export type InvestmentWithDocuments = InvestmentResponse & {
 export type DocumentUploadRequest = {
   fund_manager_id: string;
   name: string;
-  company_name: string;
   description?: string | null;
   upload_date?: string | null; // YYYY-MM-DD
-  investment?: number | null;
-  fund?: number | null;
+  investment?: string | null;
+  fund?: string | null;
   file: File;
 };
 
@@ -124,12 +125,25 @@ export type FundDetail = FundResponse & {
 
 // LIMITED PARTNER
 export type LimitedPartner = {
-  fund_manager_id: string;
+  user_id: string;
   website_url?: string | null;
   legal_entity?: string | null;
   description?: string | null;
+  fund?: number; // Fund ID
 };
 
 export type LimitedPartnerResponse = LimitedPartner & {
   created_at?: string;
+};
+
+// FUND-LIMITED-PARTNERS
+export type FundLimitedPartnerRequest = {
+  fund: number; // Fund ID
+  limited_partner: string; // user_id of the limited partner
+  invested_amount: string; // string representing decimal
+};
+
+export type FundLimitedPartnerResponse = FundLimitedPartnerRequest & {
+  user_id: number;
+  created_at: string; // ISO 8601 date-time
 };
