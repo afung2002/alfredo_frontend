@@ -17,13 +17,14 @@ const schema = z.object({
   }),
   investment: z.string().optional(),
   fund: z.string().optional(),
+  company: z.string().optional(),
+
 });
 
 export type UploadDocumentFormData = z.infer<typeof schema>
 
 const useUploadDocumentForm = (onSuccess: () => void, investmentId: any, fundId: any) => {
   const [uploadDocument, { isLoading }] = useUploadDocumentMutation();
-  console.log(fundId)
   const {
     control,
     handleSubmit,
@@ -39,9 +40,10 @@ const useUploadDocumentForm = (onSuccess: () => void, investmentId: any, fundId:
       docTitle: '',
       description: '',
       file: undefined,
-      documentType: 'fund', // Default value, can be changed as needed
+      documentType: 'investment', // Default value, can be changed as needed
       investment: '',
       fund: '',
+      company: '',
     },
     mode: 'onChange',
   });
@@ -58,7 +60,9 @@ const useUploadDocumentForm = (onSuccess: () => void, investmentId: any, fundId:
     await handleSubmit(async (data) => {
       try {
         const file = data.file[0]; // Grab  file from FileList
-
+        console.log(fundId, 'fundId')
+        console.log(investmentId, 'investmentId')
+        console.log(data, 'data')
         await uploadDocument({
           description: data.description,
           name: data.docTitle,
@@ -66,6 +70,7 @@ const useUploadDocumentForm = (onSuccess: () => void, investmentId: any, fundId:
           fund_manager_id: "1", // TODO: Replace with actual fund manager ID
           fund: getValues('documentType') === 'fund' ? (fundId || getValues('fund')) : '',
           investment: getValues('documentType') === 'investment' ? (investmentId || getValues('investment')) : '',
+          company_name: data.company,
         }).unwrap();
 
         reset();
