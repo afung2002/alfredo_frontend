@@ -356,12 +356,7 @@ const FundView: React.FC = () => {
             </Box>
             <LimitedPartnersList limitedPartners={filteredLimitedPartners} isLoading={isLoadingLimitedPartners} />
 
-            <Dialog open={isLimitedPartnerModelOpen} onClose={() => setIsLimitedPartnerModalOpen(false)}>
-              <DialogTitle>Add Limited Partner</DialogTitle>
-              <DialogContent>
-                <NewLimitedPartnerFundForm fundId={fundId} closeModal={() => setIsLimitedPartnerModalOpen(false)} />
-              </DialogContent>
-            </Dialog>
+
           </>
         )}
         {selectedTab === "updates" && (
@@ -422,6 +417,12 @@ const FundView: React.FC = () => {
           </>
         )}
       </Box>
+      <Dialog open={isLimitedPartnerModelOpen} onClose={() => setIsLimitedPartnerModalOpen(false)}>
+        <DialogTitle>Add Limited Partner</DialogTitle>
+        <DialogContent>
+          <NewLimitedPartnerFundForm fundId={fundId} closeModal={() => setIsLimitedPartnerModalOpen(false)} />
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 };
