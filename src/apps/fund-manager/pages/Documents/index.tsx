@@ -1,5 +1,5 @@
 import  { useEffect, useState } from 'react';
-import { Box, Typography, CircularProgress, Alert } from '@mui/material';
+import { Box, Typography, CircularProgress, Alert, Chip } from '@mui/material';
 import { Document } from '../../../../types';
 import UploadDocumentModal from '@components/UploadDocumentModal';
 import { searchByTitle } from '@utils/uiUtils';
@@ -62,10 +62,15 @@ const Documents = () => {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
       {/* Document Statistics */}
-      <Box sx={{ mb: 1 }}>
-        <Typography variant="h5" sx={{ mb: 1, fontWeight: 500, textAlign: 'left' }}>
-          {documentsData?.length} Documents
+      <Box className="flex gap-3 items-center" sx={{ mb: 1 }}>
+        <Typography variant="h3" sx={{ mb: 1, fontWeight: 600, textAlign: 'left' }}>
+          Documents
         </Typography>
+        <Chip
+          label={documentsData?.length}
+          color="secondary"
+          sx={{ fontSize: '0.875rem',  fontWeight: 700, borderRadius: '4px' }}
+        />
       </Box>
 
       <Box sx={{ display: "flex", gap: 2, mb: 2, width: '100%' }}>
