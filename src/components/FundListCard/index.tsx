@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Routes } from "../../constants/routes";
 import Card from "../Card";
 import { useDeleteFundMutation } from "../../services/api/baseApi";
+import FundIcon from "@assets/fund.svg";
 
 interface FundListCardProps {
   fund: Fund;
@@ -32,6 +33,7 @@ const FundListCard: React.FC<FundListCardProps> = ({ fund }) => {
         onDelete={() => handleFundDelete(fund.id)}
         title={fund.name}
         subtitle={fund?.website_url}
+        sideImage={FundIcon}
         actions={[
           {
             label: "View Fund",
