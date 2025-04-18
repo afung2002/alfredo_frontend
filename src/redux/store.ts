@@ -11,7 +11,7 @@ import { apiSlice } from '../services/api/baseApi';
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['user'],
+  whitelist: ['user', 'configs'], // Only persist user and configs slices
 };
 
 const rootReducer = combineReducers({
