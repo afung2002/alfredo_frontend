@@ -20,7 +20,7 @@ const FundManagerLayout = () => {
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <AppSideMenu sideMenuButtons={sideMenuButtons} />
       <div 
-        className="flex-1 xl:px-64 lg:px-44 md:px-28 sm:px-16 px-4 pt-24 pb-24"
+        className="flex-1 xl:px-44 lg:px-32 md:px-28 sm:px-16 px-4 pt-24 pb-24"
       >
         <Outlet />
       </div>
