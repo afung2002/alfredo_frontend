@@ -16,7 +16,7 @@ const schema = z.object({
 export type NewFundFormData = z.infer<typeof schema>;
 
 const useNewFundForm = (fundId: string | null) => {
-  const [createFund, { isLoading }] = useCreateFundMutation();
+  const [createFund, { data: createdFund, isLoading }] = useCreateFundMutation();
   const [getFund, { data: fundData, isLoading: isFundLoading }] = useLazyGetFundByIdQuery();
   const [updateFund, { isLoading: isUpdateLoading }] = useUpdateFundMutation(); // Assuming this is the correct mutation for updating a fund
   
@@ -86,7 +86,7 @@ const useNewFundForm = (fundId: string | null) => {
           fund_size: data.fundSize,
           estimated_value: data.estimatedValue,
         }).unwrap();
-  
+
         reset();
         result = response?.id
       }
@@ -107,6 +107,7 @@ const useNewFundForm = (fundId: string | null) => {
     newFundErrors: errors,
     newFundIsLoading: isLoading,
     newFundIsUpdateLoading: isUpdateLoading,
+    newFundCreated: createdFund,
   };
 };
 
