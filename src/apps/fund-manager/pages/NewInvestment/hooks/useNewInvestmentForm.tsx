@@ -8,9 +8,6 @@ import { useEffect } from 'react';
 
 const schema = z.object({
   company: z.string().min(1, 'Company is required'),
-  websiteUrl: z.string().url('Must be a valid URL'),
-  founderEmail: z.string().email('Must be a valid email'),
-  description: z.string().min(1, 'Description is required'),
   investedAmount: z.string().min(1, 'Required'),
   estimatedValue: z.string().min(1, 'Required'),
   postMoneyValuation: z.string().min(1, 'Required'),
@@ -48,20 +45,18 @@ const useNewInvestmentForm = (id: string | null) => {
     if (investmentData && companyData) {
       reset({ 
         company: companyData.id.toString(),
-        websiteUrl: companyData.website_url,
-        founderEmail: companyData.founder_email,
-        description: companyData.description,
         investedAmount: investmentData.amount,
         estimatedValue: investmentData.estimated_value,
         postMoneyValuation: investmentData.post_money_valuation,
         investmentDate: investmentData.investment_date,
         investmentType: investmentData.type,
-        fund: investmentData.fund.toString() || '',
+        fund: investmentData.fund?.toString() || '',
         status: investmentData.status,
         limitedPartner: investmentData.fund_manager_id || '',
       });
     }
   }, [isInvestmentLoading, investmentData, isInvestmentError, companyData]);
+
   const {
     control,
     handleSubmit,
@@ -69,13 +64,11 @@ const useNewInvestmentForm = (id: string | null) => {
     formState: { errors },
     reset,
     watch,
+    setValue,
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
       company: '',
-      websiteUrl: '',
-      founderEmail: '',
-      description: '',
       investedAmount: '',
       estimatedValue: '',
       postMoneyValuation: '',
@@ -87,7 +80,7 @@ const useNewInvestmentForm = (id: string | null) => {
     },
     mode: 'onChange',
   });
-
+  console.log('Form Errors:', errors);
   const onSubmit = async (data: any, fundId: string | null = null) => {
     try {
       if (investmentData) {
@@ -127,11 +120,16 @@ const useNewInvestmentForm = (id: string | null) => {
 
   return {
     control,
-    handleSubmit,
-    onSubmit, // return separately
+    handleSubmit: handleSubmit((data) => onSubmit(data)),
     errors,
     isLoading,
     watch,
+    setFundValue: (value: string) => {
+      setValue('fund', value);
+    },
+    setCompanyValue: (value: string) => {
+      setValue('company', value.toString());
+    },
   };
 };
 
