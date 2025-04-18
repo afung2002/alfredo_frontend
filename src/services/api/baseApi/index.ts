@@ -1,5 +1,5 @@
 // api/apiSlice.ts
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
 import { Endpoints } from '@constants/endpoints';
 import { Tags } from '@constants/tags';
 import type {
@@ -20,20 +20,15 @@ import type {
   FundDetail,
   LimitedPartner,
   LimitedPartnerResponse,
+  FundLimitedPartnerResponse,
+  FundLimitedPartnerRequest,
 } from './types';
-import { RootState } from '@redux/store';
+import { baseQueryWithReauth } from './baseQueryWithReauth';
 
 export const apiSlice = createApi({
   reducerPath: 'api',
-  baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_BASE_URL,
-    prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).configs.token;
-      if (token) headers.set('Authorization', `Bearer ${token}`);
-      return headers;
-    },
-  }),
-  tagTypes: [Tags.FUNDS, Tags.FUND_UPDATES, Tags.COMPANIES, Tags.INVESTMENTS, Tags.DOCUMENTS],
+  baseQuery: baseQueryWithReauth,
+  tagTypes: [Tags.FUNDS, Tags.FUND_UPDATES, Tags.COMPANIES, Tags.INVESTMENTS, Tags.DOCUMENTS, Tags.LIMITED_PARTNERS],
   endpoints: (builder) => ({
     // --- FUNDS ---
     getFunds: builder.query<FundResponse[], void>({
@@ -114,10 +109,25 @@ export const apiSlice = createApi({
     }),
 
     // --- INVESTMENTS ---
-    getInvestments: builder.query<InvestmentResponse[], void>({
-      query: () => ({ url: Endpoints.INVESTMENTS, method: 'GET' }),
+    getInvestments: builder.query<InvestmentResponse[], { fund?: string | number; company?: string | number } | void>({
+      query: (params) => {
+        let query = '';
+        if (params) {
+          const queryParams = new URLSearchParams();
+          if (params.fund !== undefined) queryParams.append('fund', String(params.fund));
+          if (params.company !== undefined) queryParams.append('company', String(params.company));
+          query = `?${queryParams.toString()}`;
+        }
+    
+        return {
+          url: `${Endpoints.INVESTMENTS}${query}`,
+          method: 'GET',
+        };
+      },
       providesTags: [Tags.INVESTMENTS],
     }),
+    
+
     createInvestment: builder.mutation<InvestmentResponse, InvestmentRequest>({
       query: (data) => ({ url: Endpoints.INVESTMENTS, method: 'POST', body: data }),
       invalidatesTags: [Tags.INVESTMENTS],
@@ -152,7 +162,6 @@ export const apiSlice = createApi({
       query: (formData) => {
         const body = new FormData();
         body.append('name', formData.name);
-        body.append('company_name', formData.company_name);
         if (formData.description) body.append('description', formData.description);
         if (formData.upload_date) body.append('upload_date', formData.upload_date);
         if (formData.investment !== undefined) body.append('investment', String(formData.investment));
@@ -175,9 +184,25 @@ export const apiSlice = createApi({
       query: (id) => ({ url: `${Endpoints.DOCUMENTS}${id}/download/`, method: 'GET' }),
       providesTags: (_r, _e, id) => [{ type: Tags.DOCUMENTS, id }],
     }),
+    getDocumentsByFundId: builder.query<DocumentResponse[], string>({
+      query: (fundId) => ({
+        url: `/funds/${fundId}/documents/`,
+        method: 'GET',
+      }),
+      providesTags: (_r, _e, fundId) => [{ type: Tags.DOCUMENTS, id: `fund-${fundId}` }],
+    }),
+    
+    getDocumentsByInvestmentId: builder.query<DocumentResponse[], string>({
+      query: (investmentId) => ({
+        url: `/investments/${investmentId}/documents/`,
+        method: 'GET',
+      }),
+      providesTags: (_r, _e, investmentId) => [{ type: Tags.DOCUMENTS, id: `investment-${investmentId}` }],
+    }),
+    
 
      // --- FUND DETAIL ---
-     getFundDetail: builder.query<FundDetail, number>({
+    getFundDetail: builder.query<FundDetail, number>({
       query: (id) => ({
         url: `/funds/${id}/`,
         method: 'GET',
@@ -188,7 +213,7 @@ export const apiSlice = createApi({
     // --- LIMITED PARTNER ---
     registerLimitedPartner: builder.mutation<LimitedPartnerResponse, LimitedPartner>({
       query: (data) => ({
-        url: `/limited-partner-registration/`,
+        url: Endpoints.LIMITED_PARTNERS,
         method: 'POST',
         body: data,
       }),
@@ -230,6 +255,15 @@ export const apiSlice = createApi({
         method: 'GET',
       }),
     }),
+
+    createFundLimitedPartner: builder.mutation<FundLimitedPartnerResponse, FundLimitedPartnerRequest>({
+      query: (data) => ({
+        url: Endpoints.FUND_LIMITED_PARTNERS,
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: [Tags.LIMITED_PARTNERS],
+    }),
   }),
 });
 
@@ -259,6 +293,7 @@ export const {
   usePatchCompanyMutation,
   useDeleteCompanyMutation,
   useLazyGetCompanyByIdQuery,
+  useLazyGetCompaniesQuery,
 
   // Investments
   useGetInvestmentsQuery,
@@ -275,6 +310,8 @@ export const {
   useDeleteDocumentMutation,
   useDownloadDocumentQuery,
   useLazyDownloadDocumentQuery,
+  useGetDocumentsByFundIdQuery,
+  useGetDocumentsByInvestmentIdQuery,
 
   // Fund Detail
   useGetFundDetailQuery,
@@ -286,5 +323,6 @@ export const {
   useUpdateLimitedPartnerMutation,
   usePatchLimitedPartnerMutation,
   useGetLimitedPartnerFundsQuery,
+  useCreateFundLimitedPartnerMutation,
 } = apiSlice;
 
