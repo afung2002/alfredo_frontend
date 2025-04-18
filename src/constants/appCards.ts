@@ -21,7 +21,7 @@ export const APP_CARDS = [
     imageUrl: AppImage2,
     category: 'For Limited Partners',
     categoryValue: 'limited-partners',
-    path: '/pitch-deck-analyzer',
+    path: Routes.LIMITED_PARTNER_FUNDS,
   },
   {
     title: 'Findintros.ai',
@@ -29,7 +29,7 @@ export const APP_CARDS = [
     imageUrl: AppImage3,
     category: 'For Founders',
     categoryValue: 'founders',
-    path: '/lp-portfolio-insights',
+    path: '/apps',
   },
   {
     title: 'Companytracker.ai',
@@ -37,7 +37,7 @@ export const APP_CARDS = [
     imageUrl: AppImage4,
     category: 'For Investors',
     categoryValue: 'investors',
-    path: '/lp-portfolio-insights',
+    path: '/apps',
   },
   {
     title: 'VCassociate.ai',
@@ -45,7 +45,7 @@ export const APP_CARDS = [
     imageUrl: AppImage5,
     category: 'For Investors',
     categoryValue: 'investors',
-    path: '/lp-portfolio-insights',
+    path: '/apps',
   },
   {
     title: 'Memogenerator.ai',
@@ -53,6 +53,6 @@ export const APP_CARDS = [
     imageUrl: AppImage6,
     category: 'For Investors',
     categoryValue: 'investors',
-    path: '/lp-portfolio-insights',
+    path: '/apps',
   },
 ];
