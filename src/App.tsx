@@ -1,12 +1,21 @@
 import { BrowserRouter } from 'react-router-dom';
 import './App.css';
 import AppRoutes from './router';
+import { lightTheme, darkTheme } from './theme';
+import { useMemo, useState } from 'react';
+import { ThemeProvider } from '@mui/material/styles';
 
 function App() {
+  const [isDarkMode, setIsDarkMode] = useState(false); // Can toggle or use system preference
+
+  const theme = useMemo(() => (isDarkMode ? darkTheme : lightTheme), [isDarkMode]);
   return (
-      <BrowserRouter>
+
+    <BrowserRouter>
+      <ThemeProvider theme={theme}>
         <AppRoutes />
-      </BrowserRouter>
+      </ThemeProvider>
+    </BrowserRouter>
   )
 }
 
