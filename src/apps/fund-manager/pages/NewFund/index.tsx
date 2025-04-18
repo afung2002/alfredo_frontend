@@ -6,11 +6,15 @@ import { formContainerStyles } from '@utils/uiUtils';
 import Button from '@components/Button';
 import NewFundForm from '@components/NewFundForm';
 import Card from '../../../../components/Card';
+import { Routes } from '../../../../constants/routes';
 
 const NewFund: React.FC = () => {
   const navigate = useNavigate();
   const params = useParams();
   const fundId = params.fundId || null;
+  const handleCloseFundForm = () => {
+    navigate(-1);
+  };
   return (
     <Box sx={formContainerStyles}>
       <Button
@@ -34,7 +38,7 @@ const NewFund: React.FC = () => {
         Add Fund
       </Typography>
       <Card>
-        <NewFundForm fundId={fundId} />
+        <NewFundForm onSave={() => navigate(Routes.FUND_MANAGER_FUNDS)} fundId={fundId} onClose={handleCloseFundForm} />
       </Card>
     </Box>
   );
