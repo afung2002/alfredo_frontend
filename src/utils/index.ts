@@ -55,7 +55,6 @@ import { InvestmentType } from '../types';
 
 
 export const filterInvestmentsByType = (investments: InvestmentResponse[], type: InvestmentType): InvestmentResponse[] => {
-  console.log(investments, type)
   return investments.filter(inv => inv.type === type);
 }; 
 
