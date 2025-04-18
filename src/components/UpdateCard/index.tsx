@@ -3,15 +3,15 @@ import { FundUpdate } from "../../types/index";
 import { useState, useRef, useEffect } from "react";
 import Card from "../Card";
 import { useFormattedTime } from "@hooks/useFormattedTime";
+import { useDeleteFundUpdateMutation } from "../../services/api/baseApi";
 interface UpdateListCardProps {
   update: FundUpdate;
 }
 
 const UpdateCard: React.FC<UpdateListCardProps> = ({ update }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [deleteUpdate, { isLoading: isDeleting }] = useDeleteFundUpdateMutation();
   const [showReadMore, setShowReadMore] = useState(false);
   const descriptionRef = useRef<HTMLDivElement>(null);
-  const formattedCreatedAt = useFormattedTime(update?.created_at)
   const formattedUpdatedAt = useFormattedTime(update?.updated_at)
   useEffect(() => {
     if (descriptionRef.current) {
@@ -22,12 +22,16 @@ const UpdateCard: React.FC<UpdateListCardProps> = ({ update }) => {
       setShowReadMore(height > lineHeight * 3);
     }
   }, [update.description]);
-
+  const handleUpdateDelete = (id: number) => {
+    deleteUpdate(id)
+      .unwrap()
+  }
   return (
     <div className="mb-4">
       <Card
+        onDelete={() => handleUpdateDelete(update.id)}
         title={update.title}
-        subtitle={formattedUpdatedAt}
+        subtitle={<Typography variant="subtitle2">{formattedUpdatedAt}</Typography>}
         className="transition-shadow duration-200"
         sx={{
           display: "flex",
@@ -45,7 +49,7 @@ const UpdateCard: React.FC<UpdateListCardProps> = ({ update }) => {
       >
         {update.description && (
           <div>
-            <Typography variant="body2" sx={{
+            <Typography variant="body1" sx={{
               color: "text.secondary",
               overflow: 'hidden',
               textOverflow: 'ellipsis',
