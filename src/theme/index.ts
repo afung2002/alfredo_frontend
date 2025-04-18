@@ -8,9 +8,9 @@ const theme = createTheme({
       paper: '#ffffff',
     },
     primary: {
-      main: '#8375a9',       // New lighter purple
-      light: '#e9e5f4',      // Softer background variant
-      dark: '#6a5b8e',       // For hover/focus
+      main: '#8375a9',
+      light: '#e9e5f4',
+      dark: '#6a5b8e',
       contrastText: '#ffffff',
     },
     secondary: {
@@ -53,6 +53,31 @@ const theme = createTheme({
       styleOverrides: {
         body: {
           backgroundColor: '#f2f0f5',
+        },
+      },
+    },
+
+    // ✅ ListItem selected background color
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          '&.Mui-selected': {
+            backgroundColor: '#e7e4e4',
+            '&:hover': {
+              backgroundColor: '#dcdada',
+            },
+          },
+        },
+      },
+    },
+
+    // ✅ Tabs - inactive tab background color
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          '&.MuiTab-root:not(.Mui-selected)': {
+            backgroundColor: '#e7e4e4',
+          },
         },
       },
     },
