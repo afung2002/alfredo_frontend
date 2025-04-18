@@ -10,7 +10,7 @@ import {
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowBack, Edit } from "@mui/icons-material";
 import { Routes } from "@constants/routes";
-import { useGetDocumentsQuery, useGetInvestmentByIdQuery, useLazyGetCompanyByIdQuery } from "@services/api/baseApi";
+import { useGetDocumentsByInvestmentIdQuery, useGetDocumentsQuery, useGetInvestmentByIdQuery, useLazyGetCompanyByIdQuery } from "@services/api/baseApi";
 import DocumentsList from "@components/DocumentsList";
 import Input from "@components/Input";
 import { useForm } from "react-hook-form";
@@ -26,25 +26,18 @@ const Investment: React.FC = () => {
     investmentId ? +investmentId : 0,
     { skip: !investmentId || !+investmentId }
   );
-  const { data: documentsData, isLoading: isLoadingDocuments, error: errorDocuments } = useGetDocumentsQuery();
+  const { data: documentsData, isLoading: isLoadingDocuments, error: errorDocuments } = useGetDocumentsByInvestmentIdQuery(investmentId);
   const [getCompany, {data: companyData, isLoading: companyLoading, error: companyError}] = useLazyGetCompanyByIdQuery();
-  const [companyDocs, setCompanyDocs] = useState<any[]>([]);
   useEffect(() => {
     if (investmentError || investmentLoading) {
       return
     }
     getCompany(investmentData?.company?.id || 0).unwrap()
-  }, [investmentData]);
+  }, [investmentData, investmentLoading, investmentError]);
 
-  useEffect(() => {
-    if (companyError || companyLoading || !companyData) {
-      return
-    }
-    const companyDocs = documentsData?.filter((doc: any) => doc.company_name === companyData?.name);
-    setCompanyDocs(companyDocs || []);
-  }, [documentsData, isLoadingDocuments, errorDocuments, companyData]);
+
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-  const [filteredDocs, setFilteredDocs] = useState<any[]>(companyDocs || []);
+  const [filteredDocs, setFilteredDocs] = useState<any[]>(documentsData || []);
   const { control, watch } = useForm({
     defaultValues: {
       'searchDocuments': ''
@@ -54,12 +47,12 @@ const Investment: React.FC = () => {
 
   useEffect(() => {
     if (searchValue === '') {
-      setFilteredDocs(companyDocs || []);
+      setFilteredDocs(documentsData || []);
       return;
     }
-    const filteredDocs = searchByTitle(companyDocs, searchValue, 'name');
+    const filteredDocs = searchByTitle(documentsData, searchValue, 'name');
     setFilteredDocs(filteredDocs || []);
-  }, [searchValue, documentsData, companyDocs]);
+  }, [searchValue, documentsData, documentsData]);
   const navigate = useNavigate();
   const handleModalClose = () => {
     setIsUploadModalOpen(false);
@@ -127,9 +120,6 @@ const Investment: React.FC = () => {
         variant="outlined"
         sx={{
           p: 3,
-          // width: "500px",
-          border: "1px solid",
-          borderColor: "grey.200",
           borderRadius: "10px",
           display: "flex",
           flexDirection: "column",
@@ -297,8 +287,7 @@ const Investment: React.FC = () => {
       <UploadDocumentModal
         open={isUploadModalOpen}
         onClose={handleModalClose}
-        onDocumentUploaded={() => {
-        }}
+        investment={investmentId}
       />
     </Box>
   );
