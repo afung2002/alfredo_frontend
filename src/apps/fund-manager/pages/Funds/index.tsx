@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, CircularProgress } from '@mui/material';
+import { Box, Typography, CircularProgress, Chip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import FundListCard from '@components/FundListCard';
 import { Fund } from '../../../../types';
@@ -31,9 +31,9 @@ const Funds = () => {
 
   const handleAddNew = (event: React.MouseEvent) => {
     // Prevent navigation if clicking the add button
-    if ((event.target as HTMLElement).closest('.MuiIconButton-root')) {
-      return;
-    }
+    // if ((event.target as HTMLElement).closest('.MuiIconButton-root')) {
+    //   return;
+    // }
     navigate(Routes.FUND_MANAGER_NEW_FUND);
   };
   const {totalFundSize, totalEstimatedValue} = calculateFundTotals(fundsData || []);
@@ -76,9 +76,16 @@ const Funds = () => {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
       <Box sx={{ mb: 1 }}>
-        <Typography variant="h5" sx={{ mb: 1, fontWeight: 500, textAlign: 'left' }}>
-          {fundsData?.length ?? 0} Fund(s)
+        <Box className="flex gap-3 items-center" sx={{ mb: 1 }}>
+        <Typography variant="h3" sx={{ mb: 1, fontWeight: 600, textAlign: 'left' }}>
+          Funds
         </Typography>
+        <Chip
+          label={fundsData?.length}
+          color="secondary"
+          sx={{ fontSize: '0.875rem',  fontWeight: 700, borderRadius: '4px' }}
+        />
+        </Box>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, minWidth:'475px' }}>
           <Typography variant="subtitle1" sx={{ color: "text.secondary", fontWeight: 500 }}>
             {formatNumberString(totalFundSize)} AUM
