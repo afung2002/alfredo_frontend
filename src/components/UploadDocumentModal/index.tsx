@@ -58,7 +58,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
                 error={!!uploadErrors.docTitle?.message}
               />
             </Grid>
-            <Grid size={{ xs: 12 }}>
+            {/* <Grid size={{ xs: 12 }}>
               <label>Document Type</label>
               <RadioGroup
                 name="documentType"
@@ -71,7 +71,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
                 <FormControlLabel value="investment" control={<Radio size="small" />} label="Investment" />
                 <FormControlLabel value="fund" control={<Radio size="small" />} label="Fund" />
               </RadioGroup>
-            </Grid>
+            </Grid> */}
 
 
             {/* <Grid size={{ xs: 12 }}>
@@ -120,7 +120,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
                 </Grid>
               )
             }
-            {
+            {/* {
               (!fund && !investment) && watch('documentType') === 'investment' && (
                 <Grid size={{ xs: 12 }}>
               <Select
@@ -143,7 +143,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
               />
             </Grid>
               )
-            }
+            } */}
 
             <Grid size={{ xs: 12 }}>
               <Input
