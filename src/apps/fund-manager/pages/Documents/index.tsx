@@ -92,9 +92,6 @@ const Documents = () => {
       <UploadDocumentModal
         open={isUploadModalOpen}
         onClose={handleModalClose}
-        onDocumentUploaded={() => {
-          // No action needed after document upload - component will re-render with refreshed data
-        }}
       />
     </Box>
   );
