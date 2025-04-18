@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, CircularProgress, Alert, Tab, Tabs } from '@mui/material';
+import { Box, Typography, CircularProgress, Alert, Tab, Tabs, Chip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { InvestmentDetails, InvestmentType } from '../../../../types';
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import {
-  filterInvestmentsByType
+  filterInvestmentsByType,
+  getClerkToken
 } from '@utils/index';
 import { FILTER_TABS, DEFAULT_TAB } from '@constants/index';
 import { Routes } from '@constants/routes';
@@ -18,7 +19,8 @@ import { InvestmentResponse } from '../../../../services/api/baseApi/types';
 
 
 const Investments = () => {
-  const {data: investmentsData, isLoading: isLoadingInvestments, error: errorInvestments} = useGetInvestmentsQuery();
+  getClerkToken();
+  const { data: investmentsData, isLoading: isLoadingInvestments, error: errorInvestments } = useGetInvestmentsQuery();
   const { control, watch } = useForm({
     defaultValues: {
       'searchInvestments': ''
@@ -30,7 +32,7 @@ const Investments = () => {
   const [selectedTab, setSelectedTab] = useState(DEFAULT_TAB);
   const navigate = useNavigate();
 
-  const {totalInvestments, totalFundInvested, totalEstimatedValue } = calculateInvestmentTotals(investmentsData);
+  const { totalInvestments, totalFundInvested, totalEstimatedValue } = calculateInvestmentTotals(investmentsData);
 
 
   const handleAddNew = (event: React.MouseEvent) => {
@@ -40,13 +42,13 @@ const Investments = () => {
     navigate(Routes.FUND_MANAGER_NEW_INVESTMENT);
   };
   useEffect(() => {
-      if (selectedTab === 'all') {
-        setFilteredInvestments(investmentsData || []);
-      } else if (selectedTab === 'fund') {
-        setFilteredInvestments(filterInvestmentsByType(investmentsData || [], InvestmentType.FUND));
-      } else if (selectedTab === 'angel') {
-        setFilteredInvestments(filterInvestmentsByType(investmentsData || [], InvestmentType.ANGEL));
-      }
+    if (selectedTab === 'all') {
+      setFilteredInvestments(investmentsData || []);
+    } else if (selectedTab === 'fund') {
+      setFilteredInvestments(filterInvestmentsByType(investmentsData || [], InvestmentType.FUND));
+    } else if (selectedTab === 'angel') {
+      setFilteredInvestments(filterInvestmentsByType(investmentsData || [], InvestmentType.ANGEL));
+    }
   }, [selectedTab, investmentsData]);
 
   useEffect(() => {
@@ -81,9 +83,17 @@ const Investments = () => {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
       <Box sx={{ mb: 1 }}>
-        <Typography variant="h5" sx={{ mb: 1, fontWeight: 500, textAlign: 'left' }}>
-          {totalInvestments} Investments
+        <Box className="flex gap-3 items-center" sx={{ mb: 1 }}>
+        <Typography variant="h3" sx={{ mb: 1, fontWeight: 600, textAlign: 'left' }}>
+          Investments
         </Typography>
+        <Chip
+          label={totalInvestments}
+          color="secondary"
+          sx={{ fontSize: '0.875rem', fontWeight: 700, borderRadius: '4px' }}
+        />
+        </Box>
+        
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: '475px' }}>
           <Typography variant="subtitle1" sx={{ color: "text.secondary", fontWeight: 500 }}>
             {formatNumberString(totalFundInvested)} invested
@@ -120,22 +130,22 @@ const Investments = () => {
       >
         {FILTER_TABS.map((tab) => (
           <Tab
-          sx={{
-            minHeight: 32,
-            minWidth: 'auto',
-            px: 4,
-            borderRadius: '50px',
-            textTransform: 'none',
-            bgcolor: tab.value === selectedTab ? 'primary.main' : 'grey.200',
-            color: tab.value === selectedTab ? 'white' : 'black',
-            mx: 1,
-            fontSize: 14,
-            fontWeight: 500,
-            '&.Mui-selected': {
-              bgcolor: 'primary.main',
-              color: 'white',
-            },
-          }}
+            sx={{
+              minHeight: 32,
+              minWidth: 'auto',
+              px: 4,
+              borderRadius: '50px',
+              textTransform: 'none',
+              bgcolor: tab.value === selectedTab ? 'primary.main' : 'grey.200',
+              color: tab.value === selectedTab ? 'white' : 'black',
+              mx: 1,
+              fontSize: 14,
+              fontWeight: 500,
+              '&.Mui-selected': {
+                bgcolor: 'primary.main',
+                color: 'white',
+              },
+            }}
             key={tab.value}
             label={tab.label}
             value={tab.value}
@@ -143,9 +153,9 @@ const Investments = () => {
           />
         ))}
       </Tabs>
-        <InvestmentsList 
+      <InvestmentsList
         investments={filteredInvestments}
-        />
+      />
     </Box>
   );
 };
