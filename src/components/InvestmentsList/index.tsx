@@ -1,13 +1,17 @@
-import { Typography } from "@mui/material";
+import { CircularProgress, Typography } from "@mui/material";
 import InvestmentCard from "../InvestmentCard";
 import { useNavigate } from "react-router";
 import { noDataMessageStyles } from "@src/utils/uiUtils";
 import { Routes } from "@src/constants/routes";
 import { AnimatePresence, motion } from "framer-motion";
 import { InvestmentResponse } from "../../services/api/baseApi/types";
+import { SerializedError } from "@reduxjs/toolkit";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 type InvestmentsListProps = {
   investments: InvestmentResponse[] | undefined;
+  isLoading?: boolean;
+  error?: FetchBaseQueryError | SerializedError | undefined;
 };
 
 const itemVariants = {
@@ -20,8 +24,28 @@ const itemVariants = {
   exit: { opacity: 0, y: -10, transition: { duration: 0.2 } },
 };
 
-const InvestmentsList = ({ investments }: InvestmentsListProps) => {
+const InvestmentsList = ({ investments, isLoading, error }: InvestmentsListProps) => {
   const navigate = useNavigate();
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center w-full h-full">
+        <CircularProgress />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center w-full h-full">
+        <Typography variant="body1" sx={noDataMessageStyles}>
+          {typeof error === "string"
+            ? error
+            : "An error occurred. Please try again."}
+        </Typography>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col w-full gap-4">
