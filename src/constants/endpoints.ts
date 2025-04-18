@@ -5,6 +5,7 @@ export enum Endpoints {
   DOCUMENTS = 'documents/',
   PARTNERS = 'partners/',
   USERS = 'users/',
-  LIMITED_PARTNERS = 'limited-partners/',
+  LIMITED_PARTNERS = 'limited-partner/',
   FUND_UPDATES = 'fund-updates/',
+  FUND_LIMITED_PARTNERS = 'fund-limited-partners/',
 }
