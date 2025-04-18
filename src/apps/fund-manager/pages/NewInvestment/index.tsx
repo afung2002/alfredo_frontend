@@ -32,8 +32,6 @@ const NewInvestment: React.FC = () => {
   const fund = watch('fund');
   const { data: companies, isLoading: isCompaniesLoading, error: companiesError } = useGetCompaniesQuery();
   const { data: funds, isLoading: isFundsLoading, error: fundsError } = useGetFundsQuery()
-  const { data: limitedPartners, isLoading: isLimitedPartnersLoading, error: limitedPartnersError } = useGetLimitedPartnersQuery();
-  const [isNewCompany, setIsNewCompany] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false);
   useEffect(() => {
@@ -122,13 +120,7 @@ const NewInvestment: React.FC = () => {
             <Grid size={{ xs: 12, md: 6 }}>
               <Input startAdornment={usd} rounded={false} label="Post Money Valuation" name="postMoneyValuation" control={control} error={!!errors.postMoneyValuation?.message} />
             </Grid>
-            <Dialog open={isCompanyModalOpen}>
-              <DialogTitle>Add New Company</DialogTitle>
-              <DialogContent>
-                <NewCompanyForm onClose={() => setIsCompanyModalOpen(false)} 
-                  selectCreatedCompany={setCompanyValue} />
-              </DialogContent>
-            </Dialog>
+
 
             <Grid size={{ xs: 12, md: 6 }}>
               <Input rounded={false} label="Investment Date" type="date" name="investmentDate" control={control} error={!!errors.investmentDate?.message} />
@@ -169,12 +161,7 @@ const NewInvestment: React.FC = () => {
                 }
               />
             </Grid>
-            <Dialog open={isModalOpen}>
-              <DialogTitle>Add New Fund</DialogTitle>
-              <DialogContent>
-                <NewFundForm onSave={() => setIsModalOpen(false)} onClose={() => setFundValue('')} selectCreatedFund={handleSelectCreatedFund} />
-              </DialogContent>
-            </Dialog>
+
             <Grid size={{ xs: 12 }}>
               <Input rounded={false} label="Status" name="status" multiline rows={4} control={control} error={!!errors.status?.message} />
             </Grid>
@@ -196,6 +183,19 @@ const NewInvestment: React.FC = () => {
           </Grid>
         </form>
       </Card>
+      <Dialog open={isCompanyModalOpen}>
+        <DialogTitle>Add New Company</DialogTitle>
+        <DialogContent>
+          <NewCompanyForm onClose={() => setIsCompanyModalOpen(false)}
+            selectCreatedCompany={setCompanyValue} />
+        </DialogContent>
+      </Dialog>
+      <Dialog open={isModalOpen}>
+        <DialogTitle>Add New Fund</DialogTitle>
+        <DialogContent>
+          <NewFundForm onSave={() => setIsModalOpen(false)} onClose={() => setFundValue('')} selectCreatedFund={handleSelectCreatedFund} />
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 };
