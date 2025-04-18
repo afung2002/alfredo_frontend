@@ -9,7 +9,10 @@ import {
   Alert,
   Paper,
   SxProps,
-  Theme
+  Theme,
+  DialogTitle,
+  DialogContent,
+  Dialog
 } from "@mui/material";
 import { FundUpdate, } from "../../../../types";
 import { Link } from "@mui/icons-material";
@@ -24,14 +27,19 @@ import Button from "@components/Button";
 import UploadDocumentModal from "@components/UploadDocumentModal";
 import LimitedPartnersList from "@components/LimitedPartnersList";
 import FundUpdatesList from "@components/FundUpdatesList";
-import { useGetDocumentsQuery, 
-  useGetFundByIdQuery, 
-  useGetFundUpdatesQuery, 
-  useGetInvestmentsQuery, useGetLimitedPartnersQuery } from "@services/api/baseApi";
+import {
+  useGetDocumentsByFundIdQuery,
+  useGetDocumentsQuery,
+  useGetFundByIdQuery,
+  useGetFundUpdatesQuery,
+  useGetInvestmentsQuery, useGetLimitedPartnersQuery
+} from "@services/api/baseApi";
 import useCreatePostForm from "./hooks/useCreatePostForm";
 import FundUpdateModal from "@components/FundUpdateModal";
 import { formatNumberString } from "../../../../utils";
 import { DocumentResponse, InvestmentResponse, LimitedPartnerResponse } from "@services/api/baseApi/types";
+import { Routes } from "../../../../constants/routes";
+import NewLimitedPartnerFundForm from "../../../../components/NewLimitedPartnerFundForm";
 
 // Style constants
 const commonButtonStyles: SxProps<Theme> = {
@@ -54,15 +62,9 @@ const blackButtonStyles: SxProps<Theme> = {
 };
 
 const boxRowStyles: SxProps<Theme> = {
-  display: "flex", 
-  flexDirection: "row" as const, 
+  display: "flex",
+  flexDirection: "row" as const,
   gap: "5px"
-};
-
-const commonInputStyles: SxProps<Theme> = {
-  display: 'flex',
-  flexDirection: 'column',
-  width: '100%'
 };
 
 const filterTabs = [
@@ -73,11 +75,11 @@ const filterTabs = [
 ];
 const FundView: React.FC = () => {
   const { fundId } = useParams();
-  const { data: fundData, isLoading, error } = useGetFundByIdQuery(fundId ? Number(fundId) : 0, {skip: !fundId});
-  const { data: documentsData, isLoading: isLoadingDocuments, error: errorDocuments } = useGetDocumentsQuery()
+  const { data: fundData, isLoading, error } = useGetFundByIdQuery(fundId ? Number(fundId) : 0, { skip: !fundId });
+  const { data: documentsData, isLoading: isLoadingDocuments, error: errorDocuments } = useGetDocumentsByFundIdQuery(fundId)
 
-  const { data: fundUpdatesData } = useGetFundUpdatesQuery();
-  const { data: investmentsData } = useGetInvestmentsQuery();
+  const { data: fundUpdatesData, isLoading: isFundUpdatesLoading, error: fundUpdatesError } = useGetFundUpdatesQuery();
+  const { data: investmentsData, isLoading: isInvestmentsLoading, error: investmentsError } = useGetInvestmentsQuery({ fund: fundId ? +fundId : 0 });
   const { data: limitedPartners, isLoading: isLoadingLimitedPartners } = useGetLimitedPartnersQuery();
 
   const handleOpen = () => setOpen(true);
@@ -100,12 +102,19 @@ const FundView: React.FC = () => {
       searchInvestments: ''
     }
   });
+  useEffect(() => {
+    if (isLoadingLimitedPartners) return;
+    if (limitedPartners) {
 
+      const fundLimitedPartners = limitedPartners.filter((partner) => partner.fund === +fundId);
+      setFilteredLimitedPartners(fundLimitedPartners || []);
+    }
+  }, [limitedPartners]);
   const searchDocumentsValue = watch('searchDocuments');
   const searchLimitedPartnersValue = watch('searchLimitedPartners');
   const searchInvestmentsValue = watch('searchInvestments');
   const navigate = useNavigate();
-  
+
   const [selectedTab, setSelectedTab] = useState("portfolio");
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [open, setOpen] = useState(false);
@@ -113,9 +122,9 @@ const FundView: React.FC = () => {
   const [filteredUpdates, setFilteredUpdates] = useState<FundUpdate[]>([]);
   const [filteredLimitedPartners, setFilteredLimitedPartners] = useState<LimitedPartnerResponse[]>([]);
   const [filteredInvestments, setFilteredInvestments] = useState<InvestmentResponse[]>([]);
-  
+  const [isLimitedPartnerModelOpen, setIsLimitedPartnerModalOpen] = useState(false);
   const handleEdit = () => {
-    navigate(`/fund-manager/fund/edit/${fundId}`);
+    navigate(Routes.FUND_MANAGER_FUND_EDIT.replace(':fundId', fundId || ''));
   };
 
   useEffect(() => {
@@ -138,14 +147,14 @@ const FundView: React.FC = () => {
     const filtered = searchByTitle(investmentsData || [], searchInvestmentsValue, 'company');
     setFilteredInvestments(filtered || []);
   }, [searchInvestmentsValue, investmentsData]);
-  
+
   const handleAddNew = () => {
-    navigate('/fund-manager/investment/new');
+    navigate(Routes.FUND_MANAGER_NEW_INVESTMENT);
   };
 
-  const handleAddLimitedPartner = () => {
-    navigate('/fund-manager/limited-partner/new');
-  };
+  // const handleAddLimitedPartner = () => {
+  //   navigate(Routes.FUND_MANAGER_NEW_LIMITED_PARTNER);
+  // };
 
 
   const handleModalClose = () => {
@@ -193,7 +202,6 @@ const FundView: React.FC = () => {
         variant="outlined"
         sx={{
           p: 3,
-          border: "1px solid",
           borderRadius: "10px",
           display: "flex",
           flexDirection: "column",
@@ -268,6 +276,10 @@ const FundView: React.FC = () => {
         </Box>
       </Paper>
       <Tabs
+        sx={{
+          mt: 4,
+          mb: 2,
+        }}
         value={selectedTab}
         onChange={(_, newValue) => setSelectedTab(newValue)}
         variant="scrollable"
@@ -300,107 +312,116 @@ const FundView: React.FC = () => {
           />
         ))}
       </Tabs>
-      {selectedTab === "portfolio" && (
-        <>
-          <Box sx={{ display: 'flex', gap: 2, my: 4 }}>
-            <Input
-              type="text"
-              name="searchInvestments"
-              control={control}
-              placeholder="Search investments..."
-              sx={commonInputStyles}
+      <Box sx={{ width: '100%' }}>
+        {selectedTab === "portfolio" && (
+          <>
+            <Box sx={{ display: 'flex', gap: 2, mb: 3, width: '100%' }}>
+              <Input
+                className="w-full"
+                type="text"
+                name="searchInvestments"
+                control={control}
+                placeholder="Search investments..."
+              />
+              <Button
+                onClick={handleAddNew}
+                sx={blackButtonStyles}
+              >
+                Add New
+              </Button>
+            </Box>
+            <InvestmentsList
+              isLoading={isInvestmentsLoading}
+              error={investmentsError}
+              investments={filteredInvestments}
             />
-            <Button
-              onClick={handleAddNew}
-              sx={blackButtonStyles}
-            >
-              Add New
-            </Button>
-          </Box>
-          <InvestmentsList
-            investments={filteredInvestments}
-          />
-        </>
+          </>
 
-      )}
-      {selectedTab === "limited-partners" && (
-        <>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
-            <Input
-              type="text"
-              name="searchLimitedPartners"
-              control={control}
-              placeholder="Search..."
-              sx={commonInputStyles}
+        )}
+        {selectedTab === "limited-partners" && (
+          <>
+            <Box sx={{ display: "flex", gap: 2, mb: 3, width: '100%' }}>
+              <Input
+                className="w-full"
+                type="text"
+                name="searchLimitedPartners"
+                control={control}
+                placeholder="Search..."
+              />
+              <Button
+                onClick={() => setIsLimitedPartnerModalOpen(true)}
+              >
+                Add New
+              </Button>
+            </Box>
+            <LimitedPartnersList limitedPartners={filteredLimitedPartners} isLoading={isLoadingLimitedPartners} />
+
+            <Dialog open={isLimitedPartnerModelOpen} onClose={() => setIsLimitedPartnerModalOpen(false)}>
+              <DialogTitle>Add Limited Partner</DialogTitle>
+              <DialogContent>
+                <NewLimitedPartnerFundForm fundId={fundId} closeModal={() => setIsLimitedPartnerModalOpen(false)} />
+              </DialogContent>
+            </Dialog>
+          </>
+        )}
+        {selectedTab === "updates" && (
+          <>
+            <Box sx={{ display: "flex", gap: 2, mb: 3, width: '100%' }}>
+              <Input
+                className="w-full"
+                type="text"
+                name="searchUpdates"
+                control={control}
+                placeholder="Search updates..."
+              />
+              <Button
+                onClick={handleOpen}
+              >
+                Add New
+              </Button>
+            </Box>
+            <FundUpdatesList
+              updates={filteredUpdates}
+              isLoading={isFundUpdatesLoading}
+              error={fundUpdatesError} />
+            <FundUpdateModal
+              open={open}
+              onClose={handleClose}
+              onSubmit={handlePostSubmit}
+              control={postControl}
+              errors={postErrors}
             />
-            <Button
-              onClick={handleAddLimitedPartner}
-              variant="contained"
-              sx={blackButtonStyles}
-            >
-              Add New
-            </Button>
-          </Box>
-          <LimitedPartnersList limitedPartners={filteredLimitedPartners} isLoading={isLoadingLimitedPartners} />
-        </>
-      )}
-      {selectedTab === "updates" && (
-        <>
-          <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
-            <Input
-              type="text"
-              name="searchUpdates"
-              control={control}
-              placeholder="Search updates..."
-              sx={commonInputStyles}
+          </>
+        )}
+
+        {selectedTab === "documents" && (
+          <>
+            <Box sx={{ display: 'flex', gap: 2, mb: 3, width: '100%' }}>
+              <Input
+                className="w-full"
+                type="text"
+                name="searchDocuments"
+                control={control}
+                placeholder="Search documents..."
+              />
+              <Button
+                onClick={() => setIsUploadModalOpen(true)}
+                sx={blackButtonStyles}
+              >
+                Upload New
+              </Button>
+            </Box>
+            <DocumentsList
+              documents={filteredDocs}
             />
-            <Button
-              onClick={handleOpen}
-              sx={blackButtonStyles}
-            >
-              Add New
-            </Button>
-          </Box>
-          <FundUpdatesList updates={filteredUpdates} />
-          <FundUpdateModal
-            open={open}
-            onClose={handleClose}
-            onSubmit={handlePostSubmit}
-            control={postControl}
-            errors={postErrors}
-          />
-        </>
-      )}
-      
-      {selectedTab === "documents" && (
-        <>
-          <Box sx={{ display: 'flex', gap: 2, my: 4 }}>
-            <Input
-              type="text"
-              name="searchDocuments"
-              control={control}
-              placeholder="Search documents..."
-              sx={commonInputStyles}
+            <UploadDocumentModal
+              open={isUploadModalOpen}
+              onClose={handleModalClose}
+              fund={fundId}
             />
-            <Button
-              onClick={() => setIsUploadModalOpen(true)}
-              sx={blackButtonStyles}
-            >
-              Upload New
-            </Button>
-          </Box>
-          <DocumentsList
-            documents={filteredDocs}
-          />
-          <UploadDocumentModal
-            open={isUploadModalOpen}
-            onClose={handleModalClose}
-            onDocumentUploaded={() => {
-              
-            }}
-          />
-        </>
-      )}
+          </>
+        )}
+      </Box>
     </Box>
   );
 };
