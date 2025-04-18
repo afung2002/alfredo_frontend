@@ -5,52 +5,30 @@ import { LimitedPartnerType } from "../../types/index";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useNavigate } from "react-router-dom";
 import { Routes } from "../../constants/routes";
+import Card from "../Card";
+import PartnersIcon from '@assets/partners.svg';
 
 interface LimitedPartnerCardProps {
   limitedPartner: LimitedPartnerType;
 }
 const LimitedPartnerCard = ({limitedPartner}:LimitedPartnerCardProps ) => {
-  const navigate = useNavigate();
-  const handleCardClick = (event: React.MouseEvent) => {
-    navigate(Routes.FUND_MANAGER_LIMITED_PARTNER.replace(':limitedPartnerId', limitedPartner.id));
-  };
+  // const handleCardClick = (event: React.MouseEvent) => {
+  //   navigate(Routes.FUND_MANAGER_LIMITED_PARTNER.replace(':limitedPartnerId', limitedPartner.id));
+  // };
   return (
-    <Paper
-      variant="outlined"
-      onClick={handleCardClick}
-      className="transition-shadow duration-200"
-        sx={{
-          backgroundColor: 'grey.100',
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          p: '24px',
-          borderRadius: '6px',
-          cursor: "pointer",
-          mb: '8px',
-          ':hover':{
-            backgroundColor: '#f5f5f5',
-          }
-        }}
+    <Card
+      title={limitedPartner.legal_entity}
+      subtitle={limitedPartner.website_url}
+      sideImage={PartnersIcon}
     >
-
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-start",
-        }}
-      >
-        <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
-          {limitedPartner.name}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {limitedPartner.email}
-        </Typography>
-      </Box>
-      <ArrowForwardIcon color="disabled" />
-
-    </Paper>
+      {
+        limitedPartner?.description && (
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+            {limitedPartner.description}
+          </Typography>
+        )
+      }
+    </Card>
   )
 }
 
