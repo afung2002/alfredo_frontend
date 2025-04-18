@@ -4,6 +4,7 @@ import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 
 import Card from "../Card";
 import { useDeleteDocumentMutation, useLazyDownloadDocumentQuery } from "../../services/api/baseApi";
+import DocIcon from '@assets/doc.svg';
 
 const DocumentCard: React.FC<{ document: Document }> = ({ document: doc }) => {
   const [deleteDoc, { isLoading: isDeleting }] = useDeleteDocumentMutation();
@@ -46,11 +47,20 @@ const DocumentCard: React.FC<{ document: Document }> = ({ document: doc }) => {
         onClick={() => { }}
         onDelete={() => handleDocDelete(doc.id)}
         onDownload={ () => handleDocDownload(doc.id)}
-        // title={document.name}
-        // subtitle={document.company_name}
-        avatar={
-          <DescriptionOutlinedIcon sx={{ fontSize: 40, color: 'text.primary' }} />
+        title={doc.name}
+        
+        subtitle={
+          <Typography variant="subtitle2" component="p" sx={{
+            color: 'text.secondary', fontWeight: '500', overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            display: '-webkit-box',
+            WebkitLineClamp: '1',
+            WebkitBoxOrient: 'vertical',
+          }}>
+            {doc.company_name}
+          </Typography>
         }
+        sideImage={DocIcon}
         className="transition-shadow duration-200"
         sx={{
           display: "flex",
@@ -66,23 +76,14 @@ const DocumentCard: React.FC<{ document: Document }> = ({ document: doc }) => {
           }
         }}
       >
-        <Typography variant="body1" component="h2" sx={{
-          fontWeight: '500', mb: 1, overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          display: '-webkit-box',
-          WebkitLineClamp: '1',
-          WebkitBoxOrient: 'vertical',
-        }}>
-          {doc.name}
-        </Typography>
         <Typography variant="subtitle2" component="p" sx={{
           color: 'text.secondary', fontWeight: '500', overflow: 'hidden',
           textOverflow: 'ellipsis',
           display: '-webkit-box',
-          WebkitLineClamp: '1',
+          WebkitLineClamp: '2',
           WebkitBoxOrient: 'vertical',
         }}>
-          {doc.company_name}
+          {doc.description}
         </Typography>
       </Card>
     </div>
