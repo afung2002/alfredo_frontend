@@ -40,7 +40,7 @@ const useUploadDocumentForm = (onSuccess: () => void, investmentId: any, fundId:
       docTitle: '',
       description: '',
       file: undefined,
-      documentType: 'investment', // Default value, can be changed as needed
+      documentType: 'fund', // Default value, can be changed as needed
       investment: '',
       fund: '',
       company: '',
