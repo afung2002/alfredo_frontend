@@ -16,10 +16,11 @@ type SideMenuButton = {
 
 type AppSideMenuProps = {
   sideMenuButtons: SideMenuButton[];
+  app: string;
 };
 
 
-const AppSideMenu = ({ sideMenuButtons }: AppSideMenuProps) => {
+const AppSideMenu = ({ sideMenuButtons, app }: AppSideMenuProps) => {
   const investments = useSelector(selectUserInvestments);
   const navigate = useNavigate();
   const location = useLocation();
@@ -51,7 +52,7 @@ const AppSideMenu = ({ sideMenuButtons }: AppSideMenuProps) => {
       }}
     >
       <div>
-        <Typography variant="h5" sx={{ mb: 6, fontWeight: 500, textAlign: 'left' }}>Fundmanager.ai</Typography>
+        <Typography variant="h5" sx={{ mb: 6, fontWeight: 500, textAlign: 'left' }}>{app}</Typography>
 
       </div>
       <List dense className='side-menu'>
