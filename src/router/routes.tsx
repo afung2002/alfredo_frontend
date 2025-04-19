@@ -1,28 +1,30 @@
-import { lazy } from 'react';
-import { RouteObject } from 'react-router-dom';
-import { Routes } from '@constants/routes';
-import React from 'react';
-import ProtectedRoute from '../components/ProtectedRoute/index';
-import MasterLayout from '../layouts/MasterLayout';
-import AppsPage from '../pages/AppsPage';
-import Settings from '../pages/Settings';
-import FundManagerLayout from '../apps/fund-manager/layouts/FundManagerLayout/index';
-import Investments from '../apps/fund-manager/pages/Investments';
-import Funds from '../apps/fund-manager/pages/Funds';
-import Documents from '../apps/fund-manager/pages/Documents';
-import NewFund from '../apps/fund-manager/pages/NewFund';
-import FundView from '../apps/fund-manager/pages/Fund';
-import SavedApps from '../pages/SavedApps';
-import Investment from '../apps/fund-manager/pages/Investment';
-import NewInvestment from '../apps/fund-manager/pages/NewInvestment';
-import LimitedPartner from '../apps/fund-manager/pages/LimitedPartner';
-import NewLimitedPartner from '../apps/fund-manager/pages/NewLimitedPartner';
-const LandingLayout = lazy(() => import('@layouts/LandingLayout'));
-const Page404 = lazy(() => import('@pages/Page404'));
+import { lazy } from "react";
+import { RouteObject } from "react-router-dom";
+import { Routes } from "@constants/routes";
+import React from "react";
+import ProtectedRoute from "../components/ProtectedRoute/index";
+import MasterLayout from "../layouts/MasterLayout";
+import AppsPage from "../pages/AppsPage";
+import Settings from "../pages/Settings";
+import FundManagerLayout from "../apps/fund-manager/layouts/FundManagerLayout/index";
+import Investments from "../apps/fund-manager/pages/Investments";
+import Funds from "../apps/fund-manager/pages/Funds";
+import Documents from "../apps/fund-manager/pages/Documents";
+import NewFund from "../apps/fund-manager/pages/NewFund";
+import FundView from "../apps/fund-manager/pages/Fund";
+import SavedApps from "../pages/SavedApps";
+import Investment from "../apps/fund-manager/pages/Investment";
+import NewInvestment from "../apps/fund-manager/pages/NewInvestment";
+import LimitedPartner from "../apps/fund-manager/pages/LimitedPartner";
+import NewLimitedPartner from "../apps/fund-manager/pages/NewLimitedPartner";
+const LandingLayout = lazy(() => import("@layouts/LandingLayout"));
+const Page404 = lazy(() => import("@pages/Page404"));
 
-import LandingPage from '@pages/LandingPage';
-import LimitedPartnerLayout from '../apps/limited-partner/layouts/LimitedPartnerLayout';
-import LimitedPartnerFunds from '../apps/limited-partner/pages/LimitedPartnerFunds';
+import LandingPage from "@pages/LandingPage";
+import LimitedPartnerLayout from "../apps/limited-partner/layouts/LimitedPartnerLayout";
+import LimitedPartnerFunds from "../apps/limited-partner/pages/LimitedPartnerFunds";
+import ProspectTrackerLayout from "@src/apps/prospect-tracker/layout";
+import ProspectTracker from "@src/apps/prospect-tracker/pages";
 
 export const routes: RouteObject[] = [
   {
@@ -37,7 +39,11 @@ export const routes: RouteObject[] = [
   },
   {
     path: Routes.APPS,
-    element: <ProtectedRoute><MasterLayout /></ProtectedRoute>,
+    element: (
+      <ProtectedRoute>
+        <MasterLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         path: Routes.APPS,
@@ -55,7 +61,11 @@ export const routes: RouteObject[] = [
   },
   {
     path: Routes.FUND_MANAGER,
-    element: <ProtectedRoute><FundManagerLayout /></ProtectedRoute>,
+    element: (
+      <ProtectedRoute>
+        <FundManagerLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         path: Routes.FUND_MANAGER,
@@ -100,18 +110,31 @@ export const routes: RouteObject[] = [
       {
         path: Routes.FUND_MANAGER_NEW_LIMITED_PARTNER,
         element: <NewLimitedPartner />,
-      }
+      },
     ],
   },
   {
     path: Routes.LIMITED_PARTNER_FUNDS,
-    element: <ProtectedRoute><LimitedPartnerLayout /></ProtectedRoute>,
+    element: (
+      <ProtectedRoute>
+        <LimitedPartnerLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         path: Routes.LIMITED_PARTNER_FUNDS,
         element: <LimitedPartnerFunds />,
-      }
-    ]
+      },
+    ],
   },
-  { path: '*', element: React.createElement(Page404) },
-]
+  {
+    path: Routes.PROSPECT_TRACKER,
+    element: (
+      <ProtectedRoute>
+        <ProspectTrackerLayout />
+      </ProtectedRoute>
+    ),
+    children: [{ path: Routes.PROSPECT_TRACKER, element: <ProspectTracker /> }],
+  },
+  { path: "*", element: React.createElement(Page404) },
+];

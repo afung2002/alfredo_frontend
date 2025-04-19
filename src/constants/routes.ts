@@ -1,7 +1,7 @@
 export enum Routes {
-  LANDING = '/',
+  LANDING = "/",
 
-  APPS = '/apps',
+  APPS = "/apps",
   APPS_SAVED_APPS = `${Routes.APPS}/saved-apps`,
   APPS_SETTINGS = `${Routes.APPS}/settings`,
 
@@ -25,4 +25,9 @@ export enum Routes {
   LIMITED_PARTNER_FUND_INVESTMENT = `${Routes.LIMITED_PARTNER_FUNDS}/funds/:fundId/investment/:investmentId`,
   LIMITED_PARTNER_DOCUMENTS = `${Routes.LIMITED_PARTNER_FUNDS}/documents`,
   LIMITED_PARTNER_UPDATES = `${Routes.LIMITED_PARTNER_FUNDS}/updates`,
+
+  PROSPECT_TRACKER = `${Routes.APPS}/prospect-tracker`,
+  PROSPECT_TRACKER_COMPANY = `${Routes.PROSPECT_TRACKER}/company/:companyId`,
+  PROSPECT_TRACKER_HEAT = `${Routes.PROSPECT_TRACKER}/heat`,
+  PROSPECT_TRACKER_UPDATES = `${Routes.PROSPECT_TRACKER}/updates`,
 }
