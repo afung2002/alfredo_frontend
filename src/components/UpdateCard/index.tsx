@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Card from "../Card";
 import { useFormattedTime } from "@hooks/useFormattedTime";
 import { useDeleteFundUpdateMutation } from "../../services/api/baseApi";
+import UpdateIcon  from "@assets/update.svg";
 interface UpdateListCardProps {
   update: FundUpdate;
 }
@@ -33,6 +34,7 @@ const UpdateCard: React.FC<UpdateListCardProps> = ({ update }) => {
         title={update.title}
         subtitle={<Typography variant="subtitle2">{formattedUpdatedAt}</Typography>}
         className="transition-shadow duration-200"
+        sideImage={UpdateIcon}
         sx={{
           display: "flex",
           alignItems: "center",
