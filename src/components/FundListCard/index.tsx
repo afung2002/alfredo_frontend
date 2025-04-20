@@ -5,12 +5,14 @@ import { Routes } from "../../constants/routes";
 import Card from "../Card";
 import { useDeleteFundMutation } from "../../services/api/baseApi";
 import FundIcon from "@assets/fund.svg";
+import { Apps } from "../../constants/apps";
 
 interface FundListCardProps {
   fund: Fund;
+  app?: string;
 }
 
-const FundListCard: React.FC<FundListCardProps> = ({ fund }) => {
+const FundListCard: React.FC<FundListCardProps> = ({ fund, app }) => {
   const navigate = useNavigate();
     const [deleteFund, { isLoading, isSuccess, isError, error }] = useDeleteFundMutation();
   
@@ -30,7 +32,7 @@ const FundListCard: React.FC<FundListCardProps> = ({ fund }) => {
     <div className="mb-4">
       <Card
         onClick={() => handleCardClick}
-        onDelete={() => handleFundDelete(fund.id)}
+        onDelete={ app === Apps.LIMITED_PARTNER ? undefined : () => handleFundDelete(fund.id)}
         title={fund.name}
         subtitle={fund?.website_url}
         sideImage={FundIcon}
