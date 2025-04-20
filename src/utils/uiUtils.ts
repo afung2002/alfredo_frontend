@@ -1,15 +1,20 @@
-import { SxProps, Theme } from '@mui/material';
-import { AppType } from '../types';
+import { SxProps, Theme } from "@mui/material";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 export const noDataMessageStyles: SxProps<Theme> = {
   textAlign: "center",
   mt: 4,
-  color: "text.secondary"
+  color: "text.secondary",
 };
 
 export const formContainerStyles: SxProps<Theme> = {
   maxWidth: 800,
-  mx: 'auto',
+  mx: "auto",
   p: 3,
   textAlign: "left",
 };
@@ -63,13 +68,18 @@ export const loadingContainerStyles: SxProps<Theme> = {
 
 export const errorContainerStyles: SxProps<Theme> = {
   p: 3,
-}; 
+};
 
-export const searchByTitle = (cards: any[] | undefined, searchTerm: string, searchBy: string): any[] | undefined => {
+export const searchByTitle = (
+  cards: any[] | undefined,
+  searchTerm: string,
+  searchBy: string
+): any[] | undefined => {
   if (!searchTerm.trim()) return cards;
-  if (searchBy === 'company') return cards?.filter((card) =>
-    card.company.name.toLowerCase().includes(searchTerm.trim().toLowerCase())
-  );
+  if (searchBy === "company")
+    return cards?.filter((card) =>
+      card.company.name.toLowerCase().includes(searchTerm.trim().toLowerCase())
+    );
 
   return cards?.filter((card) =>
     card[searchBy].toLowerCase().includes(searchTerm.trim().toLowerCase())

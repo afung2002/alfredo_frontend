@@ -34,6 +34,7 @@
       "@redux/*": ["./src/redux/*"],
       "@fundManagerLayouts/*": ["./src/apps/fund-manager/layouts/*"],
       "@fundManagerPages/*": ["./src/apps/fund-manager/pages/*"],
+      "@ui/*": ["./src/components/ui/*"]
     }
   },
   "include": ["src"],

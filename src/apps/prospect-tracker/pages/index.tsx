@@ -1,3 +1,6 @@
+import { cn } from "@src/utils/uiUtils";
+import { Button } from "@ui/button";
+import { Input } from "@ui/input";
 import { useState } from "react";
 import { FaLinkedin, FaLink } from "react-icons/fa";
 
@@ -155,30 +158,6 @@ const prospects: Prospect[] = [
   },
 ];
 
-const FilterButtons = ({
-  buttons,
-  activeFilter,
-  onFilterChange,
-}: FilterButtonsProps) => (
-  <div className="flex gap-4">
-    {buttons.map((button) => (
-      <button
-        key={button.slug}
-        className={`px-8 py-1 rounded-full text-xs ${
-          activeFilter === button.slug
-            ? "border-2 border-black text-black"
-            : "border border-gray-300 text-gray-500"
-        }`}
-        onClick={() => onFilterChange(button.slug)}
-      >
-        {button.count !== undefined
-          ? `${button.count} ${button.label}`
-          : button.label}
-      </button>
-    ))}
-  </div>
-);
-
 export default function ProspectTracker() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<FilterType>("All");
@@ -220,13 +199,13 @@ export default function ProspectTracker() {
           <h1 className="text-xl font-semibold">
             {totalProspects.toLocaleString()} Prospects Tracking
           </h1>
-          <button className="bg-black text-white px-4 py-2 rounded text-sm">
+          <Button className="bg-black text-white px-4 py-2 rounded text-sm">
             Add New
-          </button>
+          </Button>
         </div>
 
         <div>
-          <input
+          <Input
             type="text"
             placeholder="Search"
             className="w-full px-6 py-2 border rounded-full text-sm border-gray-300"
@@ -258,6 +237,28 @@ export default function ProspectTracker() {
     </div>
   );
 }
+
+const FilterButtons = ({
+  buttons,
+  activeFilter,
+  onFilterChange,
+}: FilterButtonsProps) => (
+  <div className="flex gap-4">
+    {buttons.map((button) => (
+      <Button
+        key={button.slug}
+        onClick={() => onFilterChange(button.slug)}
+        variant={"outline"}
+        rounded="full"
+        className={cn(activeFilter === button.slug ? "border-black" : "")}
+      >
+        {button.count !== undefined
+          ? `${button.count} ${button.label}`
+          : button.label}
+      </Button>
+    ))}
+  </div>
+);
 
 interface ProspectCardProps {
   prospect: Prospect;
