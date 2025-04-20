@@ -3,6 +3,8 @@ import { Button } from "@ui/button";
 import { Input } from "@ui/input";
 import { useState } from "react";
 import { FaLinkedin, FaLink } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { Routes } from "@constants/routes";
 
 interface Prospect {
   id: string;
@@ -199,9 +201,11 @@ export default function ProspectTracker() {
           <h1 className="text-xl font-semibold">
             {totalProspects.toLocaleString()} Prospects Tracking
           </h1>
-          <Button className="bg-black text-white px-4 py-2 rounded text-sm">
-            Add New
-          </Button>
+          <Link to={Routes.PROSPECT_TRACKER_NEW}>
+            <Button className="bg-black text-white px-4 py-2 rounded text-sm">
+              Add New
+            </Button>
+          </Link>
         </div>
 
         <div>

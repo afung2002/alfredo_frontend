@@ -27,6 +27,7 @@ export enum Routes {
   LIMITED_PARTNER_UPDATES = `${Routes.LIMITED_PARTNER_FUNDS}/updates`,
 
   PROSPECT_TRACKER = `${Routes.APPS}/prospect-tracker`,
+  PROSPECT_TRACKER_NEW = `${Routes.PROSPECT_TRACKER}/new`,
   PROSPECT_TRACKER_COMPANY = `${Routes.PROSPECT_TRACKER}/company/:companyId`,
   PROSPECT_TRACKER_HEAT = `${Routes.PROSPECT_TRACKER}/heat`,
   PROSPECT_TRACKER_UPDATES = `${Routes.PROSPECT_TRACKER}/updates`,

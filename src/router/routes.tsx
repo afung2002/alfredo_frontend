@@ -25,6 +25,7 @@ import LimitedPartnerLayout from "../apps/limited-partner/layouts/LimitedPartner
 import LimitedPartnerFunds from "../apps/limited-partner/pages/LimitedPartnerFunds";
 import ProspectTrackerLayout from "@src/apps/prospect-tracker/layout";
 import ProspectTracker from "@src/apps/prospect-tracker/pages";
+import NewProspect from "@src/apps/prospect-tracker/pages/new";
 
 export const routes: RouteObject[] = [
   {
@@ -134,7 +135,10 @@ export const routes: RouteObject[] = [
         <ProspectTrackerLayout />
       </ProtectedRoute>
     ),
-    children: [{ path: Routes.PROSPECT_TRACKER, element: <ProspectTracker /> }],
+    children: [
+      { path: Routes.PROSPECT_TRACKER, element: <ProspectTracker /> },
+      { path: Routes.PROSPECT_TRACKER_NEW, element: <NewProspect /> },
+    ],
   },
   { path: "*", element: React.createElement(Page404) },
 ];
