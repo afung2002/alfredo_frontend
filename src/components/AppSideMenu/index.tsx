@@ -52,10 +52,10 @@ const AppSideMenu = ({ sideMenuButtons, app }: AppSideMenuProps) => {
       }}
     >
       <div>
-        <Typography variant="h5" sx={{ mb: 6, fontWeight: 500, textAlign: 'left' }}>{app}</Typography>
+        <Typography variant="h5" sx={{ mb: 6, fontWeight: 600, textAlign: 'left' }}>{app}</Typography>
 
       </div>
-      <List dense className='side-menu'>
+      <List dense>
       {sideMenuButtons.map((button) => (
         <ListItem
         key={button.value}
