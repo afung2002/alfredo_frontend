@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography, Button, Card, CircularProgress, Alert, IconButton } from "@mui/material";
 import { LimitedPartnerType } from "../../../../types/index";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ArrowBack, Edit } from "@mui/icons-material";
 import { useGetLimitedPartnerByIdQuery } from "@src/services/api/baseApi";
 import { Routes } from "@src/constants/routes";
 
 const LimitedPartner: React.FC = () => {
   const {limitedPartnerId} = useParams<{ limitedPartnerId: string }>();
+  const location = useLocation();
+  const { state } = location
+  console.log(state, 'state')
   const {data: limitedPartner, error, isLoading} = useGetLimitedPartnerByIdQuery(limitedPartnerId);
   const navigate = useNavigate();
 
