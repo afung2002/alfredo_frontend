@@ -5,7 +5,6 @@ import UploadDocumentModal from '@components/UploadDocumentModal';
 import { searchByTitle } from '@utils/uiUtils';
 import Input from '@components/Input';
 import { useForm } from 'react-hook-form';
-import Button from '@components/Button';
 import DocumentsList from '@components/DocumentsList';
 import { useGetDocumentsQuery } from '@services/api/baseApi';
 import { Apps } from '@src/constants/apps';
@@ -91,18 +90,8 @@ const LimitedPartnerDocuments = () => {
             />
     
           </Box>
-          {/* <div className="flex justify-end mb-2">
-            <ToggleButtonGroup  color="secondary" value={selectedOrientation} exclusive onChange={handleOrientationChange}>
-              <ToggleButton  value="grid" onClick={() => setSelectedOrientation('grid')} sx={{ textTransform: 'none' }}>
-                <AppsIcon sx={{ fontSize: '1.2rem' }} />
-              </ToggleButton>
-              <ToggleButton value="row" onClick={() => setSelectedOrientation('row')} sx={{ textTransform: 'none' }}>
-                <TableRowsIcon sx={{ fontSize: '1.2rem' }} />
-              </ToggleButton>
-            </ToggleButtonGroup>
-          </div> */}
     
-          <DocumentsList app={Apps.LIMITED_PARTNER} selectedOrientation={selectedOrientation}  documents={filteredDocs} isLoading={isLoadingDocuments} />
+          <DocumentsList selectedOrientation={selectedOrientation}  documents={filteredDocs} isLoading={isLoadingDocuments} />
     
           {/* Upload Modal */}
           <UploadDocumentModal
