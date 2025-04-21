@@ -19,6 +19,7 @@ import UploadDocumentModal from "@components/UploadDocumentModal";
 import { useEffect, useState } from "react";
 import { searchByTitle } from "@utils/uiUtils";
 import { formatNumberString } from "../../../../utils";
+import { Apps } from "@src/constants/apps";
 
 const Investment: React.FC = () => {
   const { investmentId } = useParams<{ investmentId: string }>();
@@ -287,7 +288,7 @@ const Investment: React.FC = () => {
       <UploadDocumentModal
         open={isUploadModalOpen}
         onClose={handleModalClose}
-        investment={investmentId}
+        investmentId={investmentId}
       />
     </Box>
   );

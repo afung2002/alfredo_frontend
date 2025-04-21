@@ -6,15 +6,16 @@ import Card from "../Card";
 import { useDeleteFundMutation } from "../../services/api/baseApi";
 import FundIcon from "@assets/fund.svg";
 import { Apps } from "../../constants/apps";
+import { useAppContext } from "@src/context/appContext";
 
 interface FundListCardProps {
   fund: Fund;
-  app?: string;
 }
 
-const FundListCard: React.FC<FundListCardProps> = ({ fund, app }) => {
+const FundListCard: React.FC<FundListCardProps> = ({ fund }) => {
   const navigate = useNavigate();
     const [deleteFund, { isLoading, isSuccess, isError, error }] = useDeleteFundMutation();
+    const { app } = useAppContext();
   
   const handleCardClick = (event: React.MouseEvent) => {
     // Prevent navigation if clicking the add button
@@ -39,7 +40,7 @@ const FundListCard: React.FC<FundListCardProps> = ({ fund, app }) => {
         actions={[
           {
             label: "View Fund",
-            onClick: () => navigate(Routes.FUND_MANAGER_FUND.replace(':fundId', fund.id.toString())),
+            onClick: () => navigate(Routes.LIMITED_PARTNER_FUND.replace(':fundId', fund.id.toString())),
           },
         ]}
         tags={[

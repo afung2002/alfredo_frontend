@@ -4,6 +4,7 @@ import AppRoutes from './router';
 import { lightTheme, darkTheme } from './theme';
 import { useMemo, useState } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
+import { AppProvider } from './context/appContext';
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false); // Can toggle or use system preference
@@ -13,7 +14,9 @@ function App() {
 
     <BrowserRouter>
       <ThemeProvider theme={theme}>
+      <AppProvider>
         <AppRoutes />
+      </AppProvider>
       </ThemeProvider>
     </BrowserRouter>
   )

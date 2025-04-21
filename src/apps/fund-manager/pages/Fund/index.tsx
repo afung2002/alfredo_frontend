@@ -40,6 +40,8 @@ import { formatNumberString } from "../../../../utils";
 import { DocumentResponse, InvestmentResponse, LimitedPartnerResponse } from "@services/api/baseApi/types";
 import { Routes } from "../../../../constants/routes";
 import NewLimitedPartnerFundForm from "../../../../components/NewLimitedPartnerFundForm";
+import { Apps } from "@src/constants/apps";
+import { useAppContext } from "@src/context/appContext";
 
 // Style constants
 const commonButtonStyles: SxProps<Theme> = {
@@ -126,7 +128,7 @@ const FundView: React.FC = () => {
   const handleEdit = () => {
     navigate(Routes.FUND_MANAGER_FUND_EDIT.replace(':fundId', fundId || ''));
   };
-
+  const {app} = useAppContext();
   useEffect(() => {
     if (!searchDocumentsValue) return setFilteredDocs(documentsData || []);
     const filteredDocs = searchByTitle(documentsData, searchDocumentsValue, 'file');
@@ -239,9 +241,14 @@ const FundView: React.FC = () => {
                 <Link fontSize="small" />
               </IconButton>
             </Box>
-            <IconButton size="small" sx={{ color: "black" }} onClick={handleEdit}>
-              <Edit />
-            </IconButton>
+            {
+              app !== Apps.LIMITED_PARTNER && (
+                <IconButton size="small" sx={{ color: "black" }} onClick={handleEdit}>
+                  <Edit />
+                </IconButton>
+              )
+            }
+
           </Box>
 
           <Box sx={{ display: "flex", flexDirection: "column", gap: 0 }}>
@@ -412,7 +419,7 @@ const FundView: React.FC = () => {
             <UploadDocumentModal
               open={isUploadModalOpen}
               onClose={handleModalClose}
-              fund={fundId}
+              fundId={fundId}
             />
           </>
         )}

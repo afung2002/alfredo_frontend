@@ -4,7 +4,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Routes } from "@constants/routes";
 import { useSelector } from "react-redux";
 import { selectUserInvestments } from "@redux/selectors/user.selector";
-import { JSX } from "react";
+import { JSX, useContext } from "react";
+import { Apps } from "@src/constants/apps";
+import { useAppContext } from "@src/context/appContext";
 
 
 type SideMenuButton = {
@@ -16,20 +18,28 @@ type SideMenuButton = {
 
 type AppSideMenuProps = {
   sideMenuButtons: SideMenuButton[];
-  app: string;
 };
 
 
-const AppSideMenu = ({ sideMenuButtons, app }: AppSideMenuProps) => {
+const AppSideMenu = ({ sideMenuButtons }: AppSideMenuProps) => {
   const investments = useSelector(selectUserInvestments);
   const navigate = useNavigate();
   const location = useLocation();
-
+  const { app } = useAppContext();
   const handleButtonClick = (path: string) => {
     navigate(path);
   };
 
   const isActive = (path: string) => {
+    console.log(path)
+    switch (app) {
+      case Apps.LIMITED_PARTNER:
+        return path === Routes.LIMITED_PARTNER_FUNDS && location.pathname === path;
+      case Apps.FUND_MANAGER:
+        return path === Routes.FUND_MANAGER && location.pathname === path;
+      default:
+        return false;
+    }
     if (path === Routes.FUND_MANAGER) {
       // For the main route, only match exact path or investment view/new investment
       return location.pathname === path ||

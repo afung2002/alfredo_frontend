@@ -27,7 +27,7 @@ const InvestmentCard: React.FC<InvestmentCardProps> = ({ investment }) => {
     <div className="">
       <Card
         onClick={() => handleCardClick}
-        onDelete={() => handleInvestmentDelete(investment.id)}
+        // onDelete={() => handleInvestmentDelete(investment.id)}
         title={investment?.company?.name || ''}
         subtitle={`$${Number(investment?.amount).toLocaleString('en-US')}`}
         sideImage={InvestmentIcon}
