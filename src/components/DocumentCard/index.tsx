@@ -5,8 +5,10 @@ import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import Card from "../Card";
 import { useDeleteDocumentMutation, useLazyDownloadDocumentQuery } from "../../services/api/baseApi";
 import DocIcon from '@assets/doc.svg';
+import LimitedPartner from '../../apps/fund-manager/pages/LimitedPartner/index';
+import { Apps } from "../../constants/apps";
 
-const DocumentCard: React.FC<{ document: Document, orientation: "row" | "grid" }> = ({ document: doc, orientation }) => {
+const DocumentCard: React.FC<{ document: Document, orientation: "row" | "grid", app: string }> = ({ document: doc, orientation, app }) => {
   const [deleteDoc, { isLoading: isDeleting }] = useDeleteDocumentMutation();
   const [triggerDownload, { isFetching }] = useLazyDownloadDocumentQuery();
   const handleDocDelete = async (id) => {
@@ -17,7 +19,7 @@ const DocumentCard: React.FC<{ document: Document, orientation: "row" | "grid" }
     }
   }
 
-  const handleDocDownload = async (id: any) => {
+  const handleDocDownload = async (id: any) => {  
     try {
       const result = await triggerDownload(id).unwrap();
 
@@ -38,13 +40,14 @@ const DocumentCard: React.FC<{ document: Document, orientation: "row" | "grid" }
       console.error('Failed to download the document:', err);
     }
   };
+  console.log(app, 'app')
 
   return (
     <div >
       <Card
         onClick={() => { }}
-        onDelete={() => handleDocDelete(doc.id)}
-        onDownload={ () => handleDocDownload(doc.id)}
+        onDelete={app === Apps.LIMITED_PARTNER ? undefined : () => handleDocDelete(doc.id)}
+        onDownload={() => handleDocDownload(doc.id)}
         title={doc.name}
         orientation={orientation}
         subtitle={
