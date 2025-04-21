@@ -72,16 +72,24 @@ const NewLimitedPartnerFundForm = ({fundId, closeModal}: NewLimitedPartnerFundFo
               <Typography variant="h6" gutterBottom>Invite new limited partner</Typography>
             </Grid>
             <Grid size={{ xs: 12 }}>
-              <Input rounded={false} label="User ID" name="user_id" control={control} error={!!errors.user_id?.message} />
+              <Input rounded={false} label="User ID" name="user_id" control={control} 
+              // error={!!errors.user_id?.message} 
+              />
             </Grid>
             <Grid size={{ xs: 12 }}>
-              <Input rounded={false} label="Website URL" name="website_url" control={control} error={!!errors.website_url?.message} />
+              <Input rounded={false} label="Website URL" name="website_url" control={control} 
+              // error={!!errors.website_url?.message} 
+              />
             </Grid>
             <Grid size={{ xs: 12 }}>
-              <Input rounded={false} label="Legal Entity" name="legal_entity" control={control} error={!!errors.legal_entity?.message} />
+              <Input rounded={false} label="Legal Entity" name="legal_entity" control={control}
+              //  error={!!errors.legal_entity?.message}
+               />
             </Grid>
             <Grid size={{ xs: 12 }}>
-              <Input rounded={false} label="Description" name="description" multiline rows={4} control={control} error={!!errors.description?.message} />
+              <Input rounded={false} label="Description" name="description" multiline rows={4} control={control} 
+              // error={!!errors.description?.message}
+               />
             </Grid>
 
             <Grid size={{ xs: 12 }}>
