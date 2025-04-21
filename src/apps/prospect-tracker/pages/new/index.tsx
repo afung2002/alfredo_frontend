@@ -13,11 +13,28 @@ import { ArrowLeftIcon } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useProspectForm from "../../hooks/useProspectForm";
+import { FormTextArea } from "@src/components/ui/form-textarea";
+
+const PROSPECT_TYPES = [
+  {
+    label: "Person",
+    value: "person",
+  },
+  {
+    label: "Company",
+    value: "company",
+  },
+  {
+    label: "Fund",
+    value: "fund",
+  },
+] as const;
 
 export default function NewProspect() {
   const navigate = useNavigate();
-  const prospectTypes = ["Person", "Company", "Fund"];
-  const [prospectType, setProspectType] = useState<string>("");
+  const [prospectType, setProspectType] = useState<
+    (typeof PROSPECT_TYPES)[number]["value"] | undefined
+  >();
   const { control, handleSubmit, errors } = useProspectForm();
 
   const handleCancel = () => {
@@ -43,14 +60,21 @@ export default function NewProspect() {
                 <label className="block text-sm font-medium mb-2">
                   Select Prospect Type
                 </label>
-                <Select value={prospectType} onValueChange={setProspectType}>
+                <Select
+                  value={prospectType}
+                  onValueChange={(value) =>
+                    setProspectType(
+                      value as (typeof PROSPECT_TYPES)[number]["value"]
+                    )
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select Prospect Type" />
                   </SelectTrigger>
                   <SelectContent>
-                    {prospectTypes.map((type) => (
-                      <SelectItem key={type} value={type.toLowerCase()}>
-                        {type}
+                    {PROSPECT_TYPES.map((type) => (
+                      <SelectItem key={type.value} value={type.value}>
+                        {type.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -77,12 +101,12 @@ export default function NewProspect() {
 
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      LinkedIn URL
+                      Enter this person's LinkedIn URL
                     </label>
                     <FormInput
                       name="linkedinUrl"
                       control={control}
-                      placeholder="Enter LinkedIn URL"
+                      placeholder="linkedIn.com/elonmusk"
                     />
                     {errors.linkedinUrl && (
                       <p className="text-sm text-red-500 mt-1">
@@ -93,12 +117,148 @@ export default function NewProspect() {
 
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      Description
+                      Description (will help to drive precision in our AI
+                      scanning)
                     </label>
-                    <FormInput
+                    <FormTextArea
                       name="description"
                       control={control}
-                      placeholder="Enter description"
+                      placeholder="Elon Musk previously founded SpaceX and Tesla"
+                    />
+                    {errors.description && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {errors.description.message}
+                      </p>
+                    )}
+                  </div>
+                </>
+              )}
+              {prospectType === "company" && (
+                <>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">
+                        Name
+                      </label>
+                      <FormInput
+                        name="name"
+                        control={control}
+                        placeholder="Esusu"
+                      />
+                      {errors.name && (
+                        <p className="text-sm text-red-500 mt-1">
+                          {errors.name.message}
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">
+                        Company Website URL
+                      </label>
+                      <FormInput
+                        name="name"
+                        control={control}
+                        placeholder="Esusurent.com"
+                      />
+                      {errors.name && (
+                        <p className="text-sm text-red-500 mt-1">
+                          {errors.name.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Specific Sources Desired to Track (Optional)
+                    </label>
+                    <FormTextArea
+                      name="linkedinUrl"
+                      control={control}
+                      placeholder="If desired, add website URLs line by line that represent the company's public presence (ex: blog sites, Twitter profile, etc.) if not, we'll run general scans for you"
+                    />
+                    {errors.linkedinUrl && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {errors.linkedinUrl.message}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Description (will help to drive precision in our AI
+                      scanning)
+                    </label>
+                    <FormTextArea
+                      name="description"
+                      control={control}
+                      placeholder="Esusu enables renters to build credit while they pay rent."
+                    />
+                    {errors.description && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {errors.description.message}
+                      </p>
+                    )}
+                  </div>
+                </>
+              )}
+              {prospectType === "fund" && (
+                <>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">
+                        Name
+                      </label>
+                      <FormInput
+                        name="name"
+                        control={control}
+                        placeholder="Index Ventures"
+                      />
+                      {errors.name && (
+                        <p className="text-sm text-red-500 mt-1">
+                          {errors.name.message}
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">
+                        LinkedIn URL
+                      </label>
+                      <FormInput
+                        name="name"
+                        control={control}
+                        placeholder="indexventures.com"
+                      />
+                      {errors.name && (
+                        <p className="text-sm text-red-500 mt-1">
+                          {errors.name.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Specific Sources Desired to Track (Optional)
+                    </label>
+                    <FormTextArea
+                      name="linkedinUrl"
+                      control={control}
+                      placeholder="If desired, add website URLs line by line that represent the company's public presence (ex: blog sites, Twitter profile, etc.) if not, we'll run general scans for you"
+                    />
+                    {errors.linkedinUrl && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {errors.linkedinUrl.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Description (will help to drive precision in our AI
+                      scanning)
+                    </label>
+                    <FormTextArea
+                      name="description"
+                      control={control}
+                      placeholder="Index Ventures is a multi-stage venture capital firm investing across 12 funds into founders worldwide."
                     />
                     {errors.description && (
                       <p className="text-sm text-red-500 mt-1">
