@@ -50,13 +50,13 @@ const useUploadDocumentForm = (
   });
 
   // Automatically set documentType if fundId or investmentId is passed
-  useEffect(() => {
-    if (investmentId) {
-      setValue('documentType', 'fund-investment');
-    } else if (fundId) {
-      setValue('documentType', 'fund-management');
-    }
-  }, [investmentId, fundId, setValue]);
+  // useEffect(() => {
+  //   if (investmentId) {
+  //     setValue('documentType', 'fund-investment');
+  //   } else if (fundId) {
+  //     setValue('documentType', 'fund-management');
+  //   }
+  // }, [investmentId, fundId, setValue]);
 
   // Submits the form and posts to API
   const submitForm = async () => {
@@ -73,13 +73,21 @@ const useUploadDocumentForm = (
           fund_manager_id: '1', // TODO: Replace with dynamic ID
         };
 
+        if (!documentType && fundId) {
+          payload.fund = fundId;
+        }
+
+        if (!documentType && investmentId) {
+          payload.investment = investmentId;
+        }
+
         if (documentType === 'fund-management') {
-          payload.fund = fundId || getValues('fund');
+          payload.fund = getValues('fund');
         }
 
         if (documentType === 'fund-investment') {
-          payload.fund = fundId || getValues('fund');
-          payload.investment = investmentId || getValues('investment');
+          payload.fund = getValues('fund');
+          payload.investment = getValues('investment');
           payload.company_name = getValues('company');
         }
 
