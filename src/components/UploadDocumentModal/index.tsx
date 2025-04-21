@@ -26,8 +26,9 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
   open,
   onClose,
   investmentId,
-   fundId
+  fundId
 }) => {
+  console.log(fundId, 'fundId')
   const [getFunds, { data: funds, isLoading: isFundsLoading, error: fundsError }] = useLazyGetFundsQuery();
   const [getInvestments, { data: investments, isLoading: isInvestmentsLoading, error: investmentsError }] = useLazyGetInvestmentsQuery();
   const [getCompanies, { data: companies, isLoading: isCompaniesLoading, error: companiesError }] = useLazyGetCompaniesQuery();
@@ -79,7 +80,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
     } else if (documentType === 'angel-investment') {
       setFilteredCompanies(getReferencedCompanies(investments, documentType))
     }
-  } , [fund, documentType, investments, companies]);
+  }, [fund, documentType, investments, companies]);
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -96,22 +97,22 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
                 error={!!uploadErrors.docTitle?.message}
               />
             </Grid>
-            {fundId || investmentId ? ( null) : (
+            {fundId || investmentId ? (null) : (
               <Grid size={{ xs: 12 }}>
-              <Select
-                rounded={false}
-                label="Document Type"
-                name="documentType"
-                control={uploadControl}
-                options={[
-                  { value: 'angel-investment', label: 'Angel Investment' },
-                  { value: 'fund-investment', label: 'Fund Investment' },
-                  { value: 'fund-management', label: 'Fund Management' },
-                ]}
-              />
-            </Grid>
+                <Select
+                  rounded={false}
+                  label="Document Type"
+                  name="documentType"
+                  control={uploadControl}
+                  options={[
+                    { value: 'angel-investment', label: 'Angel Investment' },
+                    { value: 'fund-investment', label: 'Fund Investment' },
+                    { value: 'fund-management', label: 'Fund Management' },
+                  ]}
+                />
+              </Grid>
             )}
-            
+
             {
               (documentType === 'fund-investment') && (
                 <Grid size={{ xs: 12 }}>
@@ -137,7 +138,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
               )
             }
             {
-              ( documentType === 'fund-management') && (
+              (documentType === 'fund-management') && (
                 <Grid size={{ xs: 12 }}>
                   <Select
                     rounded={false}
