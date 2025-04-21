@@ -23,6 +23,8 @@ const Page404 = lazy(() => import('@pages/Page404'));
 import LandingPage from '@pages/LandingPage';
 import LimitedPartnerLayout from '../apps/limited-partner/layouts/LimitedPartnerLayout';
 import LimitedPartnerFunds from '../apps/limited-partner/pages/LimitedPartnerFunds';
+import LimitedPartnerDocuments from '@src/apps/limited-partner/pages/LimitedPartnerDocuments';
+import LimitedPartnerUpdates from '@src/apps/limited-partner/pages/LimitedPartnerUpdates';
 
 export const routes: RouteObject[] = [
   {
@@ -115,6 +117,18 @@ export const routes: RouteObject[] = [
       {
         path: Routes.LIMITED_PARTNER_FUNDS,
         element: <LimitedPartnerFunds />,
+      },
+      {
+        path: Routes.LIMITED_PARTNER_FUND,
+        element: <FundView />,
+      },
+      {
+        path: Routes.LIMITED_PARTNER_DOCUMENTS,
+        element: <LimitedPartnerDocuments />,
+      },
+      {
+        path: Routes.LIMITED_PARTNER_UPDATES,
+        element: <LimitedPartnerUpdates />,
       }
     ]
   },
