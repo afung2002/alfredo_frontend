@@ -12,9 +12,7 @@ const NewFund: React.FC = () => {
   const navigate = useNavigate();
   const params = useParams();
   const fundId = params.fundId || null;
-  const handleCloseFundForm = () => {
-    navigate(-1);
-  };
+
   return (
     <Box sx={formContainerStyles}>
       <Button
@@ -38,7 +36,7 @@ const NewFund: React.FC = () => {
         Add Fund
       </Typography>
       <Card>
-        <NewFundForm onSave={() => navigate(Routes.FUND_MANAGER_FUNDS)} fundId={fundId} onClose={handleCloseFundForm} />
+        <NewFundForm onSave={() => navigate(Routes.FUND_MANAGER_FUNDS)} fundId={fundId}  />
       </Card>
     </Box>
   );
