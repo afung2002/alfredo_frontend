@@ -124,7 +124,7 @@ const Funds = () => {
               animate="visible"
               exit="exit"
             >
-          <FundListCard app={Apps.FUND_MANAGER} key={fund.id} fund={fund} />
+          <FundListCard key={fund.id} fund={fund} />
           </motion.div>
         ))
       }

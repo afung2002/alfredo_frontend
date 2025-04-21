@@ -284,7 +284,7 @@ const Investment: React.FC = () => {
         </Button>
 
       </Box>
-      <DocumentsList app={Apps.FUND_MANAGER} documents={filteredDocs} isLoading={isLoadingDocuments} />
+      <DocumentsList documents={filteredDocs} isLoading={isLoadingDocuments} />
       <UploadDocumentModal
         open={isUploadModalOpen}
         onClose={handleModalClose}

@@ -109,7 +109,7 @@ const Documents = () => {
         </ToggleButtonGroup>
       </div> */}
 
-      <DocumentsList app={Apps.FUND_MANAGER} selectedOrientation={selectedOrientation}  documents={filteredDocs} isLoading={isLoadingDocuments} />
+      <DocumentsList selectedOrientation={selectedOrientation}  documents={filteredDocs} isLoading={isLoadingDocuments} />
 
       {/* Upload Modal */}
       <UploadDocumentModal

@@ -14,6 +14,7 @@ const UpdateCard: React.FC<UpdateListCardProps> = ({ update }) => {
   const [showReadMore, setShowReadMore] = useState(false);
   const descriptionRef = useRef<HTMLDivElement>(null);
   const formattedUpdatedAt = useFormattedTime(update?.updated_at)
+
   useEffect(() => {
     if (descriptionRef.current) {
       const lineHeight = parseInt(

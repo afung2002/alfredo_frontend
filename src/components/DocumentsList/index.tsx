@@ -2,16 +2,13 @@ import { Box, CircularProgress } from "@mui/material";
 import DocumentCard from "../DocumentCard";
 import { AnimatePresence, motion } from "framer-motion";
 import { Document } from "../../types";
-import { Apps } from "@src/constants/apps";
 
 type DocumentsListProps = {
   documents: Document[] | undefined;
   isLoading?: boolean;
   selectedOrientation?: "row" | "grid";
-  app?: string;
 };
-const DocumentsList = ({ documents, isLoading, selectedOrientation, app }: DocumentsListProps) => {
-  console.log(app)
+const DocumentsList = ({ documents, isLoading, selectedOrientation }: DocumentsListProps) => {
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -55,7 +52,7 @@ const DocumentsList = ({ documents, isLoading, selectedOrientation, app }: Docum
                 exit="exit"
               >
                 <div className="w-full">
-                  <DocumentCard app={app} orientation={selectedOrientation} document={document} />
+                  <DocumentCard orientation={selectedOrientation} document={document} />
                 </div>
               </motion.div>
             ))}

@@ -7,10 +7,12 @@ import { useDeleteDocumentMutation, useLazyDownloadDocumentQuery } from "../../s
 import DocIcon from '@assets/doc.svg';
 import LimitedPartner from '../../apps/fund-manager/pages/LimitedPartner/index';
 import { Apps } from "../../constants/apps";
+import { useAppContext } from "@src/context/appContext";
 
-const DocumentCard: React.FC<{ document: Document, orientation: "row" | "grid", app: string }> = ({ document: doc, orientation, app }) => {
+const DocumentCard: React.FC<{ document: Document, orientation: "row" | "grid" }> = ({ document: doc, orientation }) => {
   const [deleteDoc, { isLoading: isDeleting }] = useDeleteDocumentMutation();
   const [triggerDownload, { isFetching }] = useLazyDownloadDocumentQuery();
+  const {app} = useAppContext();
   const handleDocDelete = async (id) => {
     try {
       await deleteDoc(Number(id)).unwrap();
@@ -40,7 +42,6 @@ const DocumentCard: React.FC<{ document: Document, orientation: "row" | "grid", 
       console.error('Failed to download the document:', err);
     }
   };
-  console.log(app, 'app')
 
   return (
     <div >
