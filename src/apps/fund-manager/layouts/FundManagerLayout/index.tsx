@@ -7,6 +7,7 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Apps } from "@constants/apps";
+import { useAppContext } from "@src/context/appContext";
 
 const FundManagerLayout = () => {
   const sideMenuButtons = [
@@ -17,9 +18,11 @@ const FundManagerLayout = () => {
     // { label: 'Settings', value: 'settings', path: '/fundmanager-ai/settings' },
     { label: 'Back to Apps', value: 'back-to-apps', path: Routes.APPS, icon: <ArrowBackIcon sx={{color: '#b27b44'}} /> },
   ];
+  const { app, setApp } = useAppContext();
+  setApp(Apps.FUND_MANAGER);
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-      <AppSideMenu app={Apps.FUND_MANAGER} sideMenuButtons={sideMenuButtons} />
+      <AppSideMenu sideMenuButtons={sideMenuButtons} />
       <div 
         className="flex-1 xl:px-44 lg:px-32 md:px-28 sm:px-16 px-4 pt-24 pb-24"
       >

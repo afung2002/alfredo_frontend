@@ -284,6 +284,7 @@ export const {
   useUpdateFundUpdateMutation,
   usePatchFundUpdateMutation,
   useDeleteFundUpdateMutation,
+  useLazyGetFundsQuery,
 
   // Companies
   useGetCompaniesQuery,
@@ -302,6 +303,7 @@ export const {
   useUpdateInvestmentMutation,
   usePatchInvestmentMutation,
   useDeleteInvestmentMutation,
+  useLazyGetInvestmentsQuery,
 
   // Documents
   useGetDocumentsQuery,

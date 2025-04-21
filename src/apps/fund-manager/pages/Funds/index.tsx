@@ -11,6 +11,7 @@ import Button from '@components/Button';
 import { useGetFundsQuery } from '@services/api/baseApi';
 import { calculateFundTotals, formatNumberString } from '../../../../utils';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Apps } from '@src/constants/apps';
 
 const Funds = () => {
   const { data: fundsData, isLoading, error } = useGetFundsQuery();

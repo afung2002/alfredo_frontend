@@ -4,7 +4,7 @@ import { FundUpdate } from "../../types";
 import UpdateCard from "@components/UpdateCard";
 import { AnimatePresence, motion } from "framer-motion";
 
-const FundUpdatesList = ({ updates, isLoading, error }: any) => {
+const FundUpdatesList = ({ updates, isLoading, error}: any) => {
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
