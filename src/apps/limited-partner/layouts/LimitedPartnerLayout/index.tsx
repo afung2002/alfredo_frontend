@@ -9,9 +9,9 @@ import UpdateIcon from '@mui/icons-material/Update';
 import { Apps } from "../../../../constants/apps";
 const LimitedPartnerLayout = () => {
   const sideMenuButtons = [
-    { label: 'Funds', value: 'all', path: Routes.FUND_MANAGER, icon: <TrendingUpIcon sx={{color: '#b27b44'}} /> },
-    { label: 'Updates', value: 'updates', path: Routes.FUND_MANAGER_FUNDS, icon: <UpdateIcon sx={{color: '#b27b44'}} /> },
-    { label: 'Documents', value: 'documents', path: Routes.FUND_MANAGER_DOCUMENTS, icon: <FolderOpenOutlinedIcon sx={{color: '#b27b44'}} /> },
+    { label: 'Funds', value: 'all', path: Routes.LIMITED_PARTNER_FUNDS, icon: <TrendingUpIcon sx={{color: '#b27b44'}} /> },
+    { label: 'Updates', value: 'updates', path: Routes.LIMITED_PARTNER_UPDATES, icon: <UpdateIcon sx={{color: '#b27b44'}} /> },
+    { label: 'Documents', value: 'documents', path: Routes.LIMITED_PARTNER_DOCUMENTS, icon: <FolderOpenOutlinedIcon sx={{color: '#b27b44'}} /> },
     // { label: 'Limited Partners', value: 'limited-partners', path: '/fundmanager-ai/limited-partners' },
     // { label: 'Settings', value: 'settings', path: '/fundmanager-ai/settings' },
     { label: 'Back to Apps', value: 'back-to-apps', path: Routes.APPS, icon: <ArrowBackIcon sx={{color: '#b27b44'}} /> },
