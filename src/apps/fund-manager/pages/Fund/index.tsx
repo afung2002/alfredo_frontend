@@ -40,6 +40,7 @@ import { formatNumberString } from "../../../../utils";
 import { DocumentResponse, InvestmentResponse, LimitedPartnerResponse } from "@services/api/baseApi/types";
 import { Routes } from "../../../../constants/routes";
 import NewLimitedPartnerFundForm from "../../../../components/NewLimitedPartnerFundForm";
+import { Apps } from "@src/constants/apps";
 
 // Style constants
 const commonButtonStyles: SxProps<Theme> = {
@@ -407,6 +408,7 @@ const FundView: React.FC = () => {
               </Button>
             </Box>
             <DocumentsList
+              app={Apps.FUND_MANAGER}
               documents={filteredDocs}
             />
             <UploadDocumentModal
