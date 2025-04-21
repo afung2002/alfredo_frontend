@@ -46,6 +46,7 @@ const Card = ({ children, onClick, className, title, subtitle, actions, tags, on
     event.stopPropagation(); // Prevent the card click event from firing
     setAnchorEl(event.currentTarget);
   };
+  console.log(onDelete)
   return (
     <>
       <MuiCard variant="outlined" sx={{ borderRadius: '8px' }} className={`flex !border-none ${orientation === 'grid' ? 'flex-col' : ''} ${className}`} onClick={onClick}>
