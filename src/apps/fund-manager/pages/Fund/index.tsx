@@ -412,7 +412,7 @@ const FundView: React.FC = () => {
             <UploadDocumentModal
               open={isUploadModalOpen}
               onClose={handleModalClose}
-              fund={fundId}
+              fundId={fundId}
             />
           </>
         )}
