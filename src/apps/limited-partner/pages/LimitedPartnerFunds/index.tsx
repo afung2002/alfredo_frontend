@@ -1,17 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Typography, CircularProgress, Chip } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import FundListCard from '@components/FundListCard';
 import { Fund } from '../../../../types';
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import { Routes } from '@constants/routes';
 import Input from '@components/Input';
 import { useForm } from 'react-hook-form';
-import Button from '@components/Button';
 import { useGetFundsQuery } from '@services/api/baseApi';
-import { calculateFundTotals, formatNumberString } from '../../../../utils';
+import { calculateFundTotals, formatNumberString } from '@utils/index';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Apps } from '../../../../constants/apps';
+import { Apps } from '@constants/apps';
 
 const LimitedPartnerFunds = () => {
   const { data: fundsData, isLoading, error } = useGetFundsQuery();
@@ -25,18 +22,10 @@ const LimitedPartnerFunds = () => {
   const searchValue = watch('searchFunds');
   const [funds, setFunds] = useState<Fund[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const navigate = useNavigate();
   useEffect(() => {
     setSearchQuery(searchValue)
   }, [searchValue]);
 
-  const handleAddNew = (event: React.MouseEvent) => {
-    // Prevent navigation if clicking the add button
-    // if ((event.target as HTMLElement).closest('.MuiIconButton-root')) {
-    //   return;
-    // }
-    navigate(Routes.FUND_MANAGER_NEW_FUND);
-  };
   const { totalFundSize, totalEstimatedValue } = calculateFundTotals(fundsData || []);
   useEffect(() => {
     if (searchQuery === '') {
@@ -69,7 +58,7 @@ const LimitedPartnerFunds = () => {
   if (error) {
     return (
       <Box p={3}>
-        <Typography color="error">Error loading funds: {error.toString()}</Typography>
+        <Typography color="error">Error loading funds</Typography>
       </Box>
     );
   }
@@ -98,7 +87,6 @@ const LimitedPartnerFunds = () => {
       </Box>
 
       <Box sx={{ display: "flex", gap: 2, mb: 2, width: '100%' }}>
-
         <Input
           type="text"
           name="searchFunds"
@@ -106,10 +94,6 @@ const LimitedPartnerFunds = () => {
           placeholder="Search funds..."
           className="flex flex-col w-full"
         />
-        {/* <Button
-          onClick={handleAddNew}>
-          Add New
-        </Button> */}
       </Box>
       {!isLoading && funds && funds?.length > 0 ? (
         <AnimatePresence mode="popLayout">
@@ -123,7 +107,7 @@ const LimitedPartnerFunds = () => {
                 animate="visible"
                 exit="exit"
               >
-                <FundListCard app={Apps.LIMITED_PARTNER} key={fund.id} fund={fund} />
+                <FundListCard fund={fund} />
               </motion.div>
             ))
           }
