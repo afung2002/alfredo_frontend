@@ -11,6 +11,7 @@ import Button from '@components/Button';
 import { useGetFundsQuery } from '@services/api/baseApi';
 import { calculateFundTotals, formatNumberString } from '../../../../utils';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Apps } from '@src/constants/apps';
 
 const Funds = () => {
   const { data: fundsData, isLoading, error } = useGetFundsQuery();
@@ -123,7 +124,7 @@ const Funds = () => {
               animate="visible"
               exit="exit"
             >
-          <FundListCard key={fund.id} fund={fund} />
+          <FundListCard app={Apps.FUND_MANAGER} key={fund.id} fund={fund} />
           </motion.div>
         ))
       }
