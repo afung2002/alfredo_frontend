@@ -28,6 +28,7 @@ const FundListCard: React.FC<FundListCardProps> = ({ fund, app }) => {
     deleteFund(fundId)
       .unwrap()
   }
+  console.log(app)
   return (
     <div className="mb-4">
       <Card
@@ -39,7 +40,7 @@ const FundListCard: React.FC<FundListCardProps> = ({ fund, app }) => {
         actions={[
           {
             label: "View Fund",
-            onClick: () => navigate(Routes.FUND_MANAGER_FUND.replace(':fundId', fund.id.toString())),
+            onClick: () => navigate(Routes.LIMITED_PARTNER_FUND.replace(':fundId', fund.id.toString())),
           },
         ]}
         tags={[
