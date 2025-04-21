@@ -10,6 +10,7 @@ import DocumentsList from '@components/DocumentsList';
 import { useGetDocumentsQuery } from '@services/api/baseApi';
 import TableRowsIcon from '@mui/icons-material/TableRows';
 import AppsIcon from '@mui/icons-material/Apps';
+import { Apps } from '@src/constants/apps';
 
 const Documents = () => {
   const { data: documentsData, isLoading: isLoadingDocuments, error: errorDocuments } = useGetDocumentsQuery();
@@ -108,7 +109,7 @@ const Documents = () => {
         </ToggleButtonGroup>
       </div> */}
 
-      <DocumentsList selectedOrientation={selectedOrientation}  documents={filteredDocs} isLoading={isLoadingDocuments} />
+      <DocumentsList app={Apps.FUND_MANAGER} selectedOrientation={selectedOrientation}  documents={filteredDocs} isLoading={isLoadingDocuments} />
 
       {/* Upload Modal */}
       <UploadDocumentModal
