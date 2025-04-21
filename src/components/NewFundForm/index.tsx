@@ -14,6 +14,7 @@ type NewFundFormProps = {
 };
 const NewFundForm = ({ fundId, onClose, selectCreatedFund, onSave  }: NewFundFormProps) => {
   const navigate = useNavigate();
+  console.log('fundId', fundId)
   const {
     newFundControl,
     submitNewFund,
@@ -26,7 +27,9 @@ const NewFundForm = ({ fundId, onClose, selectCreatedFund, onSave  }: NewFundFor
     e.preventDefault();
     submitNewFund().then((result) => {
       if (result) {
-        // navigate(Routes.FUND_MANAGER_FUNDS);
+        console.log('result', result)
+        // If you want to navigate to the funds page after creating a new fund, uncomment the line below
+        navigate(Routes.FUND_MANAGER_FUNDS);
         onSave()
       }
     })
@@ -34,7 +37,7 @@ const NewFundForm = ({ fundId, onClose, selectCreatedFund, onSave  }: NewFundFor
   useEffect(() => {
     if (newFundCreated) {
       onClose?.();
-      selectCreatedFund(newFundCreated);
+      selectCreatedFund?.(newFundCreated);
     }
   }, [newFundCreated]);
   return (
