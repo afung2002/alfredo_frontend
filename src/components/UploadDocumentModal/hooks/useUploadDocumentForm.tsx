@@ -2,9 +2,9 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useUploadDocumentMutation } from '@services/api/baseApi';
-import Investment from '../../../apps/fund-manager/pages/Investment/index';
 import { useEffect } from 'react';
 
+// Validation schema
 const schema = z.object({
   docTitle: z.string().min(1, 'Document title is required'),
   description: z.string().optional(),
@@ -12,35 +12,36 @@ const schema = z.object({
     .custom<FileList>((val) => val instanceof FileList && val.length > 0, {
       message: 'File is required',
     }),
-  documentType: z.enum(['fund', 'investment'], {
-    required_error: 'Document type is required',
-  }),
+  documentType: z.string().optional(),
   investment: z.string().optional(),
   fund: z.string().optional(),
   company: z.string().optional(),
-
 });
 
-export type UploadDocumentFormData = z.infer<typeof schema>
+export type UploadDocumentFormData = z.infer<typeof schema>;
 
-const useUploadDocumentForm = (onSuccess: () => void, investmentId: any, fundId: any) => {
+const useUploadDocumentForm = (
+  onSuccess: () => void,
+  investmentId?: string,
+  fundId?: string
+) => {
   const [uploadDocument, { isLoading }] = useUploadDocumentMutation();
+
   const {
     control,
     handleSubmit,
-    setError,
     formState: { errors },
     reset,
     setValue,
     watch,
-    getValues
+    getValues,
   } = useForm<UploadDocumentFormData>({
     resolver: zodResolver(schema),
     defaultValues: {
       docTitle: '',
       description: '',
       file: undefined,
-      documentType: 'fund', // Default value, can be changed as needed
+      documentType: '',
       investment: '',
       fund: '',
       company: '',
@@ -48,37 +49,53 @@ const useUploadDocumentForm = (onSuccess: () => void, investmentId: any, fundId:
     mode: 'onChange',
   });
 
+  // Automatically set documentType if fundId or investmentId is passed
   useEffect(() => {
     if (investmentId) {
-      setValue('documentType', 'investment');
+      setValue('documentType', 'fund-investment');
     } else if (fundId) {
-      setValue('documentType', 'fund');
+      setValue('documentType', 'fund-management');
     }
-  }, [investmentId, fundId]);
+  }, [investmentId, fundId, setValue]);
 
+  // Submits the form and posts to API
   const submitForm = async () => {
     await handleSubmit(async (data) => {
       try {
-        const file = data.file[0]; // Grab  file from FileList
-        console.log(fundId, 'fundId')
-        console.log(investmentId, 'investmentId')
-        console.log(data, 'data')
-        await uploadDocument({
-          description: data.description,
+        const file = data.file[0]; // extract from FileList
+        const documentType = getValues('documentType');
+
+        // Prepare payload conditionally
+        const payload: any = {
           name: data.docTitle,
+          description: data.description,
           file,
-          fund_manager_id: "1", // TODO: Replace with actual fund manager ID
-          fund: getValues('documentType') === 'fund' ? (fundId || getValues('fund')) : '',
-          investment: getValues('documentType') === 'investment' ? (investmentId || getValues('investment')) : '',
-          company_name: data.company,
-        }).unwrap();
+          fund_manager_id: '1', // TODO: Replace with dynamic ID
+        };
+
+        if (documentType === 'fund-management') {
+          payload.fund = fundId || getValues('fund');
+        }
+
+        if (documentType === 'fund-investment') {
+          payload.fund = fundId || getValues('fund');
+          payload.investment = investmentId || getValues('investment');
+          payload.company_name = getValues('company');
+        }
+
+        if (documentType === 'angel-investment') {
+          payload.company_name = getValues('company');
+        }
+
+        await uploadDocument(payload).unwrap();
 
         reset();
         onSuccess();
       } catch (err: any) {
         const message = err?.data?.message || 'Upload failed. Try again.';
+        console.error('Upload error:', message);
       }
-    })(); // call immediately
+    })(); // Immediately invoke
   };
 
   return {
