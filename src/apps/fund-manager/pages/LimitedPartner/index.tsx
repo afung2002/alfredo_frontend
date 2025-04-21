@@ -3,14 +3,13 @@ import { Box, Typography, Button, Card, CircularProgress, Alert, IconButton } fr
 import { LimitedPartnerType } from "../../../../types/index";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowBack, Edit } from "@mui/icons-material";
-import { getLimitedPartnerById } from "@services/index";
+import { useGetLimitedPartnerByIdQuery } from "@src/services/api/baseApi";
+import { Routes } from "@src/constants/routes";
 
 const LimitedPartner: React.FC = () => {
-  const [limitedPartner, setLimitedPartner] = useState<LimitedPartnerType | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const {limitedPartnerId} = useParams<{ limitedPartnerId: string }>();
+  const {data: limitedPartner, error, isLoading} = useGetLimitedPartnerByIdQuery(limitedPartnerId);
   const navigate = useNavigate();
-  const { limitedPartnerId } = useParams<{ limitedPartnerId: string }>();
 
   
 
@@ -19,35 +18,15 @@ const LimitedPartner: React.FC = () => {
   };
 
   const handleEdit = () => {
-    navigate(`/fundmanager-ai/limited-partners/${limitedPartnerId}/edit`);
+    navigate(Routes.FUND_MANAGER_LIMITED_PARTNER_EDIT.replace(':limitedPartnerId', limitedPartnerId));
   }
-
-  useEffect(() => {
-    const fetchLimitedPartner = async () => {
-      try {
-        if (limitedPartnerId) {
-          const data = await getLimitedPartnerById(limitedPartnerId);
-          setLimitedPartner(data);
-        } else {
-          setError("Limited partner ID is required");
-          setLoading(false);
-        }
-      } catch (err) {
-        setError("Failed to fetch limited partner. Please try again.");
-        console.error("Error fetching limited partner:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchLimitedPartner();
-  }, [limitedPartnerId]);
 
   if (!limitedPartner) {
     return <div>Limited partner not found</div>;
   }
 
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
         <CircularProgress />
@@ -58,7 +37,10 @@ const LimitedPartner: React.FC = () => {
   if (error) {
     return (
       <Box p={3}>
-        <Alert severity="error">{error}</Alert>
+        <Alert severity="error">
+          <>
+          {error}
+          </></Alert>
       </Box>
     );
   }
@@ -114,9 +96,13 @@ const LimitedPartner: React.FC = () => {
         >
           
           <Box sx={{ display: "flex", justifyContent: "space-between", width: "100%"}}>
-            <Typography variant="h6" >
-              {limitedPartner.name}
+            <div className="flex gap-1 items-center">
+            <Typography variant="body2">Legal Entity:</Typography>
+            <Typography variant="body1" >
+              {limitedPartner.legal_entity}
             </Typography>
+            </div>
+          
             <IconButton onClick={handleEdit} size="small" sx={{ color: "black" }}>
               <Edit />
             </IconButton>
@@ -124,20 +110,13 @@ const LimitedPartner: React.FC = () => {
           <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
             <Typography variant="body2">Legal Entity:</Typography>
             <Typography variant="body2" color="text.secondary">
-              {limitedPartner.legalEntity}
+              {limitedPartner.website_url}
             </Typography>
           </Box>
           <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
             <Typography variant="body2">Description:</Typography>
             <Typography variant="body2" color="text.secondary">
               {limitedPartner.description}
-            </Typography>
-          </Box>
-
-          <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
-            <Typography variant="body2">LP Email:</Typography>
-            <Typography variant="body2" color="text.secondary">
-              {limitedPartner.email}
             </Typography>
           </Box>
         </Box>
