@@ -287,7 +287,7 @@ const Investment: React.FC = () => {
       <UploadDocumentModal
         open={isUploadModalOpen}
         onClose={handleModalClose}
-        investment={investmentId}
+        investmentId={investmentId}
       />
     </Box>
   );
