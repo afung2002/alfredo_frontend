@@ -100,7 +100,12 @@ export const routes: RouteObject[] = [
       {
         path: Routes.FUND_MANAGER_NEW_LIMITED_PARTNER,
         element: <NewLimitedPartner />,
+      },
+      {
+        path: Routes.FUND_MANAGER_LIMITED_PARTNER_EDIT,
+        element: <NewLimitedPartner />,
       }
+    
     ],
   },
   {
