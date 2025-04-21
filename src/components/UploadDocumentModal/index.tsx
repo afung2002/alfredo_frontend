@@ -6,33 +6,33 @@ import {
   Box,
   Grid,
   CircularProgress,
-  RadioGroup,
-  Radio,
-  FormControlLabel,
 } from '@mui/material';
 import Input from '@components/Input';
 import Button from '@components/Button';
 import useUploadDocumentForm from './hooks/useUploadDocumentForm';
 import Select from '../Select';
-import { useGetCompaniesQuery, useGetFundsQuery, useGetInvestmentsQuery } from '@services/api/baseApi';
+import { useLazyGetCompaniesQuery, useLazyGetFundsQuery, useLazyGetInvestmentsQuery } from '@services/api/baseApi';
+import { useEffect, useState } from 'react';
+import { getReferencedCompanies, getReferencedFunds } from '../../utils';
 
 interface UploadDocumentModalProps {
   open: boolean;
   onClose: () => void;
-  investment?: any;
-  fund?: any;
+  investmentId?: any;
+  fundId?: any;
 }
 
 const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
   open,
   onClose,
-  investment,
-  fund
+  investmentId,
+   fundId
 }) => {
-  const { data: funds, isLoading: isFundsLoading, error: fundsError } = useGetFundsQuery();
-  const { data: investments, isLoading: isInvestmentsLoading, error: investmentsError } = useGetInvestmentsQuery();
-  const { data: companies, isLoading: isCompaniesLoading, error: companiesError } = useGetCompaniesQuery();
-  
+  const [getFunds, { data: funds, isLoading: isFundsLoading, error: fundsError }] = useLazyGetFundsQuery();
+  const [getInvestments, { data: investments, isLoading: isInvestmentsLoading, error: investmentsError }] = useLazyGetInvestmentsQuery();
+  const [getCompanies, { data: companies, isLoading: isCompaniesLoading, error: companiesError }] = useLazyGetCompaniesQuery();
+  const [filteredFunds, setFilteredFunds] = useState([]);
+  const [filteredCompanies, setFilteredCompanies] = useState([]);
   const {
     uploadControl,
     submitForm,
@@ -42,7 +42,45 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
     watch,
   } = useUploadDocumentForm(() => {
     onClose();
-  }, investment, fund);
+  }, investmentId, fundId);
+  const documentType = watch('documentType');
+  const fund = watch('fund');
+  console.log(documentType, 'documentType')
+  useEffect(() => {
+    if (!documentType) return;
+    switch (documentType) {
+      case 'angel-investment':
+        getCompanies();
+        break;
+      case 'fund-investment':
+        getFunds();
+        getInvestments();
+        getCompanies();
+        break;
+      case 'fund-management':
+        getFunds();
+        break;
+      default:
+        break;
+    }
+  }, [documentType]);
+
+  useEffect(() => {
+    if (documentType === 'fund-investment') {
+      if (funds && funds.length > 0 && investments && investments.length > 0) {
+        setFilteredFunds(getReferencedFunds(investments, funds))
+      }
+    }
+  }, [documentType, funds, investments, companies]);
+  useEffect(() => {
+    if (!fund) return;
+    if (documentType === 'fund-investment') {
+      setFilteredCompanies(getReferencedCompanies(investments, documentType, fund))
+    } else if (documentType === 'angel-investment') {
+      setFilteredCompanies(getReferencedCompanies(investments, documentType))
+    }
+  } , [fund, documentType, investments, companies]);
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Upload New Document</DialogTitle>
@@ -58,48 +96,50 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
                 error={!!uploadErrors.docTitle?.message}
               />
             </Grid>
-            {/* <Grid size={{ xs: 12 }}>
-              <label>Document Type</label>
-              <RadioGroup
-                name="documentType"
-                row
-                defaultValue="investment"
-                onChange={(e) => {
-                  setValue('documentType', e.target.value as 'investment' | 'fund');
-                }}
-              >
-                <FormControlLabel value="investment" control={<Radio size="small" />} label="Investment" />
-                <FormControlLabel value="fund" control={<Radio size="small" />} label="Fund" />
-              </RadioGroup>
-            </Grid> */}
-
-
-            {/* <Grid size={{ xs: 12 }}>
+            {fundId || investmentId ? ( null) : (
+              <Grid size={{ xs: 12 }}>
               <Select
-                disabled={watch('documentType') === 'fund'}
                 rounded={false}
-                label="Investment"
-                name="investment"
+                label="Document Type"
+                name="documentType"
                 control={uploadControl}
-                options={
-                  isInvestmentsLoading
-                    ? [{ value: '', label: 'Loading investments...' }]
-                    : investments && investments.length > 0
-                      ? [
-                        ...investments.map((investment) => ({
-                          value: String(investment.id ?? 'Unknown'),
-                          label: investment.name ?? 'Unknown',
-                        })),
-                      ]
-                      : [{ value: 'no_investments', label: 'No investments found' }]
-                }
+                options={[
+                  { value: 'angel-investment', label: 'Angel Investment' },
+                  { value: 'fund-investment', label: 'Fund Investment' },
+                  { value: 'fund-management', label: 'Fund Management' },
+                ]}
               />
-            </Grid> */}
+            </Grid>
+            )}
+            
             {
-              (!fund && !investment) &&  (
+              (documentType === 'fund-investment') && (
                 <Grid size={{ xs: 12 }}>
                   <Select
-                    // disabled={watch('documentType') === 'investment'}
+                    rounded={false}
+                    label="Fund"
+                    name="fund"
+                    control={uploadControl}
+                    options={
+                      (isFundsLoading || isInvestmentsLoading)
+                        ? [{ value: '', label: 'Loading funds...' }]
+                        : filteredFunds && filteredFunds.length > 0
+                          ? [
+                            ...filteredFunds.map((fund) => ({
+                              value: String(fund.id ?? 'Unknown'),
+                              label: fund.name ?? 'Unknown',
+                            })),
+                          ]
+                          : [{ value: 'no_funds', label: 'No funds found' }]
+                    }
+                  />
+                </Grid>
+              )
+            }
+            {
+              ( documentType === 'fund-management') && (
+                <Grid size={{ xs: 12 }}>
+                  <Select
                     rounded={false}
                     label="Fund"
                     name="fund"
@@ -120,30 +160,31 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
                 </Grid>
               )
             }
-            {/* {
-              (!fund && !investment) && watch('documentType') === 'investment' && (
+
+            {
+              (documentType === 'angel-investment' || documentType === 'fund-investment') && (
                 <Grid size={{ xs: 12 }}>
-              <Select
-                rounded={false}
-                label="Company"
-                name="company"
-                control={uploadControl}
-                options={
-                  isCompaniesLoading
-                    ? [{ value: '', label: 'Loading companies...' }]
-                    : companies && companies.length > 0
-                      ? [
-                        ...companies.map((company) => ({
-                          value: company.name,
-                          label: company.name,
-                        })),
-                      ]
-                      : [{ value: 'no_companies', label: 'No companies found' }]
-                }
-              />
-            </Grid>
+                  <Select
+                    rounded={false}
+                    label="Company"
+                    name="company"
+                    control={uploadControl}
+                    options={
+                      (isFundsLoading || isInvestmentsLoading)
+                        ? [{ value: '', label: 'Loading companies...' }]
+                        : filteredCompanies && filteredCompanies.length > 0
+                          ? [
+                            ...filteredCompanies.map((company) => ({
+                              value: company.name,
+                              label: company.name,
+                            })),
+                          ]
+                          : [{ value: 'no_companies', label: 'No companies found' }]
+                    }
+                  />
+                </Grid>
               )
-            } */}
+            }
 
             <Grid size={{ xs: 12 }}>
               <Input
