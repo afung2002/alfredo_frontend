@@ -8,9 +8,8 @@ import { useForm } from 'react-hook-form';
 import Button from '@components/Button';
 import DocumentsList from '@components/DocumentsList';
 import { useGetDocumentsQuery } from '@services/api/baseApi';
-import TableRowsIcon from '@mui/icons-material/TableRows';
-import AppsIcon from '@mui/icons-material/Apps';
 import { Apps } from '@src/constants/apps';
+import { useAppContext } from '../../../../context/appContext';
 
 const Documents = () => {
   const { data: documentsData, isLoading: isLoadingDocuments, error: errorDocuments } = useGetDocumentsQuery();
@@ -39,14 +38,7 @@ const Documents = () => {
   }, [searchValue, documentsData]);
 
 
-  // useEffect(() => {
-  //   const filteredDocs = documents.filter((doc) => {
-  //     if (selectedTab === 'all') return true;
-  //     return doc.type === selectedTab;
-  //   });
-  //   setFilteredDocs(filteredDocs);
-  //   setValue('searchDocuments', '');
-  // }, [selectedTab, documents, setValue]);
+  const {app} = useAppContext()
   const handleModalClose = () => {
     setIsUploadModalOpen(false);
   }
@@ -91,11 +83,16 @@ const Documents = () => {
           placeholder="Search documents..."
           className="flex flex-col w-full"
         />
-        <Button
+        {
+          app !== Apps.LIMITED_PARTNER && (
+            <Button
           onClick={() => setIsUploadModalOpen(true)}
         >
           Upload New
         </Button>
+          )
+        }
+        
 
       </Box>
       {/* <div className="flex justify-end mb-2">
