@@ -4,11 +4,11 @@ import {
   useGetLimitedPartnerByIdQuery,
   useUpdateLimitedPartnerMutation,
 } from '@services/api/baseApi';
-import type { LimitedPartner } from '@services/api/types';
+import { LimitedPartner } from '@services/api/baseApi/types';
 
 type LimitedPartnerFormFields = Omit<LimitedPartner, 'user_id'>;
 
-export const useLimitedPartnerForm = (limitedPartnerId: string) => {
+ const useLimitedPartnerForm = (limitedPartnerId: string) => {
   const { data, isLoading: isFetching, error: fetchError } = useGetLimitedPartnerByIdQuery(limitedPartnerId);
   const [updateLimitedPartner, { isLoading: isUpdating, error: updateError, isSuccess }] =
     useUpdateLimitedPartnerMutation();
@@ -58,3 +58,5 @@ export const useLimitedPartnerForm = (limitedPartnerId: string) => {
     errors,
   };
 };
+
+export default useLimitedPartnerForm;
