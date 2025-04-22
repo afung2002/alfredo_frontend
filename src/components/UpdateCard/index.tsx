@@ -5,6 +5,8 @@ import Card from "../Card";
 import { useFormattedTime } from "@hooks/useFormattedTime";
 import { useDeleteFundUpdateMutation } from "../../services/api/baseApi";
 import UpdateIcon  from "@assets/update.svg";
+import { useAppContext } from "../../context/appContext";
+import { Apps } from "../../constants/apps";
 interface UpdateListCardProps {
   update: FundUpdate;
 }
@@ -14,7 +16,7 @@ const UpdateCard: React.FC<UpdateListCardProps> = ({ update }) => {
   const [showReadMore, setShowReadMore] = useState(false);
   const descriptionRef = useRef<HTMLDivElement>(null);
   const formattedUpdatedAt = useFormattedTime(update?.updated_at)
-
+  const {app} = useAppContext();
   useEffect(() => {
     if (descriptionRef.current) {
       const lineHeight = parseInt(
@@ -31,7 +33,7 @@ const UpdateCard: React.FC<UpdateListCardProps> = ({ update }) => {
   return (
     <div className="mb-4">
       <Card
-        onDelete={() => handleUpdateDelete(update.id)}
+        onDelete={app === Apps.LIMITED_PARTNER ? undefined :  () => handleUpdateDelete(update.id)}
         title={update.title}
         subtitle={<Typography variant="subtitle2">{formattedUpdatedAt}</Typography>}
         className="transition-shadow duration-200"
