@@ -1,51 +1,48 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useCreateFundLimitedPartnerMutation } from '@services/api/baseApi';
-import type { FundLimitedPartnerRequest } from '@services/api/baseApi/types';
+import {
+  useGetLimitedPartnerByIdQuery,
+  useUpdateLimitedPartnerMutation,
+} from '@services/api/baseApi';
+import type { LimitedPartner } from '@services/api/types';
 
-// Schema for selecting an existing limited partner
-const schema = z.object({
-  limitedPartners: z.string().nonempty('Please select a limited partner'),
-});
+type LimitedPartnerFormFields = Omit<LimitedPartner, 'user_id'>;
 
-type FormData = z.infer<typeof schema>;
-
-const useLimitedPartnerForm = () => {
-  const navigate = useNavigate();
-  const { fundId } = useParams<{ fundId: string }>();
-  const [createFundLP, { isLoading }] = useCreateFundLimitedPartnerMutation();
+export const useLimitedPartnerForm = (limitedPartnerId: string) => {
+  const { data, isLoading: isFetching, error: fetchError } = useGetLimitedPartnerByIdQuery(limitedPartnerId);
+  const [updateLimitedPartner, { isLoading: isUpdating, error: updateError, isSuccess }] =
+    useUpdateLimitedPartnerMutation();
 
   const {
-    control,
     handleSubmit,
-    setError,
+    control,
+    reset,
     formState: { errors },
-  } = useForm<FormData>({
-    resolver: zodResolver(schema),
-    defaultValues: { limitedPartners: '' },
+  } = useForm<LimitedPartnerFormFields>({
+    defaultValues: {
+      website_url: '',
+      legal_entity: '',
+      description: '',
+      fund: undefined,
+    },
   });
 
-  const onSubmit = async (data: FormData) => {
-    if (!fundId) {
-      console.error('Fund ID is missing in route parameters');
-      return;
+  useEffect(() => {
+    if (data) {
+      reset({
+        website_url: data.website_url || '',
+        legal_entity: data.legal_entity || '',
+        description: data.description || '',
+        fund: data.fund,
+      });
     }
+  }, [data, reset]);
 
-    // Build payload to match FundLimitedPartnerRequest
-    const payload: FundLimitedPartnerRequest = {
-      fund: Number(fundId),
-      limited_partner: data.limitedPartners,
-      invested_amount: '0', // Default amount; adjust as needed
-    };
-
+  const onSubmit = async (values: LimitedPartnerFormFields) => {
     try {
-      await createFundLP(payload).unwrap();
-      navigate(-1);
-    } catch (err: any) {
-      const message = err?.data?.message || 'Failed to add limited partner to fund';
-      setError('limitedPartners', { type: 'server', message });
+      await updateLimitedPartner({...values, user_id: "1"}).unwrap();
+    } catch (err) {
+      console.error('Update failed:', err);
     }
   };
 
@@ -53,9 +50,11 @@ const useLimitedPartnerForm = () => {
     control,
     handleSubmit,
     onSubmit,
+    isFetching,
+    isUpdating,
+    fetchError,
+    updateError,
+    isSuccess,
     errors,
-    isLoading,
   };
 };
-
-export default useLimitedPartnerForm;
