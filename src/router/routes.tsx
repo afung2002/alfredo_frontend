@@ -129,6 +129,10 @@ export const routes: RouteObject[] = [
       {
         path: Routes.LIMITED_PARTNER_UPDATES,
         element: <LimitedPartnerUpdates />,
+      },
+      {
+        path: Routes.LIMITED_PARTNER_FUND_INVESTMENT,
+        element: <Investment />,
       }
     ]
   },
