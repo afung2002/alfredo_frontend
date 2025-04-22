@@ -180,9 +180,14 @@ export const apiSlice = createApi({
       query: (id) => ({ url: `${Endpoints.DOCUMENTS}${id}/`, method: 'DELETE' }),
       invalidatesTags: (_r, _e, id) => [{ type: Tags.DOCUMENTS, id }, Tags.DOCUMENTS],
     }),
-    downloadDocument: builder.query<DocumentResponse, number>({
-      query: (id) => ({ url: `${Endpoints.DOCUMENTS}${id}/download/`, method: 'GET' }),
-      providesTags: (_r, _e, id) => [{ type: Tags.DOCUMENTS, id }],
+    downloadDocument: builder.query<Blob, number>({
+      query: (id) => ({
+        url: `${Endpoints.DOCUMENTS}${id}/download/`,
+        method: 'GET',
+        // this will tell fetch NOT to parse JSON
+        responseHandler: (response) => response.blob(),
+      }),
+      // we don't need tags here, but you can keep it if caching is needed
     }),
     getDocumentsByFundId: builder.query<DocumentResponse[], string>({
       query: (fundId) => ({
@@ -321,6 +326,7 @@ export const {
   // Limited Partners
   useRegisterLimitedPartnerMutation,
   useGetLimitedPartnersQuery,
+  useLazyGetLimitedPartnersQuery,
   useGetLimitedPartnerByIdQuery,
   useUpdateLimitedPartnerMutation,
   usePatchLimitedPartnerMutation,
