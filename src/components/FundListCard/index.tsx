@@ -40,7 +40,9 @@ const FundListCard: React.FC<FundListCardProps> = ({ fund }) => {
         actions={[
           {
             label: "View Fund",
-            onClick: () => navigate(Routes.LIMITED_PARTNER_FUND.replace(':fundId', fund.id.toString())),
+            onClick: () => {app === Apps.LIMITED_PARTNER && navigate(Routes.LIMITED_PARTNER_FUND.replace(':fundId', fund.id.toString()));
+            app === Apps.FUND_MANAGER && navigate(Routes.FUND_MANAGER_FUND.replace(':fundId', fund.id.toString()));
+            },
           },
         ]}
         tags={[
