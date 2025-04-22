@@ -73,30 +73,30 @@ const NewLimitedPartner: React.FC = () => {
               />
             </Grid>
             <Grid size={{ xs: 12 }}>
-              <Divider sx={{my: 3}}>Or</Divider>
+              <Divider sx={{ my: 3 }}>Or</Divider>
             </Grid>
             <Grid size={{ xs: 12 }}>
               <Typography variant="h6" gutterBottom>Invite new limited partner</Typography>
             </Grid>
             <Grid size={{ xs: 12 }}>
-              <Input rounded={false} label="User ID" name="user_id" control={control} 
+              <Input rounded={false} label="User ID" name="user_id" control={control}
               // error={!!errors.user_id?.message}
-               />
+              />
             </Grid>
             <Grid size={{ xs: 12 }}>
-              <Input rounded={false} label="Website URL" name="website_url" control={control} 
+              <Input rounded={false} label="Website URL" name="website_url" control={control}
               // error={!!errors.website_url?.message}
-               />
+              />
             </Grid>
             <Grid size={{ xs: 12 }}>
               <Input rounded={false} label="Legal Entity" name="legal_entity" control={control}
               //  error={!!errors.legal_entity?.message}
-                />
+              />
             </Grid>
             <Grid size={{ xs: 12 }}>
               <Input rounded={false} label="Description" name="description" multiline rows={4} control={control}
               //  error={!!errors.description?.message} 
-               />
+              />
             </Grid>
 
             <Grid size={{ xs: 12 }}>
