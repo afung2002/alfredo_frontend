@@ -1,27 +1,26 @@
 import React from 'react';
-import { Box, Typography, Grid, CircularProgress, Card, Divider } from '@mui/material';
+import { Box, Typography, Grid, CircularProgress, Card } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { formContainerStyles } from '@utils/uiUtils';
 import Input from '@components/Input';
 import Button from '@components/Button';
-import useLimitedPartnerForm from './hooks/useLimitedPartnerForm';
-import Select from '@components/Select';
-import { useGetLimitedPartnersQuery } from '@services/api/baseApi';
+import { useLimitedPartnerForm } from './hooks/useLimitedPartnerForm';
 
 const NewLimitedPartner: React.FC = () => {
-  const { fundId } = useParams<{ fundId: string }>();
-  const { data: limitedPartnersData, isLoading: limitedPartnersLoading, error: limitedPartnersError } = useGetLimitedPartnersQuery();
   const navigate = useNavigate();
+  const { limitedPartnerId } = useParams<{ limitedPartnerId: string }>();
   const {
     control,
     handleSubmit,
     onSubmit,
-    errors,
-    isLoading,
-  } = useLimitedPartnerForm();
-  console.log(errors, 'errors')
-  console.log(fundId, 'id')
+    isFetching,
+    isUpdating,
+    fetchError,
+  } = useLimitedPartnerForm(limitedPartnerId || '');
+
+  if (isFetching) return <CircularProgress />;
+  if (fetchError) return <Typography color="error">Failed to load data.</Typography>;
 
   return (
     <Box sx={formContainerStyles}>
@@ -29,83 +28,43 @@ const NewLimitedPartner: React.FC = () => {
         variant="text"
         onClick={() => navigate(-1)}
         sx={{
-          textAlign: "left",
-          color: "gray",
-          ml: "-12px",
-          mb: "20px",
-          display: "flex",
-          justifyContent: "flex-start",
-          "&:hover": { color: "black" },
+          textAlign: 'left',
+          color: 'gray',
+          ml: '-12px',
+          mb: '20px',
+          display: 'flex',
+          justifyContent: 'flex-start',
+          '&:hover': { color: 'black' },
         }}
       >
-        <ArrowBack fontSize="small" sx={{ mr: "3px" }} />
+        <ArrowBack fontSize="small" sx={{ mr: '3px' }} />
         Back
       </Button>
 
       <Typography variant="h5" component="h1" gutterBottom>
-        Register Limited Partner
+        Edit Limited Partner
       </Typography>
 
       <Card sx={{ border: '1px solid', borderColor: 'grey.200', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', p: '30px' }}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={3}>
-            <Grid size={{ xs: 12 }}>
-              <Typography variant="h6" gutterBottom>Select from existing</Typography>
+            <Grid size={{ xs: 12, lg: 6 }}>
+              <Input label="Website URL" name="website_url" control={control} />
             </Grid>
-            <Grid size={{ xs: 12 }}>
-              <Select
-                rounded={false}
-                label="Limited Partners"
-                name="limitedPartners"
-                control={control}
-                options={
-                  limitedPartnersLoading
-                    ? [{ value: '', label: 'Loading limited partners...' }]
-                    : limitedPartnersData && limitedPartnersData.length > 0
-                      ? [
-                        ...limitedPartnersData.map((lp) => ({
-                          value: String(lp.user_id ?? 'Unknown'),
-                          label: lp.legal_entity ?? 'Unknown',
-                        })),
-                      ]
-                      : [{ value: 'no_limited_partner', label: 'No limited partner found' }]
-                }
-              />
+            <Grid size={{ xs: 12, lg: 6 }}>
+              <Input label="Legal Entity" name="legal_entity" control={control} />
             </Grid>
-            <Grid size={{ xs: 12 }}>
-              <Divider sx={{ my: 3 }}>Or</Divider>
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <Typography variant="h6" gutterBottom>Invite new limited partner</Typography>
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <Input rounded={false} label="User ID" name="user_id" control={control}
-              // error={!!errors.user_id?.message}
-              />
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <Input rounded={false} label="Website URL" name="website_url" control={control}
-              // error={!!errors.website_url?.message}
-              />
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <Input rounded={false} label="Legal Entity" name="legal_entity" control={control}
-              //  error={!!errors.legal_entity?.message}
-              />
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <Input rounded={false} label="Description" name="description" multiline rows={4} control={control}
-              //  error={!!errors.description?.message} 
-              />
+            <Grid size={{ xs: 12, lg: 6 }}>
+              <Input label="Description" name="description" control={control} />
             </Grid>
 
-            <Grid size={{ xs: 12 }}>
+            <Grid size={{ xs: 12}}>
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-                <Button variant="outlined" onClick={() => navigate(-1)} disabled={isLoading}>
+                <Button variant="outlined" onClick={() => navigate(-1)} disabled={isUpdating}>
                   Cancel
                 </Button>
-                <Button type="submit" variant="contained" disabled={isLoading}>
-                  {isLoading ? <CircularProgress size={24} /> : 'Register'}
+                <Button type="submit" variant="contained" disabled={isUpdating}>
+                  {isUpdating ? <CircularProgress size={24} /> : 'Update'}
                 </Button>
               </Box>
             </Grid>
