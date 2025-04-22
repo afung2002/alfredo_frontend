@@ -7,7 +7,7 @@ import useLimitedPartnerFundForm from "./hooks/useLimitedPartnerFundForm";
 import Select from "../Select";
 import { useGetLimitedPartnersQuery } from "../../services/api/baseApi";
 import { useEffect } from "react";
-import useLimitedPartnerForm from "@src/apps/fund-manager/pages/NewLimitedPartner/hooks/useLimitedPartnerForm";
+import useLimitedPartnerForm from "./hooks/useLimitedPartnerFundForm";
 
 type NewLimitedPartnerFundFormProps = {
   fundId?: number | string;
@@ -22,7 +22,7 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal }: NewLimitedPartnerFund
     onSubmit,
     errors,
     isLoading,
-  } = useLimitedPartnerForm();
+  } = useLimitedPartnerFundForm(fundId);
   // const {
   //   control,
   //   handleSubmit,
