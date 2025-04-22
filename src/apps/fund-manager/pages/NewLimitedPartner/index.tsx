@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { formContainerStyles } from '@utils/uiUtils';
 import Input from '@components/Input';
 import Button from '@components/Button';
-import { useLimitedPartnerForm } from './hooks/useLimitedPartnerForm';
+import useLimitedPartnerForm from './hooks/useLimitedPartnerForm';
 
 const NewLimitedPartner: React.FC = () => {
   const navigate = useNavigate();
