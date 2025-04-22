@@ -5,6 +5,8 @@ import Card from "../Card";
 import { useDeleteInvestmentMutation } from "../../services/api/baseApi";
 import { InvestmentResponse } from "../../services/api/baseApi/types";
 import InvestmentIcon from "@assets/investment.svg";
+import { Apps } from "../../constants/apps";
+import { useAppContext } from "../../context/appContext";
 
 interface InvestmentCardProps {
   investment: InvestmentResponse;
@@ -17,7 +19,7 @@ const InvestmentCard: React.FC<InvestmentCardProps> = ({ investment }) => {
   const handleCardClick = () => {
     navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':investmentId', investment.id.toString()))
   }
-
+  const { app } = useAppContext();
   const handleInvestmentDelete = (investmentId: number) => {
     // Implement the delete functionality here
     deleteInvestment(investmentId)
@@ -34,7 +36,10 @@ const InvestmentCard: React.FC<InvestmentCardProps> = ({ investment }) => {
         actions={[
           {
             label: "View Investment",
-            onClick: () => navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':investmentId', investment.id.toString())),
+            onClick: () => {
+              app === Apps.LIMITED_PARTNER && navigate(Routes.LIMITED_PARTNER_FUND_INVESTMENT.replace(':investmentId', investment.id.toString()))
+            
+              app === Apps.FUND_MANAGER && navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':investmentId', investment.id.toString()))},
           },
         ]}
         tags={[
