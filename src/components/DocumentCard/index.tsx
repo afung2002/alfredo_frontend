@@ -21,23 +21,17 @@ const DocumentCard: React.FC<{ document: Document, orientation: "row" | "grid" }
     }
   }
 
-  const handleDocDownload = async (id: any) => {  
+  const handleDocDownload = async (id: number) => {
     try {
-      const result = await triggerDownload(id).unwrap();
-
-      const fileUrl = (result as any).file_url;
-      const fileName = (result as any).file_name || 'document';
-
-      if (fileUrl) {
-        const link = document.createElement('a');
-        link.href = fileUrl;
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-      } else {
-        console.error('Missing file URL in API response.');
-      }
+      const blob = await triggerDownload(id).unwrap();
+      const fileUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = fileUrl;
+      link.download = `document-${id}.pdf`; // or a better name if you have one
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(fileUrl); // cleanup
     } catch (err) {
       console.error('Failed to download the document:', err);
     }
