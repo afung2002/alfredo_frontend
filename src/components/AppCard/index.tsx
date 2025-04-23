@@ -154,7 +154,10 @@ const AppCard: React.FC<AppCardProps> = ({
     //     </Box>
     //   </CardContent>
     // </Paper>
-    <Card sx={{
+    <Card
+    onClick={handleCardClick}
+    sx={{
+      cursor: 'pointer',
       width: '100%',
       height: '100%',
       display: 'flex',
