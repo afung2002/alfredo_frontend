@@ -105,10 +105,10 @@ const AppsPage = () => {
           />
         ))}
       </Tabs>
-      <Grid container spacing={2} className="mb-4 w-full">
+      <Grid container spacing={4} className="mb-4 w-full">
         {/* <div className="flex flex-col gap-4 min-w-[600px]"> */}
         {filteredCards.map((card, index) => (
-          <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
             <AppCard
               key={index}
               title={card.title}
