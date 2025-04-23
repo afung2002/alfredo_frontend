@@ -14,12 +14,6 @@ export default defineConfig(({ mode }) => {
       react(),
       tailwindcss(),
     ],
-    server: {
-      historyApiFallback: true,
-    },
-    build: {
-      outDir: 'dist',
-    },
     resolve: {
       alias: {
         '@src': path.resolve(__dirname, './src'),
