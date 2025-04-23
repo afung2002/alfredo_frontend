@@ -31,7 +31,6 @@ const AppSideMenu = ({ sideMenuButtons }: AppSideMenuProps) => {
   };
 
   const isActive = (path: string) => {
-    console.log(path)
     switch (app) {
       case Apps.LIMITED_PARTNER:
         return path === Routes.LIMITED_PARTNER_FUNDS && location.pathname === path;
@@ -99,6 +98,7 @@ const AppSideMenu = ({ sideMenuButtons }: AppSideMenuProps) => {
       ))}
       </List>
     </Box>
+    
   )
 }
 
