@@ -236,14 +236,20 @@ export const apiSlice = createApi({
         url: `/limited-partner/${user_id}/`,
         method: 'GET',
       }),
+      providesTags: (result, error, user_id) => [
+        { type: Tags.LIMITED_PARTNERS, id: user_id }
+      ],
     }),
 
-    updateLimitedPartner: builder.mutation<LimitedPartnerResponse, { user_id: string } & LimitedPartner>({
-      query: ({ user_id, ...data }) => ({
-        url: `/limited-partner/${user_id}/`,
+    updateLimitedPartner: builder.mutation<LimitedPartnerResponse, LimitedPartner>({
+      query: (payload) => ({
+        url: `/limited-partner/${payload.user_id}/`,
         method: 'PUT',
-        body: data,
+        body: payload,
       }),
+      invalidatesTags: (result, error, { user_id }) => [
+        { type: Tags.LIMITED_PARTNERS, id: user_id }
+      ],
     }),
 
     patchLimitedPartner: builder.mutation<LimitedPartnerResponse, { user_id: string } & Partial<LimitedPartner>>({
