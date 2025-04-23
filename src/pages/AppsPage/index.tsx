@@ -15,13 +15,53 @@ import { AppType } from '../../types';
 import { searchByTitle } from '@utils/uiUtils';
 import Input from '../../components/Input';
 import { useForm } from 'react-hook-form';
-import { useSearchParams } from 'react-router-dom';
 import { SignUp } from '@clerk/clerk-react';
-
+import { useSignUp } from '@clerk/clerk-react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 const AppsPage = () => {
+  const { signUp, setActive } = useSignUp();
   const [searchParams] = useSearchParams();
-  const clerkStatus = searchParams.get('__clerk_status');
-  console.log(clerkStatus, 'clerk status')
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [verifying, setVerifying] = useState(false);
+  const [error, setError] = useState('');
+
+  const ticket = searchParams.get('__clerk_ticket');
+
+  useEffect(() => {
+    // If a Clerk ticket is present, we assume it's an invitation flow
+    const handleInvite = async () => {
+      if (!ticket) return;
+
+      try {
+        setVerifying(true);
+        await signUp?.create({ ticket });
+        await setActive({ session: signUp.createdSessionId });
+        navigate('/dashboard');
+      } catch (err: any) {
+        setError(err.errors?.[0]?.message || 'Failed to accept invitation.');
+      } finally {
+        setVerifying(false);
+      }
+    };
+
+    handleInvite();
+  }, [ticket]);
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    try {
+      await signUp?.create({ emailAddress: email, password });
+      await signUp?.prepareEmailAddressVerification({ strategy: 'email_code' });
+      alert('Check your email for the verification code!');
+    } catch (err: any) {
+      setError(err.errors?.[0]?.message || 'Sign-up failed.');
+    }
+  };
+
   const { control, watch, setValue } = useForm({
     defaultValues: {
       'searchApps': ''
@@ -54,12 +94,36 @@ const AppsPage = () => {
   return (
     <div className='min-h-screen w-full p-4 flex-1'>
       {
-        clerkStatus && (
-          <SignUp />
+        ticket && (
+          <div>
+      <h2>Custom Sign Up</h2>
+      {verifying ? (
+        <p>Verifying your invitation...</p>
+      ) : (
+        <form onSubmit={handleSignUp}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type="submit">Sign Up</button>
+        </form>
+      )}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+    </div>
         )
       }
       {
-        !clerkStatus && (
+        !ticket && (
           <>
             <Typography variant="h5" sx={{ mb: 2, fontWeight: 500, textAlign: 'left' }}>
         Cutting-Edge Applications for Startup Investing
