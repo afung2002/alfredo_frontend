@@ -5,14 +5,15 @@ import {
   useUpdateLimitedPartnerMutation,
 } from '@services/api/baseApi';
 import { LimitedPartner } from '@services/api/baseApi/types';
+import { useNavigate } from 'react-router';
 
 type LimitedPartnerFormFields = Omit<LimitedPartner, 'user_id'>;
 
- const useLimitedPartnerForm = (limitedPartnerId: string) => {
+const useLimitedPartnerForm = (limitedPartnerId: string) => {
   const { data, isLoading: isFetching, error: fetchError } = useGetLimitedPartnerByIdQuery(limitedPartnerId);
   const [updateLimitedPartner, { isLoading: isUpdating, error: updateError, isSuccess }] =
     useUpdateLimitedPartnerMutation();
-
+  const navigate = useNavigate();
   const {
     handleSubmit,
     control,
@@ -21,7 +22,8 @@ type LimitedPartnerFormFields = Omit<LimitedPartner, 'user_id'>;
   } = useForm<LimitedPartnerFormFields>({
     defaultValues: {
       website_url: '',
-      legal_entity: '',
+      email: '',
+      name: '',
       description: '',
       fund: undefined,
     },
@@ -31,7 +33,8 @@ type LimitedPartnerFormFields = Omit<LimitedPartner, 'user_id'>;
     if (data) {
       reset({
         website_url: data.website_url || '',
-        legal_entity: data.legal_entity || '',
+        name: data.name || '',
+        email: data.email || '',
         description: data.description || '',
         fund: data.fund,
       });
@@ -39,8 +42,11 @@ type LimitedPartnerFormFields = Omit<LimitedPartner, 'user_id'>;
   }, [data, reset]);
 
   const onSubmit = async (values: LimitedPartnerFormFields) => {
+    console.log('Form submitted with values:', values);
+    console.log('Limited Partner ID:', limitedPartnerId);
     try {
-      await updateLimitedPartner({...values, user_id: "1"}).unwrap();
+      await updateLimitedPartner({user_id: limitedPartnerId, ...values }).unwrap();
+      navigate(-1); // Navigate back after successful update
     } catch (err) {
       console.error('Update failed:', err);
     }
