@@ -19,6 +19,8 @@ import UploadDocumentModal from "@components/UploadDocumentModal";
 import { useEffect, useState } from "react";
 import { searchByTitle } from "@utils/uiUtils";
 import { formatNumberString } from "../../../../utils";
+import { Apps } from "@src/constants/apps";
+import { useAppContext } from "../../../../context/appContext";
 
 const Investment: React.FC = () => {
   const { investmentId } = useParams<{ investmentId: string }>();
@@ -59,8 +61,8 @@ const Investment: React.FC = () => {
   }
   const handleEdit = () => {
     navigate(Routes.FUND_MANAGER_INVESTMENT_EDIT.replace(":investmentId", investmentId || ""));
-  };
-
+  }; 
+  const {app} = useAppContext();
 
   if (investmentLoading) {
     return (
@@ -158,13 +160,18 @@ const Investment: React.FC = () => {
                 <Link fontSize="small" />
               </IconButton> */}
             </Box>
-            <IconButton
+            {
+              app === Apps.FUND_MANAGER && (
+                <IconButton
               onClick={handleEdit}
               size="small"
               sx={{ color: "black" }}
             >
               <Edit />
             </IconButton>
+              )
+            }
+            
           </Box>
 
           <Box sx={{ display: "flex", flexDirection: "column", gap: 0 }}>
@@ -287,7 +294,7 @@ const Investment: React.FC = () => {
       <UploadDocumentModal
         open={isUploadModalOpen}
         onClose={handleModalClose}
-        investment={investmentId}
+        investmentId={investmentId}
       />
     </Box>
   );

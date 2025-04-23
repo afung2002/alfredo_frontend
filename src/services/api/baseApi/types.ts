@@ -128,9 +128,10 @@ export type FundDetail = FundResponse & {
 export type LimitedPartner = {
   user_id: string;
   website_url?: string | null;
-  legal_entity?: string | null;
   description?: string | null;
   fund?: number; // Fund ID
+  email: string;
+  name: string;
 };
 
 export type LimitedPartnerResponse = LimitedPartner & {

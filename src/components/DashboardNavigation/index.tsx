@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useClerk } from "@clerk/clerk-react";
 import { Routes } from "@constants/routes";
-import LogoBlack from "@assets/predictiveLogoBlack.svg";
+import LogoBlack from "@assets/Alfred AI.png";
 const DashboardNavigation: React.FC = () => {
   const navigate = useNavigate();
   const { signOut } = useClerk();

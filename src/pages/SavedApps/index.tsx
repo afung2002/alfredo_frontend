@@ -3,6 +3,7 @@ import {
   Typography,
   Tabs,
   Tab,
+  Grid,
 } from '@mui/material';
 import AppCard from '@components/AppCard';
 import { APPS_FILTER_TABS } from '@constants/index';
@@ -92,9 +93,10 @@ const SavedApps = () => {
           />
         ))}
       </Tabs>
-
-      <div className="flex flex-col gap-4 min--[600px]">
+      <Grid container spacing={2} className="mb-4 w-full">
+      {/* <div className="flex flex-col gap-4 min--[600px]"> */}
         {filteredCards?.map((card, index) => (
+          <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
           <AppCard
             key={index}
             title={card.title}
@@ -104,8 +106,10 @@ const SavedApps = () => {
             path={card.path}
             onAdd={() => handleToggleApp(card)}
           />
+          </Grid>
         ))}
-      </div>
+      {/* </div> */}
+      </Grid>
     </div>
   )
 }

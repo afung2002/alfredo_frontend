@@ -180,9 +180,14 @@ export const apiSlice = createApi({
       query: (id) => ({ url: `${Endpoints.DOCUMENTS}${id}/`, method: 'DELETE' }),
       invalidatesTags: (_r, _e, id) => [{ type: Tags.DOCUMENTS, id }, Tags.DOCUMENTS],
     }),
-    downloadDocument: builder.query<DocumentResponse, number>({
-      query: (id) => ({ url: `${Endpoints.DOCUMENTS}${id}/download/`, method: 'GET' }),
-      providesTags: (_r, _e, id) => [{ type: Tags.DOCUMENTS, id }],
+    downloadDocument: builder.query<Blob, number>({
+      query: (id) => ({
+        url: `${Endpoints.DOCUMENTS}${id}/download/`,
+        method: 'GET',
+        // this will tell fetch NOT to parse JSON
+        responseHandler: (response) => response.blob(),
+      }),
+      // we don't need tags here, but you can keep it if caching is needed
     }),
     getDocumentsByFundId: builder.query<DocumentResponse[], string>({
       query: (fundId) => ({
@@ -231,14 +236,20 @@ export const apiSlice = createApi({
         url: `/limited-partner/${user_id}/`,
         method: 'GET',
       }),
+      providesTags: (result, error, user_id) => [
+        { type: Tags.LIMITED_PARTNERS, id: user_id }
+      ],
     }),
 
-    updateLimitedPartner: builder.mutation<LimitedPartnerResponse, { user_id: string } & LimitedPartner>({
-      query: ({ user_id, ...data }) => ({
-        url: `/limited-partner/${user_id}/`,
+    updateLimitedPartner: builder.mutation<LimitedPartnerResponse, LimitedPartner>({
+      query: (payload) => ({
+        url: `/limited-partner/${payload.user_id}/`,
         method: 'PUT',
-        body: data,
+        body: payload,
       }),
+      invalidatesTags: (result, error, { user_id }) => [
+        { type: Tags.LIMITED_PARTNERS, id: user_id }
+      ],
     }),
 
     patchLimitedPartner: builder.mutation<LimitedPartnerResponse, { user_id: string } & Partial<LimitedPartner>>({
@@ -284,6 +295,7 @@ export const {
   useUpdateFundUpdateMutation,
   usePatchFundUpdateMutation,
   useDeleteFundUpdateMutation,
+  useLazyGetFundsQuery,
 
   // Companies
   useGetCompaniesQuery,
@@ -302,6 +314,7 @@ export const {
   useUpdateInvestmentMutation,
   usePatchInvestmentMutation,
   useDeleteInvestmentMutation,
+  useLazyGetInvestmentsQuery,
 
   // Documents
   useGetDocumentsQuery,
@@ -319,6 +332,7 @@ export const {
   // Limited Partners
   useRegisterLimitedPartnerMutation,
   useGetLimitedPartnersQuery,
+  useLazyGetLimitedPartnersQuery,
   useGetLimitedPartnerByIdQuery,
   useUpdateLimitedPartnerMutation,
   usePatchLimitedPartnerMutation,

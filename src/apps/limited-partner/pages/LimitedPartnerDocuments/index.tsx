@@ -5,13 +5,11 @@ import UploadDocumentModal from '@components/UploadDocumentModal';
 import { searchByTitle } from '@utils/uiUtils';
 import Input from '@components/Input';
 import { useForm } from 'react-hook-form';
-import Button from '@components/Button';
 import DocumentsList from '@components/DocumentsList';
 import { useGetDocumentsQuery } from '@services/api/baseApi';
 import { Apps } from '@src/constants/apps';
-import { useAppContext } from '../../../../context/appContext';
 
-const Documents = () => {
+const LimitedPartnerDocuments = () => {
   const { data: documentsData, isLoading: isLoadingDocuments, error: errorDocuments } = useGetDocumentsQuery();
 
   const { control, watch } = useForm({
@@ -38,7 +36,14 @@ const Documents = () => {
   }, [searchValue, documentsData]);
 
 
-  const {app} = useAppContext()
+  // useEffect(() => {
+  //   const filteredDocs = documents.filter((doc) => {
+  //     if (selectedTab === 'all') return true;
+  //     return doc.type === selectedTab;
+  //   });
+  //   setFilteredDocs(filteredDocs);
+  //   setValue('searchDocuments', '');
+  // }, [selectedTab, documents, setValue]);
   const handleModalClose = () => {
     setIsUploadModalOpen(false);
   }
@@ -62,59 +67,39 @@ const Documents = () => {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-      {/* Document Statistics */}
-      <Box className="flex gap-3 items-center" sx={{ mb: 1 }}>
-        <Typography variant="h3" sx={{ mb: 1, fontWeight: 600, textAlign: 'left' }}>
-          Documents
-        </Typography>
-        <Chip
-          label={documentsData?.length}
-          color="secondary"
-          sx={{ fontSize: '0.875rem', fontWeight: 700, borderRadius: '4px' }}
-        />
-      </Box>
+          {/* Document Statistics */}
+          <Box className="flex gap-3 items-center" sx={{ mb: 1 }}>
+            <Typography variant="h3" sx={{ mb: 1, fontWeight: 600, textAlign: 'left' }}>
+              Documents
+            </Typography>
+            <Chip
+              label={documentsData?.length}
+              color="secondary"
+              sx={{ fontSize: '0.875rem', fontWeight: 700, borderRadius: '4px' }}
+            />
+          </Box>
+    
+          <Box sx={{ display: "flex", gap: 2, mb: 2, width: '100%' }}>
+    
+            <Input
+              type="text"
+              name="searchDocuments"
+              control={control}
+              placeholder="Search documents..."
+              className="flex flex-col w-full"
+            />
+    
+          </Box>
+    
+          <DocumentsList selectedOrientation={selectedOrientation}  documents={filteredDocs} isLoading={isLoadingDocuments} />
+    
+          {/* Upload Modal */}
+          <UploadDocumentModal
+            open={isUploadModalOpen}
+            onClose={handleModalClose}
+          />
+        </Box>
+  )
+}
 
-      <Box sx={{ display: "flex", gap: 2, mb: 2, width: '100%' }}>
-
-        <Input
-          type="text"
-          name="searchDocuments"
-          control={control}
-          placeholder="Search documents..."
-          className="flex flex-col w-full"
-        />
-        {
-          app !== Apps.LIMITED_PARTNER && (
-            <Button
-          onClick={() => setIsUploadModalOpen(true)}
-        >
-          Upload New
-        </Button>
-          )
-        }
-        
-
-      </Box>
-      {/* <div className="flex justify-end mb-2">
-        <ToggleButtonGroup  color="secondary" value={selectedOrientation} exclusive onChange={handleOrientationChange}>
-          <ToggleButton  value="grid" onClick={() => setSelectedOrientation('grid')} sx={{ textTransform: 'none' }}>
-            <AppsIcon sx={{ fontSize: '1.2rem' }} />
-          </ToggleButton>
-          <ToggleButton value="row" onClick={() => setSelectedOrientation('row')} sx={{ textTransform: 'none' }}>
-            <TableRowsIcon sx={{ fontSize: '1.2rem' }} />
-          </ToggleButton>
-        </ToggleButtonGroup>
-      </div> */}
-
-      <DocumentsList selectedOrientation={selectedOrientation}  documents={filteredDocs} isLoading={isLoadingDocuments} />
-
-      {/* Upload Modal */}
-      <UploadDocumentModal
-        open={isUploadModalOpen}
-        onClose={handleModalClose}
-      />
-    </Box>
-  );
-};
-
-export default Documents; 
+export default LimitedPartnerDocuments

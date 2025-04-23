@@ -4,6 +4,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import React, { useState } from "react";
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import DownloadIcon from '@mui/icons-material/Download';
+import { on } from "events";
 type CardPropsType = CardProps & {
   children?: React.ReactNode;
   onClick?: () => void;
@@ -48,13 +49,13 @@ const Card = ({ children, onClick, className, title, subtitle, actions, tags, on
   return (
     <>
       <MuiCard variant="outlined" sx={{ borderRadius: '8px' }} className={`flex !border-none ${orientation === 'grid' ? 'flex-col' : ''} ${className}`} onClick={onClick}>
-        {
+        {/* {
           sideImage && (
             <div className={` bg-slate-200 flex justify-center items-center ${orientation === 'grid' ? 'h-32 w-full' : 'h-auto w-1/3'}`}>
               <img src={sideImage} alt="sideImage" className={`${orientation === 'grid' ? 'w-1/2 h-2/3' : 'w-1/2 h-full'}`} />
             </div>
           )
-        }
+        } */}
         <div className="flex flex-col w-full h-full justify-between p-2">
           <CardHeader
             avatar={

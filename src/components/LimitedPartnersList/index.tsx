@@ -19,7 +19,7 @@ const LimitedPartnersList = ({limitedPartners, isLoading}: LimitedPartnersListPr
     <>
       {
         limitedPartners && limitedPartners?.length > 0 && limitedPartners.map((partner, index) => (
-          <LimitedPartnerCard limitedPartner={partner} />
+          <LimitedPartnerCard key={index} limitedPartner={partner} />
         ))
       }
     </>
