@@ -48,11 +48,14 @@ const NewLimitedPartner: React.FC = () => {
       <Card sx={{ border: '1px solid', borderColor: 'grey.200', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', p: '30px' }}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={3}>
-            <Grid size={{ xs: 12, lg: 6 }}>
-              <Input label="Website URL" name="website_url" control={control} />
+          <Grid size={{ xs: 12, lg: 6 }}>
+              <Input label="Name" name="name" control={control} />
             </Grid>
             <Grid size={{ xs: 12, lg: 6 }}>
-              <Input label="Legal Entity" name="legal_entity" control={control} />
+              <Input label="Email" name="email" control={control} />
+            </Grid>
+            <Grid size={{ xs: 12, lg: 6 }}>
+              <Input label="Website URL" name="website_url" control={control} />
             </Grid>
             <Grid size={{ xs: 12, lg: 6 }}>
               <Input label="Description" name="description" control={control} />
