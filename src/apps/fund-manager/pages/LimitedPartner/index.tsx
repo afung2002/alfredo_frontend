@@ -6,6 +6,7 @@ import { ArrowBack, Edit } from "@mui/icons-material";
 import { useGetDocumentsQuery, useGetLimitedPartnerByIdQuery } from "@src/services/api/baseApi";
 import { Routes } from "@src/constants/routes";
 import DocumentsList from "../../../../components/DocumentsList";
+import { Link } from "@mui/icons-material";
 
 const LimitedPartner: React.FC = () => {
   const { limitedPartnerId } = useParams<{ limitedPartnerId: string }>();
@@ -95,21 +96,34 @@ const LimitedPartner: React.FC = () => {
           >
 
             <Box sx={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
-              <div className="flex gap-1 items-center">
-                <Typography variant="body2">Legal Entity:</Typography>
+              {/* <div className="flex gap-1 items-center">
+                <Typography variant="body2">Name: </Typography>
                 <Typography variant="body1" >
-                  {limitedPartner.legal_entity}
+                  {limitedPartner?.name}
                 </Typography>
-              </div>
+              </div> */}
+              <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                <Typography variant="h6" sx={{ fontWeight: 500 }}>
+                  {limitedPartner?.name}
+                </Typography>
+                <IconButton
+                  onClick={() => window.open(limitedPartner?.website_url as string, "_blank")}
+                  size="small"
+                  sx={{ color: "text.secondary" }}
+                  title="Open website"
+                >
+                  <Link fontSize="small" />
+                </IconButton>
+              </Box>
 
               <IconButton onClick={handleEdit} size="small" sx={{ color: "black" }}>
                 <Edit />
               </IconButton>
             </Box>
             <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
-              <Typography variant="body2">Website Url</Typography>
+              <Typography variant="body2">Email: </Typography>
               <Typography variant="body2" color="text.secondary">
-                {limitedPartner.website_url}
+                {limitedPartner.email}
               </Typography>
             </Box>
             <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
