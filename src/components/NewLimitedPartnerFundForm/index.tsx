@@ -58,7 +58,7 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal }: NewLimitedPartnerFund
                     ? [
                       ...limitedPartnersData.map((lp) => ({
                         value: String(lp.user_id ?? 'Unknown'),
-                        label: lp.legal_entity ?? 'Unknown',
+                        label: lp.name ?? 'Unknown',
                       })),
                     ]
                     : [{ value: 'no_limited_partner', label: 'No limited partner found' }]
@@ -80,8 +80,28 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal }: NewLimitedPartnerFund
           <Grid size={{ xs: 12 }}>
             <Typography variant="h6" gutterBottom>Invite new limited partner</Typography>
           </Grid>
-          <Grid size={{ xs: 12 }}>
+          <Grid size={{ xs: 12, lg: 6 }}>
+            <Input type="text" rounded={false} label="Name" name="name" control={control}
+            // error={!!errors.email?.message}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, lg: 6 }}>
             <Input type="email" rounded={false} label="Email" name="email" control={control}
+            // error={!!errors.email?.message}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, lg: 6 }}>
+            <Input type="text" rounded={false} label="Website" name="website" control={control}
+            // error={!!errors.email?.message}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, lg: 6 }}>
+            <Input type="text" rounded={false} label="Fund amount" name="fundAmount" control={control}
+            // error={!!errors.email?.message}
+            />
+          </Grid>
+          <Grid size={{ xs: 12 }}>
+            <Input multiline rows={4}  rounded={false} label="Description" name="description" control={control}
             // error={!!errors.email?.message}
             />
           </Grid>
