@@ -14,8 +14,8 @@ const LimitedPartnerCard = ({limitedPartner}:LimitedPartnerCardProps ) => {
   console.log(limitedPartner, 'limitedPartner')
   return (
     <Card
-      title={limitedPartner.legal_entity}
-      subtitle={limitedPartner.website_url}
+      title={limitedPartner.name}
+      subtitle={limitedPartner.email}
       sideImage={PartnersIcon}
       actions={[
         {
