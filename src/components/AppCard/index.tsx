@@ -171,7 +171,9 @@ const AppCard: React.FC<AppCardProps> = ({
         image={imageUrl}
         title={title}
       />
-      <CardContent>
+      <CardContent sx={{
+        p: 3,
+      }}>
         <Typography gutterBottom variant="h5" component="div">
           {title}
         </Typography>
@@ -179,10 +181,14 @@ const AppCard: React.FC<AppCardProps> = ({
         {description}
         </Typography>
       </CardContent>
-      <CardActions className="flex justify-between items-center">
+      <CardActions sx={{px:3}} className="flex justify-between items-center">
         <Chip
-          label={category}
+          label={
+            <b>{category}</b>
+            
+          }
           size="small"
+          color='primary'
           sx={{
             backgroundColor: 'grey.100',
             borderRadius: '5px',
@@ -190,6 +196,8 @@ const AppCard: React.FC<AppCardProps> = ({
           }}
         />
         <IconButton
+        size='large'
+        edge="end"
           className="MuiIconButton-root"
           onClick={onAdd}
           sx={{
