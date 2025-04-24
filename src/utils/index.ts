@@ -78,13 +78,15 @@ export function getReferencedFunds(investments: InvestmentResponse[], funds: Fun
 
 export const getReferencedCompanies = (investments: InvestmentResponse[], investmentType: string, id?: string) => {
   console.log(investments, 'investments')
-  console.log(investmentType, 'investmentType')
+  console.log(investmentType, 'angle-investment')
+  console.log(investmentType === "angle-investment")
   console.log(id, 'id')
   if (investmentType === "fund-investment") {
     const companies = investments.filter(inv => inv.type === "FUND" && inv.fund === +id).map(inv => inv.company);
     console.log(companies, 'companies')
     return companies
-  } else if (investmentType === "angle-investment") {
+  } else if (investmentType === "angel-investment") {
+    console.log('angel')
     return investments.filter(inv => inv.type === "ANGEL").map(inv => inv.company);
   }
 }
