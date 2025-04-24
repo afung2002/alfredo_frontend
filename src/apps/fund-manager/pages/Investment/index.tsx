@@ -6,6 +6,7 @@ import {
   CircularProgress,
   Alert,
   Paper,
+  Button
 } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowBack, Edit } from "@mui/icons-material";
@@ -14,7 +15,6 @@ import { useGetDocumentsByInvestmentIdQuery, useGetDocumentsQuery, useGetInvestm
 import DocumentsList from "@components/DocumentsList";
 import Input from "@components/Input";
 import { useForm } from "react-hook-form";
-import Button from "@components/Button";
 import UploadDocumentModal from "@components/UploadDocumentModal";
 import { useEffect, useState } from "react";
 import { searchByTitle } from "@utils/uiUtils";
@@ -278,6 +278,7 @@ const Investment: React.FC = () => {
       <Box sx={{ display: "flex", gap: 2, mb: 2, width: '100%' }}>
 
         <Input
+          rounded
           type="text"
           name="searchDocuments"
           control={control}
@@ -285,7 +286,19 @@ const Investment: React.FC = () => {
           className="flex flex-col w-full"
         />
         <Button
-          onClick={() => setIsUploadModalOpen(true)}>
+          onClick={() => setIsUploadModalOpen(true)}
+          variant="contained"
+          sx={{
+            flexShrink: 0,
+            textTransform: "none",
+            bgcolor: "black",
+            color: "white",
+            borderRadius: "2px",
+            "&:hover": {
+              bgcolor: "rgba(0, 0, 0, 0.8)",
+            },
+          }}
+          >
           Upload New
         </Button>
 

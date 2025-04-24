@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, CircularProgress, Alert, Tab, Tabs, Chip } from '@mui/material';
+import { Box, Typography, CircularProgress, Alert, Tab, Tabs, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { InvestmentDetails, InvestmentType } from '../../../../types';
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
@@ -11,7 +11,6 @@ import { FILTER_TABS, DEFAULT_TAB } from '@constants/index';
 import { Routes } from '@constants/routes';
 import Input from '@components/Input';
 import { useForm } from 'react-hook-form';
-import Button from '@components/Button';
 import InvestmentsList from '@src/components/InvestmentsList';
 import { useGetInvestmentsQuery } from '@services/api/baseApi';
 import { calculateInvestmentTotals, formatNumberString } from '../../../../utils';
@@ -84,29 +83,30 @@ const Investments = () => {
     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
       <Box sx={{ mb: 1 }}>
         <Box className="flex gap-3 items-center" sx={{ mb: 1 }}>
-        <Typography variant="h3" sx={{ mb: 1, fontWeight: 600, textAlign: 'left' }}>
-          Investments
-        </Typography>
-        <Chip
-          label={totalInvestments}
-          color="secondary"
-          sx={{ fontSize: '0.875rem', fontWeight: 700, borderRadius: '4px' }}
-        />
+          <Typography sx={{ textAlign: 'left', fontSize: '1.5rem', lineHeight: '1.334', fontWeight: 500 }}>
+            {totalInvestments} Investments
+          </Typography>
+          {/* <Chip
+            label={totalInvestments}
+            color="secondary"
+            sx={{ fontSize: '0.875rem', fontWeight: 700, borderRadius: '4px' }}
+          /> */}
         </Box>
-        
+
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: '475px' }}>
           <Typography variant="subtitle1" sx={{ color: "text.secondary", fontWeight: 500 }}>
             {formatNumberString(totalFundInvested)} invested
           </Typography>
           <FiberManualRecordIcon sx={{ fontSize: 8, color: "black" }} />
           <Typography variant="subtitle1" sx={{ color: "text.secondary", fontWeight: 500 }}>
-            {formatNumberString(totalEstimatedValue)} ESV
+            {formatNumberString(totalEstimatedValue)} est value
           </Typography>
         </Box>
       </Box>
 
       <Box sx={{ display: "flex", gap: 2, mb: 2, width: '100%' }}>
         <Input
+          rounded
           type="text"
           name="searchInvestments"
           control={control}
@@ -115,6 +115,17 @@ const Investments = () => {
         />
         <Button
           onClick={handleAddNew}
+          variant="contained"
+          sx={{
+            flexShrink: 0,
+            textTransform: "none",
+            bgcolor: "black",
+            color: "white",
+            borderRadius: "2px",
+            "&:hover": {
+              bgcolor: "rgba(0, 0, 0, 0.8)",
+            },
+          }}
         >
           Add New
         </Button>
@@ -126,25 +137,29 @@ const Investments = () => {
         variant="scrollable"
         scrollButtons={false}
         TabIndicatorProps={{ style: { display: 'none' } }}
-
       >
         {FILTER_TABS.map((tab) => (
           <Tab
+            disableFocusRipple
+            disableTouchRipple
             sx={{
               minHeight: 32,
               minWidth: 'auto',
               px: 4,
               borderRadius: '50px',
               textTransform: 'none',
-              bgcolor: tab.value === selectedTab ? 'primary.main' : 'grey.200',
-              color: tab.value === selectedTab ? 'white' : 'black',
+              bgcolor: 'transparent !important', // Set background transparent
+              color: 'gray',
               mx: 1,
               fontSize: 14,
-              fontWeight: 500,
+              fontWeight: 600,
+              border: '1px solid gray',
               '&.Mui-selected': {
-                bgcolor: 'primary.main',
-                color: 'white',
+                border: '1px solid black',
+                bgcolor: 'transparent !important', // Ensure selected tab is also transparent
+                color: 'black', // Optional: change color for selected tab
               },
+
             }}
             key={tab.value}
             label={tab.label}
@@ -153,6 +168,7 @@ const Investments = () => {
           />
         ))}
       </Tabs>
+
       <InvestmentsList
         investments={filteredInvestments}
       />
