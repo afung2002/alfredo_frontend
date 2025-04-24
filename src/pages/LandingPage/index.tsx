@@ -1,5 +1,5 @@
 import { Box, Container } from '@mui/material';
-import { SignIn, SignUp, useUser } from '@clerk/clerk-react';
+import { SignIn, useUser } from '@clerk/clerk-react';
 import { Navigate, useNavigate } from 'react-router';
 import Loader from '../../components/Loader';
 import { useEffect, useState } from 'react';
@@ -71,7 +71,29 @@ const LandingPage = () => {
       {
         ticket && (
           <div>
-      <SignUp />
+      <h2>Custom Sign Up</h2>
+      {verifying ? (
+        <p>Verifying your invitation...</p>
+      ) : (
+        <form onSubmit={handleSignUp}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type="submit">Sign Up</button>
+        </form>
+      )}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
         )
       }
