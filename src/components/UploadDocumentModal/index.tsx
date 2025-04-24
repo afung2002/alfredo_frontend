@@ -11,7 +11,7 @@ import Input from '@components/Input';
 import Button from '@components/Button';
 import useUploadDocumentForm from './hooks/useUploadDocumentForm';
 import Select from '../Select';
-import { useLazyGetCompaniesQuery, useLazyGetFundsQuery, useLazyGetInvestmentsQuery } from '@services/api/baseApi';
+import { useLazyGetCompaniesQuery, useLazyGetFundsQuery, useGetInvestmentsQuery } from '@services/api/baseApi';
 import { useEffect, useState } from 'react';
 import { getReferencedCompanies, getReferencedFunds } from '../../utils';
 
@@ -30,7 +30,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
 }) => {
   console.log(fundId, 'fundId')
   const [getFunds, { data: funds, isLoading: isFundsLoading, error: fundsError }] = useLazyGetFundsQuery();
-  const [getInvestments, { data: investments, isLoading: isInvestmentsLoading, error: investmentsError }] = useLazyGetInvestmentsQuery();
+  const { data: investments, isLoading: isInvestmentsLoading, error: investmentsError } = useGetInvestmentsQuery();
   const [getCompanies, { data: companies, isLoading: isCompaniesLoading, error: companiesError }] = useLazyGetCompaniesQuery();
   const [filteredFunds, setFilteredFunds] = useState([]);
   const [filteredCompanies, setFilteredCompanies] = useState([]);
@@ -46,7 +46,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
   }, investmentId, fundId);
   const documentType = watch('documentType');
   const fund = watch('fund');
-  console.log(documentType, 'documentType')
+  console.log(watch('company'), 'company')
   useEffect(() => {
     if (!documentType) return;
     switch (documentType) {
@@ -55,7 +55,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
         break;
       case 'fund-investment':
         getFunds();
-        getInvestments();
+        // getInvestments();
         getCompanies();
         break;
       case 'fund-management':
@@ -74,10 +74,11 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
     }
   }, [documentType, funds, investments, companies]);
   useEffect(() => {
-    if (!fund) return;
+    // if (!fund || !) return;
     if (documentType === 'fund-investment') {
       setFilteredCompanies(getReferencedCompanies(investments, documentType, fund))
     } else if (documentType === 'angel-investment') {
+      console.log('angel1')
       setFilteredCompanies(getReferencedCompanies(investments, documentType))
     }
   }, [fund, documentType, investments, companies]);
