@@ -2,7 +2,6 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useUploadDocumentMutation } from '@services/api/baseApi';
-import { useEffect } from 'react';
 
 // Validation schema
 const schema = z.object({
@@ -23,7 +22,9 @@ export type UploadDocumentFormData = z.infer<typeof schema>;
 const useUploadDocumentForm = (
   onSuccess: () => void,
   investmentId?: string,
-  fundId?: string
+  fundId?: string,
+  limitedPartner?: string,
+
 ) => {
   const [uploadDocument, { isLoading }] = useUploadDocumentMutation();
 
@@ -70,7 +71,6 @@ const useUploadDocumentForm = (
           name: data.docTitle,
           description: data.description,
           file,
-          fund_manager_id: '1', // TODO: Replace with dynamic ID
         };
 
         if (!documentType && fundId) {
@@ -86,6 +86,7 @@ const useUploadDocumentForm = (
         }
 
         if (documentType === 'fund-investment') {
+          console.log(getValues('company'))
           payload.fund = getValues('fund');
           payload.investment = getValues('investment');
           payload.company_name = getValues('company');
@@ -94,7 +95,10 @@ const useUploadDocumentForm = (
         if (documentType === 'angel-investment') {
           payload.company_name = getValues('company');
         }
-
+        if (limitedPartner) {
+          payload.limited_partner = limitedPartner;
+        }
+        console.log(payload, 'payload')
         await uploadDocument(payload).unwrap();
 
         reset();
