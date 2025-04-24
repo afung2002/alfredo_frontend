@@ -51,6 +51,7 @@ const AppSideMenu = ({ sideMenuButtons }: AppSideMenuProps) => {
   };
   return (
     <Box
+    
       sx={{
         width: '250px',
         p: 3,
@@ -58,6 +59,7 @@ const AppSideMenu = ({ sideMenuButtons }: AppSideMenuProps) => {
         borderColor: 'divider',
         display: 'flex',
         flexDirection: 'column',
+        bgcolor: '#f2f0f5'
       }}
     >
       <div>

@@ -45,150 +45,47 @@ const AppCard: React.FC<AppCardProps> = ({
   };
   const isSaved = savedApps?.some((app) => app.title === title);
   return (
-    // <Paper
-    //   onClick={handleCardClick}
-    //   sx={{
-    //     width: '100%',
-    //     height: 100,
-    //     display: 'flex',
-    //     alignItems: 'center',
-    //     cursor: 'pointer',
-    //     borderRadius: 2,
-    //     boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
-    //     overflow: 'hidden',
-    //     backgroundColor: '#FFF',
-
-    //     '&:hover': {
-    //       boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-    //     },
-    //   }}
-    // >
-    //   {/* Image Container */}
-    //   <Box
-    //     sx={{
-    //       width: 120,
-    //       height: '100%',
-    //       flexShrink: 0,
-    //       // backgroundColor: 'grey.100',
-    //       overflow: 'hidden',
-    //     }}
-    //   >
-    //     <Box
-    //       component="img"
-    //       src={imageUrl}
-    //       alt={title}
-    //       sx={{
-    //         width: '100%',
-    //         height: '100%',
-    //         objectFit: 'cover',
-    //       // backgroundColor: 'grey.100',
-
-    //       }}
-    //     />
-    //   </Box>
-
-    //   {/* Content */}
-    //   <CardContent
-    //     sx={{
-    //       flex: 1,
-    //       display: 'flex',
-    //       alignItems: 'flex-start',
-    //       gap: 2,
-    //       py: 2,
-    //       px: 3,
-    //       '&:last-child': { pb: 2 },
-    //     }}
-    //   >
-    //     {/* Text Content */}
-    //     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
-    //       <Typography 
-    //         variant="body2" 
-    //         sx={{ 
-    //           fontWeight: 700, 
-    //           mb: 0.3,
-    //           width: '100%',
-    //           textAlign: 'left'
-    //         }}
-    //       >
-    //         {title}
-    //       </Typography>
-    //       <Typography 
-    //         variant="body2" 
-    //         color="textSecondary"
-    //         sx={{
-    //           width: '100%',
-    //           textAlign: 'left'
-    //         }}
-    //       >
-    //         {description}
-    //       </Typography>
-    //     </Box>
-
-    //     {/* Category and Add Button */}
-    //     <Box
-    //       sx={{
-    //         display: 'flex',
-    //         alignItems: 'center',
-    //         gap: 2,
-    //         flexShrink: 0,
-    //       }}
-    //     >
-    //       <Chip
-    //         label={category}
-    //         size="small"
-    //         sx={{
-    //           backgroundColor: 'grey.100',
-    //           borderRadius: '5px',
-    //           color: 'primary.main',
-    //         }}
-    //       />
-    //       <IconButton
-    //         className="MuiIconButton-root"
-    //         onClick={onAdd}
-    //         sx={{
-    //           color: 'primary.main',
-    //         }}
-    //       >
-    //         {isSaved ? <RemoveCircleOutlineIcon color="action" /> : <AddCircleOutlineIcon />}
-    //       </IconButton>
-    //     </Box>
-    //   </CardContent>
-    // </Paper>
     <Card
-    onClick={handleCardClick}
-    sx={{
-      cursor: 'pointer',
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      borderRadius: 2,
-      boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
-      overflow: 'hidden',
-      backgroundColor: '#FFF',
+      onClick={handleCardClick}
+      sx={{
+        boxShadow: 'rgb(0 0 0 / 10%) 0px 2px 4px',
+        cursor: 'pointer',
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        borderRadius: 2,
+        overflow: 'hidden',
+        backgroundColor: '#FFF',
+        '&:hover': {
+          boxShadow: 'rgb(0 0 0 / 15%) 0px 4px 6px',
+        },
 
-    }}>
+      }}>
       <CardMedia
-        sx={{ height: '150px' }}
+        sx={{ height: '120px' }}
         image={imageUrl}
         title={title}
       />
       <CardContent sx={{
-        p: 3,
+        p: '18px',
       }}>
-        <Typography gutterBottom variant="h5" component="div">
+        <Typography gutterBottom sx={{
+          fontSize: '1rem',
+          fontWeight: 500,
+        }} component="div">
           {title}
         </Typography>
-        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-        {description}
+        <Typography sx={{ color: 'text.secondary', fontSize: '0.85rem' }} color="text.secondary">
+          {description}
         </Typography>
       </CardContent>
-      <CardActions sx={{px:3}} className="flex justify-between items-center">
-        <Chip
+      <CardActions sx={{ padding: '0px 5px 5px 5px' }} className="flex justify-end items-center">
+        {/* <Chip
           label={
             <b>{category}</b>
-            
+
           }
           size="small"
           color='primary'
@@ -197,17 +94,18 @@ const AppCard: React.FC<AppCardProps> = ({
             borderRadius: '5px',
             color: 'primary.main',
           }}
-        />
+        /> */}
         <IconButton
-        size='large'
-        edge="end"
+          size='large'
+          // edge="end"
           className="MuiIconButton-root"
           onClick={onAdd}
           sx={{
             color: 'primary.main',
+            // margin: '0px 25px 8px 0px'
           }}
         >
-          {isSaved ? <RemoveCircleOutlineIcon color="action" /> : <AddCircleOutlineIcon />}
+          {isSaved ? <RemoveCircleOutlineIcon sx={{ color: '#b7b7b7' }} /> : <AddCircleOutlineIcon sx={{ color: '#b7b7b7' }} />}
         </IconButton>
       </CardActions>
     </Card>

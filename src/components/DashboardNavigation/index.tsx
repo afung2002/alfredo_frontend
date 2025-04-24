@@ -47,19 +47,22 @@ const DashboardNavigation: React.FC = () => {
         width: 250,
         minWidth:'200px',
         p: 3,
-        borderRight: "1px solid",
+        borderRight: "1px solid rgb(234 234 234)",
         borderColor: "divider",
         display: "flex",
         flexDirection: "column",
+        bgcolor: '#fafafb'
       }}
     >
       {/* Logo */}
-
+      <div className="pl-5 pb-5">
       <img
       src={LogoBlack}
       alt="Predictive Logo"
       className="w-3/4 h-auto mb-4 text-center"
       />
+      </div>
+      
 
       {/* Vertical Button Group */}
       <ButtonGroup

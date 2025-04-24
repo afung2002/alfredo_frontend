@@ -92,7 +92,7 @@ const AppsPage = () => {
 
   
   return (
-    <div className='min-h-screen w-full p-4 flex-1'>
+    <div className='min-h-screen w-full p-4 flex-1 mt-[55px]'>
       {
         ticket && (
           <div>
@@ -126,16 +126,17 @@ const AppsPage = () => {
         !ticket && (
           <>
             <Typography variant="h5" sx={{ mb: 2, fontWeight: 500, textAlign: 'left' }}>
-        Cutting-Edge Applications for Startup Investing
+            Professional Class AI Agents for Startup Investing
       </Typography>
       <Input
+        rounded
         type="text"
         name="searchApps"
         control={control}
         placeholder="Search Apps..."
-        className="flex flex-col mb-4"
+        className="flex flex-col mb-[30px]"
       />
-      <Tabs
+      {/* <Tabs
         className='mb-2'
         value={selectedTab}
         onChange={(_, newValue) => setSelectedTab(newValue)}
@@ -168,11 +169,11 @@ const AppsPage = () => {
             disableRipple
           />
         ))}
-      </Tabs>
+      </Tabs> */}
       <Grid container spacing={4} className="mb-4 w-full">
         {/* <div className="flex flex-col gap-4 min-w-[600px]"> */}
         {filteredCards.map((card, index) => (
-          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
+          <Grid size={{ xs: 12, sm: 6, md: 4, xl: 3 }} key={index}>
             <AppCard
               key={index}
               title={card.title}

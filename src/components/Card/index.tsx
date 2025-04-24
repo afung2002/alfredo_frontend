@@ -48,7 +48,13 @@ const Card = ({ children, onClick, className, title, subtitle, actions, tags, on
   };
   return (
     <>
-      <MuiCard variant="outlined" sx={{ borderRadius: '8px' }} className={`flex !border-none ${orientation === 'grid' ? 'flex-col' : ''} ${className}`} onClick={onClick}>
+      <MuiCard variant="outlined" sx={{
+        borderRadius: '8px', 
+        boxShadow: 'rgb(0 0 0 / 10%) 0px 2px 4px',
+      }} 
+      className={`flex !border-none ${orientation === 'grid' ? 'flex-col' : ''} ${className}`} 
+      onClick={onClick}
+      >
         {/* {
           sideImage && (
             <div className={` bg-slate-200 flex justify-center items-center ${orientation === 'grid' ? 'h-32 w-full' : 'h-auto w-1/3'}`}>
