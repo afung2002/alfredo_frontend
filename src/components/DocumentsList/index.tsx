@@ -34,7 +34,6 @@ const DocumentsList = ({ documents, isLoading, selectedOrientation }: DocumentsL
       </Box>
     )
   }
-  console.log(selectedOrientation, 'selectedOrientation')
 
   return (
     <>

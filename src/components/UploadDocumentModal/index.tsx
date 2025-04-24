@@ -20,15 +20,16 @@ interface UploadDocumentModalProps {
   onClose: () => void;
   investmentId?: any;
   fundId?: any;
+  limitedPartnerId?: any;
 }
 
 const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
   open,
   onClose,
   investmentId,
-  fundId
+  fundId,
+  limitedPartnerId,
 }) => {
-  console.log(fundId, 'fundId')
   const [getFunds, { data: funds, isLoading: isFundsLoading, error: fundsError }] = useLazyGetFundsQuery();
   const { data: investments, isLoading: isInvestmentsLoading, error: investmentsError } = useGetInvestmentsQuery();
   const [getCompanies, { data: companies, isLoading: isCompaniesLoading, error: companiesError }] = useLazyGetCompaniesQuery();
@@ -43,7 +44,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
     watch,
   } = useUploadDocumentForm(() => {
     onClose();
-  }, investmentId, fundId);
+  }, investmentId, fundId, limitedPartnerId);
   const documentType = watch('documentType');
   const fund = watch('fund');
   console.log(watch('company'), 'company')
