@@ -17,6 +17,7 @@ import { selectUserApps } from '../../redux/selectors/user.selector';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { CardMedia } from '@mui/material';
 import Button from '../Button';
+import LockIcon from '../../assets/lock.svg';
 interface AppCardProps {
   title: string;
   description: string;
@@ -58,6 +59,7 @@ const AppCard: React.FC<AppCardProps> = ({
         borderRadius: 2,
         overflow: 'hidden',
         backgroundColor: '#FFF',
+        position: 'relative',
         '&:hover': {
           boxShadow: 'rgb(0 0 0 / 15%) 0px 4px 6px',
         },
@@ -68,6 +70,11 @@ const AppCard: React.FC<AppCardProps> = ({
         image={imageUrl}
         title={title}
       />
+      {
+        (title !== 'Fund Manager' &&  title !== 'Limited Partner') && 
+      <img src={LockIcon} alt="lock" className="absolute top-2 left-2 w-16" />
+        
+      }
       <CardContent sx={{
         p: '18px',
       }}>
