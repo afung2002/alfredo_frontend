@@ -164,6 +164,8 @@ export const apiSlice = createApi({
         body.append('name', formData.name);
         if (formData.description) body.append('description', formData.description);
         if (formData.upload_date) body.append('upload_date', formData.upload_date);
+        if (formData.company_name) body.append('company_name', formData.company_name);
+        if (formData.limited_partner) body.append('limited_partner', formData.limited_partner);
         if (formData.investment !== undefined) body.append('investment', String(formData.investment));
         if (formData.fund !== undefined) body.append('fund', String(formData.fund));
         body.append('file', formData.file);
