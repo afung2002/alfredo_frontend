@@ -105,6 +105,7 @@ export type DocumentUploadRequest = {
   fund?: string | null;
   file: File;
   company_name: string;
+  limited_partner?: string | null;
 };
 
 export type DocumentResponse = {
