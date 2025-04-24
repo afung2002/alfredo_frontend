@@ -1,7 +1,7 @@
-import { Chip, Card, Box, Typography, IconButton } from "@mui/material";
+import { Chip, Box, Typography, IconButton } from "@mui/material";
 import { useNavigate } from "react-router";
 import { Routes } from "@constants/routes";
-// import Card from "../Card";
+import Card from "../Card";
 import { useDeleteInvestmentMutation } from "../../services/api/baseApi";
 import { InvestmentResponse } from "../../services/api/baseApi/types";
 import InvestmentIcon from "@assets/investment.svg";
