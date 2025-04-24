@@ -29,7 +29,7 @@ const NewFundForm = ({ fundId, onClose, selectCreatedFund, onSave  }: NewFundFor
       if (result) {
         console.log('result', result)
         // If you want to navigate to the funds page after creating a new fund, uncomment the line below
-        navigate(Routes.FUND_MANAGER_FUNDS);
+        
         onSave()
       }
     })
