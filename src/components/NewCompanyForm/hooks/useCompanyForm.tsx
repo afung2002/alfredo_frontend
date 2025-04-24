@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -16,24 +16,47 @@ export type CompanyFormData = z.infer<typeof companySchema>;
 const useCompanyForm = () => {
   const [createdCompanyId, setCreatedCompanyId] = useState<number | null>(null);
   const [createCompany, { isLoading, error }] = useCreateCompanyMutation();
-
+  const companySchema = z.object({
+    companyName: z.string().min(1, 'Company name is required'),
+    websiteUrl: z
+      .string()
+      .trim()
+      .transform((val) =>
+        val.startsWith('http://') || val.startsWith('https://')
+          ? val
+          : `https://${val}`
+      )
+      .refine((val) => {
+        try {
+          new URL(val); // native browser validation
+          return true;
+        } catch {
+          return false;
+        }
+      }, {
+        message: 'Invalid URL',
+      }),
+    founderEmail: z.string().email('Invalid email'),
+    description: z.string().optional(),
+  });
   const {
     control,
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
+    getValues,
   } = useForm<CompanyFormData>({
     resolver: zodResolver(companySchema),
-    defaultValues: {
-      companyName: '',
-      websiteUrl: '',
-      founderEmail: '',
-      description: '',
-    },
   });
 
   const onSubmit = async (data: CompanyFormData) => {
+
     try {
+      const formattedUrl = data.websiteUrl.startsWith('http')
+        ? data.websiteUrl
+        : `https://${data.websiteUrl}`;
+      setValue('websiteUrl', formattedUrl); // Update the URL in the form state
       const response = await createCompany({
         name: data.companyName,
         website_url: data.websiteUrl,
@@ -49,6 +72,14 @@ const useCompanyForm = () => {
       console.log('Error creating company:', e);
     }
   };
+
+  useEffect(() => {
+    if (createdCompanyId && getValues('websiteUrl')) {
+      const url = getValues('websiteUrl');
+      const corrected = url.startsWith('http') ? url : `https://${url}`;
+      setValue('websiteUrl', corrected);
+    }
+  }, [createdCompanyId]);
 
   return {
     control,
