@@ -12,7 +12,7 @@
     "types": [
       "node"
     ],
-  "paths": {
+    "paths": {
       "@src/*": [ "./src/*" ],
       "@assets/*": ["./src/assets/*"],
       "@components/*": ["./src/components/*"],
@@ -25,9 +25,9 @@
       "@services/*": ["./src/services/*"],
       "@redux/*": ["./src/redux/*"],
       "@fundManagerLayouts/*": ["./src/apps/fund-manager/layouts/*"],
-      "@fundManagerPages/*": ["./src/apps/fund-manager/pages/*"]
+      "@fundManagerPages/*": ["./src/apps/fund-manager/pages/*"],
+      "@ui/*": ["./src/components/ui/*"]
     },
     "moduleResolution": "node",
   }
-
 }
