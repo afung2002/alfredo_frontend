@@ -69,7 +69,7 @@ const LimitedPartnerDocuments = () => {
     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
           {/* Document Statistics */}
           <Box className="flex gap-3 items-center" sx={{ mb: 1 }}>
-            <Typography variant="h3" sx={{ mb: 1, fontWeight: 600, textAlign: 'left' }}>
+          <Typography sx={{ textAlign: 'left', fontSize: '1.5rem', lineHeight: '1.334', fontWeight: 500 }}>
               Documents
             </Typography>
             <Chip
@@ -82,6 +82,7 @@ const LimitedPartnerDocuments = () => {
           <Box sx={{ display: "flex", gap: 2, mb: 2, width: '100%' }}>
     
             <Input
+              rounded
               type="text"
               name="searchDocuments"
               control={control}

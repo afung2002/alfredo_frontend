@@ -66,7 +66,7 @@ const LimitedPartnerFunds = () => {
     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
       <Box sx={{ mb: 1 }}>
         <Box className="flex gap-3 items-center" sx={{ mb: 1 }}>
-          <Typography variant="h3" sx={{ mb: 1, fontWeight: 600, textAlign: 'left' }}>
+        <Typography sx={{ textAlign: 'left', fontSize: '1.5rem', lineHeight: '1.334', fontWeight: 500 }}>
             Funds
           </Typography>
           <Chip
@@ -81,13 +81,14 @@ const LimitedPartnerFunds = () => {
           </Typography>
           <FiberManualRecordIcon sx={{ fontSize: 8, color: "black" }} />
           <Typography variant="subtitle1" sx={{ color: "text.secondary", fontWeight: 500 }}>
-            {formatNumberString(totalEstimatedValue)} ESV
+            {formatNumberString(totalEstimatedValue)} est value
           </Typography>
         </Box>
       </Box>
 
       <Box sx={{ display: "flex", gap: 2, mb: 2, width: '100%' }}>
         <Input
+          rounded
           type="text"
           name="searchFunds"
           control={control}
