@@ -27,6 +27,8 @@ import ProspectTrackerLayout from "@src/apps/prospect-tracker/layout";
 import ProspectTracker from "@src/apps/prospect-tracker/pages";
 import NewProspect from "@src/apps/prospect-tracker/pages/new";
 import Prospect from "@src/apps/prospect-tracker/pages/prospect";
+import Heat from "@src/apps/prospect-tracker/pages/heat";
+import Updates from "@src/apps/prospect-tracker/pages/update";
 
 export const routes: RouteObject[] = [
   {
@@ -142,6 +144,14 @@ export const routes: RouteObject[] = [
       {
         path: Routes.PROSPECT_TRACKER_PROSPECT,
         element: <Prospect />,
+      },
+      {
+        path: Routes.PROSPECT_TRACKER_HEAT,
+        element: <Heat />,
+      },
+      {
+        path: Routes.PROSPECT_TRACKER_UPDATES,
+        element: <Updates />,
       },
     ],
   },
