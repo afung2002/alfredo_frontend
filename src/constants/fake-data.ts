@@ -1,0 +1,220 @@
+import { Prospect } from "@src/components/ProspectCard";
+
+export const prospects: Prospect[] = [
+  {
+    id: "1",
+    name: "Wayne Chang",
+    type: "Person",
+    updates: 1,
+    updatedAgo: "5 min ago",
+    updateType: "Entered stealth mode",
+    hasLinkedIn: true,
+  },
+  {
+    id: "2",
+    name: "John Andrew",
+    type: "Person",
+    updates: 1,
+    updatedAgo: "10 min ago",
+    updateType: "Entered stealth mode",
+    hasLinkedIn: true,
+  },
+  {
+    id: "3",
+    name: "Khalid Ashmawy",
+    type: "Person",
+    updates: 1,
+    updatedAgo: "15 min ago",
+    updateType: "Just Left Rippling",
+    hasLinkedIn: true,
+  },
+  {
+    id: "4",
+    name: "Vivek Katara",
+    type: "Person",
+    updates: 1,
+    updatedAgo: "20 min ago",
+    updateType: "Just Left Rippling",
+    hasLinkedIn: true,
+  },
+  {
+    id: "5",
+    name: "Comma Capital",
+    type: "Fund",
+    updates: 1,
+    updatedAgo: "25 min ago",
+    updateType: "New Portfolio Company",
+    hasWebsite: true,
+  },
+  {
+    id: "6",
+    name: "Thatch",
+    type: "Company",
+    updates: 1,
+    updatedAgo: "30 min ago",
+    updateType: "New Portfolio Company",
+    hasWebsite: true,
+  },
+  {
+    id: "7",
+    name: "Conscience VC",
+    type: "Fund",
+    updates: 1,
+    updatedAgo: "30 min ago",
+    updateType: "New Portfolio Company",
+    hasWebsite: true,
+  },
+  {
+    id: "8",
+    name: "Mural Pay",
+    type: "Company",
+    updates: 1,
+    updatedAgo: "35 min ago",
+    updateType: "New Portfolio Company",
+    hasWebsite: true,
+  },
+  {
+    id: "9",
+    name: "Josh Browder",
+    type: "Person",
+    updates: 1,
+    updatedAgo: "40 min ago",
+    updateType: "New Portfolio Company",
+    hasLinkedIn: true,
+  },
+  {
+    id: "10",
+    name: "Maverick Partners",
+    type: "Fund",
+    updates: 1,
+    updatedAgo: "45 min ago",
+    updateType: "New Portfolio Company",
+    hasWebsite: true,
+  },
+  {
+    id: "11",
+    name: "Wayne Chang",
+    type: "Person",
+    updates: 1,
+    updatedAgo: "50 min ago",
+    updateType: "New Portfolio Company",
+    hasLinkedIn: true,
+  },
+  {
+    id: "12",
+    name: "John Andrew",
+    type: "Person",
+    updates: 1,
+    updatedAgo: "55 min ago",
+    updateType: "New Portfolio Company",
+    hasLinkedIn: true,
+  },
+  {
+    id: "13",
+    name: "Khalid Ashmawy",
+    type: "Person",
+    updates: 1,
+    updatedAgo: "1 hour ago",
+    updateType: "New Portfolio Company",
+    hasLinkedIn: true,
+  },
+  {
+    id: "14",
+    name: "Vivek Katara",
+    type: "Person",
+    updates: 1,
+    updatedAgo: "1 hour 5 min ago",
+    updateType: "New Portfolio Company",
+    hasLinkedIn: true,
+  },
+  {
+    id: "15",
+    name: "Comma Capital",
+    type: "Fund",
+    updates: 1,
+    updatedAgo: "1 hour 10 min ago",
+    updateType: "New Portfolio Company",
+    hasWebsite: true,
+  },
+  {
+    id: "16",
+    name: "Thatch",
+    type: "Company",
+    updates: 1,
+    updatedAgo: "1 hour 15 min ago",
+    updateType: "New Portfolio Company",
+    hasWebsite: true,
+  },
+  {
+    id: "17",
+    name: "Conscience VC",
+    type: "Fund",
+    updates: 1,
+    updatedAgo: "1 hour 20 min ago",
+    updateType: "New Portfolio Company",
+    hasWebsite: true,
+  },
+  {
+    id: "18",
+    name: "Mural Pay",
+    type: "Company",
+    updates: 1,
+    updatedAgo: "1 hour 20 min ago",
+    updateType: "New Portfolio Company",
+    hasWebsite: true,
+  },
+  {
+    id: "19",
+    name: "Josh Browder",
+    type: "Person",
+    updates: 1,
+    updatedAgo: "1 hour 25 min ago",
+    updateType: "New Portfolio Company",
+    hasLinkedIn: true,
+  },
+  {
+    id: "20",
+    name: "Maverick Partners",
+    type: "Fund",
+    updates: 1,
+    updatedAgo: "1 hour 30 min ago",
+    updateType: "New Portfolio Company",
+    hasWebsite: true,
+  },
+];
+
+export const prospect = {
+  name: "Wayne Chang",
+  type: "Person",
+  sources: {
+    linkedin: "https://www.linkedin.com/in/waynechang/",
+    twitter: "https://x.com/Wayne",
+    website: "chang.com",
+  },
+  description:
+    "Serial entrepreneur and cofounder of Crashlytics (acq by Twitter). Likely going to start something new in B2B.",
+};
+
+export interface Update {
+  id: string;
+  timestamp: string;
+  content: string;
+  type: string;
+}
+
+export const updates: Update[] = [
+  {
+    id: "1",
+    timestamp: "3 hours ago",
+    content:
+      "Wayne Chang adjusted his linkedin title from Head of Product at Twitter to Cofounder at Stealth, and changed his current linkedin position to Stealth.",
+    type: "Entered stealth mode",
+  },
+  {
+    id: "2",
+    timestamp: "5 days ago",
+    content:
+      "Featured in an article on Business Insider for his prior company Crashlytics, acquired by Twitter.",
+    type: "Entered stealth mode",
+  },
+];

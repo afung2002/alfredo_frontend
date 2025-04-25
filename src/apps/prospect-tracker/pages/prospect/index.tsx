@@ -1,54 +1,14 @@
-import {
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  ChevronRightIcon,
-  PencilIcon,
-} from "lucide-react";
+import { ArrowLeftIcon, PencilIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { FaLinkedin } from "react-icons/fa";
 
 import { Button } from "@src/components/ui/button";
 import { Card } from "@src/components/ui/card";
 import { Routes } from "@src/constants/routes";
-
-interface Update {
-  id: string;
-  timestamp: string;
-  content: string;
-  type: string;
-}
+import ProspectUpdateCard from "@src/components/ProspectUpdateCard";
+import { prospect, updates } from "@src/constants/fake-data";
 
 export default function Prospect() {
-  // Mock data - replace with real data later
-  const prospect = {
-    name: "Wayne Chang",
-    type: "Person",
-    sources: {
-      linkedin: "https://www.linkedin.com/in/waynechang/",
-      twitter: "https://x.com/Wayne",
-      website: "chang.com",
-    },
-    description:
-      "Serial entrepreneur and cofounder of Crashlytics (acq by Twitter). Likely going to start something new in B2B.",
-  };
-
-  const updates: Update[] = [
-    {
-      id: "1",
-      timestamp: "3 hours ago",
-      content:
-        "Wayne Chang adjusted his linkedin title from Head of Product at Twitter to Cofounder at Stealth, and changed his current linkedin position to Stealth.",
-      type: "Entered stealth mode",
-    },
-    {
-      id: "2",
-      timestamp: "5 days ago",
-      content:
-        "Featured in an article on Business Insider for his prior company Crashlytics, acquired by Twitter.",
-      type: "Entered stealth mode",
-    },
-  ];
-
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white min-h-screen flex flex-col">
       <Link to={Routes.PROSPECT_TRACKER}>
@@ -105,24 +65,11 @@ export default function Prospect() {
 
         <div className="space-y-3">
           {updates.map((update) => (
-            <Card key={update.id} className="bg-white rounded-lg shadow-sm">
-              <div className="flex items-start justify-between border-b border-gray-200 shadow-sm rounded-b-lg pb-4 px-4">
-                <div className="flex items-center gap-2">
-                  <span className="font-medium">{prospect.name}</span>
-                  <FaLinkedin className="text-[#0077b5] w-5 h-5" />
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-blue-600 bg-white px-3 py-0.5 rounded-full border border-gray-200">
-                    {update.type}
-                  </span>
-                  <ChevronRightIcon className="w-4 h-4" />
-                </div>
-              </div>
-              <div className="px-4 space-y-2">
-                <div className="text-sm text-gray-500">{update.timestamp}</div>
-                <p className="text-sm">{update.content}</p>
-              </div>
-            </Card>
+            <ProspectUpdateCard
+              key={update.id}
+              update={update}
+              name={prospect.name}
+            />
           ))}
         </div>
       </div>
