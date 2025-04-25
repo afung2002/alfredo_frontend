@@ -2,11 +2,9 @@ import { useState } from "react";
 
 import { cn } from "@src/utils/uiUtils";
 import { Button } from "@ui/button";
-import { Input } from "@ui/input";
-import { Link } from "react-router-dom";
-import { Routes } from "@constants/routes";
 import ProspectCard, { Prospect } from "@src/components/ProspectCard";
-import { prospects } from "@src/constants/fake-data";
+import { prospects } from "@constants/fake-data";
+import { Switch } from "@src/components/ui/switch";
 
 type FilterType = "All" | "Companies" | "Funds" | "People";
 
@@ -22,8 +20,7 @@ interface FilterButtonsProps {
   onFilterChange: (filter: FilterType) => void;
 }
 
-export default function ProspectTracker() {
-  const [searchQuery, setSearchQuery] = useState("");
+export default function Heat() {
   const [activeFilter, setActiveFilter] = useState<FilterType>("All");
 
   const totalProspects = prospects.length;
@@ -45,11 +42,7 @@ export default function ProspectTracker() {
       (activeFilter === "Funds" && prospect.type === "Fund") ||
       (activeFilter === "People" && prospect.type === "Person");
 
-    const searchMatch =
-      !searchQuery ||
-      prospect.name.toLowerCase().includes(searchQuery.toLowerCase());
-
-    return typeMatch && searchMatch;
+    return typeMatch;
   });
 
   const handleProspectClick = (prospect: Prospect) => {
@@ -59,25 +52,14 @@ export default function ProspectTracker() {
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white h-screen flex flex-col pt-24">
       <div className="flex-none space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-xl font-semibold">
-            {totalProspects.toLocaleString()} Prospects Tracking
-          </h1>
-          <Link to={Routes.PROSPECT_TRACKER_NEW}>
-            <Button className="bg-black text-white px-4 py-2 rounded text-sm">
-              Add New
-            </Button>
-          </Link>
-        </div>
-
-        <div>
-          <Input
-            type="text"
-            placeholder="Search"
-            className="w-full px-6 py-2 border rounded-full text-sm border-gray-300"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+        <div className="flex flex-col gap-2">
+          <h1 className="text-xl font-semibold">{totalProspects} Heating Up</h1>
+          <div className="flex items-center gap-2">
+            <Switch />
+            <span className="text-sm text-muted-foreground">
+              Email me when prospect starts heating up
+            </span>
+          </div>
         </div>
 
         <div className="flex gap-4">
@@ -96,6 +78,7 @@ export default function ProspectTracker() {
               key={prospect.id}
               prospect={prospect}
               onClick={() => handleProspectClick(prospect)}
+              showHeat
             />
           ))}
         </div>

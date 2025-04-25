@@ -25,6 +25,10 @@ import LimitedPartnerLayout from "../apps/limited-partner/layouts/LimitedPartner
 import LimitedPartnerFunds from "../apps/limited-partner/pages/LimitedPartnerFunds";
 import ProspectTrackerLayout from "@src/apps/prospect-tracker/layout";
 import ProspectTracker from "@src/apps/prospect-tracker/pages";
+import NewProspect from "@src/apps/prospect-tracker/pages/new";
+import Prospect from "@src/apps/prospect-tracker/pages/prospect";
+import Heat from "@src/apps/prospect-tracker/pages/heat";
+import Updates from "@src/apps/prospect-tracker/pages/update";
 
 export const routes: RouteObject[] = [
   {
@@ -134,7 +138,22 @@ export const routes: RouteObject[] = [
         <ProspectTrackerLayout />
       </ProtectedRoute>
     ),
-    children: [{ path: Routes.PROSPECT_TRACKER, element: <ProspectTracker /> }],
+    children: [
+      { path: Routes.PROSPECT_TRACKER, element: <ProspectTracker /> },
+      { path: Routes.PROSPECT_TRACKER_NEW, element: <NewProspect /> },
+      {
+        path: Routes.PROSPECT_TRACKER_PROSPECT,
+        element: <Prospect />,
+      },
+      {
+        path: Routes.PROSPECT_TRACKER_HEAT,
+        element: <Heat />,
+      },
+      {
+        path: Routes.PROSPECT_TRACKER_UPDATES,
+        element: <Updates />,
+      },
+    ],
   },
   { path: "*", element: React.createElement(Page404) },
 ];
