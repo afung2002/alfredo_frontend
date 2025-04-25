@@ -1,4 +1,4 @@
-import { InvestmentResponse } from "../services/api/baseApi/types";
+import { FundResponse, InvestmentResponse } from "../services/api/baseApi/types";
 import { InvestmentDetails } from "../types";
 import { Clerk } from '@clerk/clerk-js';
 
@@ -65,3 +65,28 @@ export const getClerkToken = async (template?: string) => {
   const token = await clerk.session?.getToken({ template });
   return token;
 };
+
+export function getReferencedFunds(investments: InvestmentResponse[], funds: FundResponse[]): FundResponse[] {
+  const fundIds = investments
+    .filter(inv => inv.type === "FUND" && inv.fund !== null)
+    .map(inv => inv.fund as number);
+
+  const uniqueFundIds = Array.from(new Set(fundIds));
+
+  return funds.filter(fund => uniqueFundIds.includes(fund.id));
+}
+
+export const getReferencedCompanies = (investments: InvestmentResponse[], investmentType: string, id?: string) => {
+  console.log(investments, 'investments')
+  console.log(investmentType, 'angle-investment')
+  console.log(investmentType === "angle-investment")
+  console.log(id, 'id')
+  if (investmentType === "fund-investment") {
+    const companies = investments.filter(inv => inv.type === "FUND" && inv.fund === +id).map(inv => inv.company);
+    console.log(companies, 'companies')
+    return companies
+  } else if (investmentType === "angel-investment") {
+    console.log('angel')
+    return investments.filter(inv => inv.type === "ANGEL").map(inv => inv.company);
+  }
+}

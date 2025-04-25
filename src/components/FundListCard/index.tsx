@@ -5,6 +5,8 @@ import { Routes } from "../../constants/routes";
 import Card from "../Card";
 import { useDeleteFundMutation } from "../../services/api/baseApi";
 import FundIcon from "@assets/fund.svg";
+import { Apps } from "../../constants/apps";
+import { useAppContext } from "@src/context/appContext";
 
 interface FundListCardProps {
   fund: Fund;
@@ -13,6 +15,7 @@ interface FundListCardProps {
 const FundListCard: React.FC<FundListCardProps> = ({ fund }) => {
   const navigate = useNavigate();
     const [deleteFund, { isLoading, isSuccess, isError, error }] = useDeleteFundMutation();
+    const { app } = useAppContext();
   
   const handleCardClick = (event: React.MouseEvent) => {
     // Prevent navigation if clicking the add button
@@ -30,14 +33,16 @@ const FundListCard: React.FC<FundListCardProps> = ({ fund }) => {
     <div className="mb-4">
       <Card
         onClick={() => handleCardClick}
-        onDelete={() => handleFundDelete(fund.id)}
+        onDelete={ app === Apps.LIMITED_PARTNER ? undefined : () => handleFundDelete(fund.id)}
         title={fund.name}
         subtitle={fund?.website_url}
         sideImage={FundIcon}
         actions={[
           {
             label: "View Fund",
-            onClick: () => navigate(Routes.FUND_MANAGER_FUND.replace(':fundId', fund.id.toString())),
+            onClick: () => {app === Apps.LIMITED_PARTNER && navigate(Routes.LIMITED_PARTNER_FUND.replace(':fundId', fund.id.toString()));
+            app === Apps.FUND_MANAGER && navigate(Routes.FUND_MANAGER_FUND.replace(':fundId', fund.id.toString()));
+            },
           },
         ]}
         tags={[

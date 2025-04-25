@@ -4,6 +4,7 @@ import {
   Tabs,
   Tab,
   TextField,
+  Grid,
 } from '@mui/material';
 import AppCard from '@components/AppCard';
 import { APP_CARDS } from '@constants/appCards';
@@ -14,8 +15,53 @@ import { AppType } from '../../types';
 import { searchByTitle } from '@utils/uiUtils';
 import Input from '../../components/Input';
 import { useForm } from 'react-hook-form';
-
+import { SignUp } from '@clerk/clerk-react';
+import { useSignUp } from '@clerk/clerk-react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 const AppsPage = () => {
+  const { signUp, setActive } = useSignUp();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [verifying, setVerifying] = useState(false);
+  const [error, setError] = useState('');
+
+  const ticket = searchParams.get('__clerk_ticket');
+
+  useEffect(() => {
+    // If a Clerk ticket is present, we assume it's an invitation flow
+    const handleInvite = async () => {
+      if (!ticket) return;
+
+      try {
+        setVerifying(true);
+        await signUp?.create({ ticket });
+        await setActive({ session: signUp.createdSessionId });
+        navigate('/dashboard');
+      } catch (err: any) {
+        setError(err.errors?.[0]?.message || 'Failed to accept invitation.');
+      } finally {
+        setVerifying(false);
+      }
+    };
+
+    handleInvite();
+  }, [ticket]);
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    try {
+      await signUp?.create({ emailAddress: email, password });
+      await signUp?.prepareEmailAddressVerification({ strategy: 'email_code' });
+      alert('Check your email for the verification code!');
+    } catch (err: any) {
+      setError(err.errors?.[0]?.message || 'Sign-up failed.');
+    }
+  };
+
   const { control, watch, setValue } = useForm({
     defaultValues: {
       'searchApps': ''
@@ -43,19 +89,54 @@ const AppsPage = () => {
     const filteredCards = searchByTitle(APP_CARDS || [], searchValue, 'title');
     setFilteredCards(filteredCards);
   }, [searchValue]);
+
+  
   return (
-    <div className='min-h-screen w-full p-4 flex-1'>
-      <Typography variant="h5" sx={{ mb: 2, fontWeight: 500, textAlign: 'left' }}>
-        Cutting-Edge Applications for Startup Investing
+    <div className='min-h-screen w-full p-4 flex-1 mt-[55px]'>
+      {
+        ticket && (
+          <div>
+      <h2>Custom Sign Up</h2>
+      {verifying ? (
+        <p>Verifying your invitation...</p>
+      ) : (
+        <form onSubmit={handleSignUp}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type="submit">Sign Up</button>
+        </form>
+      )}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+    </div>
+        )
+      }
+      {
+        !ticket && (
+          <>
+            <Typography variant="h5" sx={{ mb: 2, fontWeight: 500, textAlign: 'left' }}>
+            Professional Class AI Agents for Startup Investing
       </Typography>
       <Input
+        rounded
         type="text"
         name="searchApps"
         control={control}
         placeholder="Search Apps..."
-        className="flex flex-col mb-4"
+        className="flex flex-col mb-[30px]"
       />
-      <Tabs
+      {/* <Tabs
         className='mb-2'
         value={selectedTab}
         onChange={(_, newValue) => setSelectedTab(newValue)}
@@ -66,43 +147,49 @@ const AppsPage = () => {
       >
         {APPS_FILTER_TABS.map((tab) => (
           <Tab
-          sx={{
-            minHeight: 32,
-            minWidth: 'auto',
-            px: 4,
-            borderRadius: '50px',
-            textTransform: 'none',
-            bgcolor: tab.value === selectedTab ? 'primary.main' : 'grey.200',
-            color: tab.value === selectedTab ? 'white' : 'black',
-            mx: 1,
-            fontSize: 14,
-            fontWeight: 500,
-            '&.Mui-selected': {
-              bgcolor: 'primary.main',
-              color: 'white',
-            },
-          }}
+            sx={{
+              minHeight: 32,
+              minWidth: 'auto',
+              px: 4,
+              borderRadius: '50px',
+              textTransform: 'none',
+              bgcolor: tab.value === selectedTab ? 'primary.main' : 'grey.200',
+              color: tab.value === selectedTab ? 'white' : 'black',
+              mx: 1,
+              fontSize: 14,
+              fontWeight: 500,
+              '&.Mui-selected': {
+                bgcolor: 'primary.main',
+                color: 'white',
+              },
+            }}
             key={tab.value}
             label={tab.label}
             value={tab.value}
             disableRipple
           />
         ))}
-      </Tabs>
-
-      <div className="flex flex-col gap-4 min-w-[600px]">
+      </Tabs> */}
+      <Grid container spacing={4} className="mb-4 w-full">
+        {/* <div className="flex flex-col gap-4 min-w-[600px]"> */}
         {filteredCards.map((card, index) => (
-          <AppCard
-            key={index}
-            title={card.title}
-            description={card.description}
-            imageUrl={card.imageUrl}
-            category={card.category}
-            path={card.path}
-            onAdd={() => handleToggleApp(card)}
-          />
+          <Grid size={{ xs: 12, sm: 6, md: 4, xl: 3 }} key={index}>
+            <AppCard
+              title={card.title}
+              description={card.description}
+              imageUrl={card.imageUrl}
+              category={card.category}
+              path={card.path}
+              onAdd={() => handleToggleApp(card)}
+            />
+          </Grid>
         ))}
-      </div>
+        {/* </div> */}
+      </Grid>
+          </>
+        )
+      }
+      
     </div>
   )
 }

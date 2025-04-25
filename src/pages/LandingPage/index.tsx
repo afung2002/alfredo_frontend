@@ -1,18 +1,25 @@
 import { Box, Container } from '@mui/material';
-import { SignIn, useUser } from '@clerk/clerk-react';
-import { Navigate, useNavigate } from 'react-router';
-import Loader from '../../components/Loader';
+import { SignIn, SignUp, useUser } from '@clerk/clerk-react';
+import { Navigate } from 'react-router';
+import Loader from '@components/Loader';
 import { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 const LandingPage = () => {
-  const { isLoaded, isSignedIn } = useUser();
-
+  const { user, isSignedIn, isLoaded } = useUser();
+  const [searchParams] = useSearchParams();
+  const ticket = searchParams.get('__clerk_ticket');
+  console.log('user', user);
+  console.log('isSignedIn', isSignedIn);
+  console.log('isLoaded', isLoaded);
+  console.log('useUser', useUser());
+  
   useEffect(() => {
     if (!isLoaded) return;
     if (!isSignedIn) return;
   }
-  , [isSignedIn, isLoaded]);
-  const navigate = useNavigate();
+    , [isSignedIn, isLoaded]);
+
   if (!isLoaded) return <Loader />;
   if (isSignedIn) return <Navigate to="/apps" />;
 
@@ -27,6 +34,11 @@ const LandingPage = () => {
       }}
     >
       <Container maxWidth="sm">
+        {
+          ticket && (<SignUp />)
+        }
+        {
+          !ticket && (
 
             <SignIn
               appearance={{
@@ -40,9 +52,10 @@ const LandingPage = () => {
                 },
               }}
             />
-
-
+          )
+        }
       </Container>
+
     </Box>
   )
 };

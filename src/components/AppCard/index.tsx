@@ -7,12 +7,17 @@ import {
   IconButton,
   Chip,
   Paper,
+  CardHeader,
+  CardActions,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { useSelector } from 'react-redux';
 import { selectUserApps } from '../../redux/selectors/user.selector';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import { CardMedia } from '@mui/material';
+import Button from '../Button';
+import LockIcon from '../../assets/lock.svg';
 interface AppCardProps {
   title: string;
   description: string;
@@ -41,115 +46,76 @@ const AppCard: React.FC<AppCardProps> = ({
   };
   const isSaved = savedApps?.some((app) => app.title === title);
   return (
-    <Paper
+    <Card
       onClick={handleCardClick}
       sx={{
-        width: '100%',
-        height: 100,
-        display: 'flex',
-        alignItems: 'center',
+        boxShadow: 'rgb(0 0 0 / 10%) 0px 2px 4px',
         cursor: 'pointer',
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
         borderRadius: 2,
-        boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
         overflow: 'hidden',
         backgroundColor: '#FFF',
-
+        position: 'relative',
         '&:hover': {
-          boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+          boxShadow: 'rgb(0 0 0 / 15%) 0px 4px 6px',
         },
-      }}
-    >
-      {/* Image Container */}
-      <Box
-        sx={{
-          width: 120,
-          height: '100%',
-          flexShrink: 0,
-          // backgroundColor: 'grey.100',
-          overflow: 'hidden',
-        }}
-      >
-        <Box
-          component="img"
-          src={imageUrl}
-          alt={title}
-          sx={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-          // backgroundColor: 'grey.100',
 
+      }}>
+      <CardMedia
+        sx={{ height: '120px' }}
+        image={imageUrl}
+        title={title}
+      />
+      {
+        (title !== 'Fund Manager' &&  title !== 'Limited Partner') && 
+      <img src={LockIcon} alt="lock" className="absolute top-2 left-2 w-16" />
+        
+      }
+      <CardContent sx={{
+        p: '18px',
+      }}>
+        <Typography gutterBottom sx={{
+          fontSize: '1rem',
+          fontWeight: 500,
+        }} component="div">
+          {title}
+        </Typography>
+        <Typography sx={{ color: 'text.secondary', fontSize: '0.85rem' }} color="text.secondary">
+          {description}
+        </Typography>
+      </CardContent>
+      <CardActions sx={{ padding: '0px 5px 5px 5px' }} className="flex justify-end items-center">
+        {/* <Chip
+          label={
+            <b>{category}</b>
+
+          }
+          size="small"
+          color='primary'
+          sx={{
+            backgroundColor: 'grey.100',
+            borderRadius: '5px',
+            color: 'primary.main',
           }}
-        />
-      </Box>
-
-      {/* Content */}
-      <CardContent
-        sx={{
-          flex: 1,
-          display: 'flex',
-          alignItems: 'flex-start',
-          gap: 2,
-          py: 2,
-          px: 3,
-          '&:last-child': { pb: 2 },
-        }}
-      >
-        {/* Text Content */}
-        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
-          <Typography 
-            variant="body2" 
-            sx={{ 
-              fontWeight: 700, 
-              mb: 0.3,
-              width: '100%',
-              textAlign: 'left'
-            }}
-          >
-            {title}
-          </Typography>
-          <Typography 
-            variant="body2" 
-            color="textSecondary"
-            sx={{
-              width: '100%',
-              textAlign: 'left'
-            }}
-          >
-            {description}
-          </Typography>
-        </Box>
-
-        {/* Category and Add Button */}
-        <Box
+        /> */}
+        <IconButton
+          size='large'
+          // edge="end"
+          className="MuiIconButton-root"
+          onClick={onAdd}
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 2,
-            flexShrink: 0,
+            color: 'primary.main',
+            // margin: '0px 25px 8px 0px'
           }}
         >
-          <Chip
-            label={category}
-            size="small"
-            sx={{
-              backgroundColor: 'grey.100',
-              borderRadius: '5px',
-              color: 'primary.main',
-            }}
-          />
-          <IconButton
-            className="MuiIconButton-root"
-            onClick={onAdd}
-            sx={{
-              color: 'primary.main',
-            }}
-          >
-            {isSaved ? <RemoveCircleOutlineIcon color="action" /> : <AddCircleOutlineIcon />}
-          </IconButton>
-        </Box>
-      </CardContent>
-    </Paper>
+          {isSaved ? <RemoveCircleOutlineIcon sx={{ color: '#b7b7b7' }} /> : <AddCircleOutlineIcon sx={{ color: '#b7b7b7' }} />}
+        </IconButton>
+      </CardActions>
+    </Card>
   );
 };
 

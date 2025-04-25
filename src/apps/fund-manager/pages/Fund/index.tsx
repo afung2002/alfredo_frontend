@@ -32,7 +32,8 @@ import {
   useGetDocumentsQuery,
   useGetFundByIdQuery,
   useGetFundUpdatesQuery,
-  useGetInvestmentsQuery, useGetLimitedPartnersQuery
+  useGetInvestmentsQuery, useGetLimitedPartnersQuery,
+  useLazyGetLimitedPartnersQuery
 } from "@services/api/baseApi";
 import useCreatePostForm from "./hooks/useCreatePostForm";
 import FundUpdateModal from "@components/FundUpdateModal";
@@ -40,6 +41,8 @@ import { formatNumberString } from "../../../../utils";
 import { DocumentResponse, InvestmentResponse, LimitedPartnerResponse } from "@services/api/baseApi/types";
 import { Routes } from "../../../../constants/routes";
 import NewLimitedPartnerFundForm from "../../../../components/NewLimitedPartnerFundForm";
+import { Apps } from "@src/constants/apps";
+import { useAppContext } from "@src/context/appContext";
 
 // Style constants
 const commonButtonStyles: SxProps<Theme> = {
@@ -73,6 +76,12 @@ const filterTabs = [
   { label: "Updates", value: "updates" },
   { label: "Documents", value: "documents" },
 ];
+
+const limitedPartnersAppFilterTabs = [
+  { label: "Portfolio", value: "portfolio" },
+  { label: "Updates", value: "updates" },
+  { label: "Documents", value: "documents" },
+];
 const FundView: React.FC = () => {
   const { fundId } = useParams();
   const { data: fundData, isLoading, error } = useGetFundByIdQuery(fundId ? Number(fundId) : 0, { skip: !fundId });
@@ -80,7 +89,7 @@ const FundView: React.FC = () => {
 
   const { data: fundUpdatesData, isLoading: isFundUpdatesLoading, error: fundUpdatesError } = useGetFundUpdatesQuery();
   const { data: investmentsData, isLoading: isInvestmentsLoading, error: investmentsError } = useGetInvestmentsQuery({ fund: fundId ? +fundId : 0 });
-  const { data: limitedPartners, isLoading: isLoadingLimitedPartners } = useGetLimitedPartnersQuery();
+  const [getLimitedPartners, { data: limitedPartners, isLoading: isLoadingLimitedPartners }] = useLazyGetLimitedPartnersQuery();
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -126,7 +135,7 @@ const FundView: React.FC = () => {
   const handleEdit = () => {
     navigate(Routes.FUND_MANAGER_FUND_EDIT.replace(':fundId', fundId || ''));
   };
-
+  const { app } = useAppContext();
   useEffect(() => {
     if (!searchDocumentsValue) return setFilteredDocs(documentsData || []);
     const filteredDocs = searchByTitle(documentsData, searchDocumentsValue, 'file');
@@ -155,7 +164,11 @@ const FundView: React.FC = () => {
   // const handleAddLimitedPartner = () => {
   //   navigate(Routes.FUND_MANAGER_NEW_LIMITED_PARTNER);
   // };
-
+  console.log("app", app);
+  useEffect(() => {
+    if (app === Apps.LIMITED_PARTNER) return
+    getLimitedPartners();
+  }, [app])
 
   const handleModalClose = () => {
     setIsUploadModalOpen(false);
@@ -239,16 +252,21 @@ const FundView: React.FC = () => {
                 <Link fontSize="small" />
               </IconButton>
             </Box>
-            <IconButton size="small" sx={{ color: "black" }} onClick={handleEdit}>
-              <Edit />
-            </IconButton>
+            {
+              app !== Apps.LIMITED_PARTNER && (
+                <IconButton size="small" sx={{ color: "black" }} onClick={handleEdit}>
+                  <Edit />
+                </IconButton>
+              )
+            }
+
           </Box>
 
           <Box sx={{ display: "flex", flexDirection: "column", gap: 0 }}>
             <Box sx={boxRowStyles}>
-              <Typography variant="body2">Legal Entity:</Typography>
+              <Typography variant="body2">Name:</Typography>
               <Typography variant="body2" color="text.secondary">
-                {fundData?.legal_entity}
+                {fundData?.name}
               </Typography>
             </Box>
 
@@ -287,30 +305,60 @@ const FundView: React.FC = () => {
         TabIndicatorProps={{ style: { display: 'none' } }}
 
       >
-        {filterTabs.map((tab) => (
-          <Tab
-            sx={{
-              minHeight: 32,
-              minWidth: 'auto',
-              px: 4,
-              borderRadius: '50px',
-              textTransform: 'none',
-              bgcolor: tab.value === selectedTab ? 'primary.main' : 'grey.200',
-              color: tab.value === selectedTab ? 'white' : 'black',
-              mx: 1,
-              fontSize: 14,
-              fontWeight: 500,
-              '&.Mui-selected': {
-                bgcolor: 'primary.main',
-                color: 'white',
-              },
-            }}
-            key={tab.value}
-            label={tab.label}
-            value={tab.value}
-            disableRipple
-          />
-        ))}
+        {
+          app !== Apps.LIMITED_PARTNER &&
+          filterTabs.map((tab) => (
+            <Tab
+              sx={{
+                minHeight: 32,
+                minWidth: 'auto',
+                px: 4,
+                borderRadius: '50px',
+                textTransform: 'none',
+                bgcolor: tab.value === selectedTab ? 'primary.main' : 'grey.200',
+                color: tab.value === selectedTab ? 'white' : 'black',
+                mx: 1,
+                fontSize: 14,
+                fontWeight: 500,
+                '&.Mui-selected': {
+                  bgcolor: 'primary.main',
+                  color: 'white',
+                },
+              }}
+              key={tab.value}
+              label={tab.label}
+              value={tab.value}
+              disableRipple
+            />
+          ))}
+
+        {
+          app === Apps.LIMITED_PARTNER &&
+          limitedPartnersAppFilterTabs.map((tab) => (
+            <Tab
+              sx={{
+                minHeight: 32,
+                minWidth: 'auto',
+                px: 4,
+                borderRadius: '50px',
+                textTransform: 'none',
+                bgcolor: tab.value === selectedTab ? 'primary.main' : 'grey.200',
+                color: tab.value === selectedTab ? 'white' : 'black',
+                mx: 1,
+                fontSize: 14,
+                fontWeight: 500,
+                '&.Mui-selected': {
+                  bgcolor: 'primary.main',
+                  color: 'white',
+                },
+              }}
+              key={tab.value}
+              label={tab.label}
+              value={tab.value}
+              disableRipple
+            />
+          ))
+        }
       </Tabs>
       <Box sx={{ width: '100%' }}>
         {selectedTab === "portfolio" && (
@@ -323,12 +371,17 @@ const FundView: React.FC = () => {
                 control={control}
                 placeholder="Search investments..."
               />
-              <Button
-                onClick={handleAddNew}
-                sx={blackButtonStyles}
-              >
-                Add New
-              </Button>
+              {
+                app !== Apps.LIMITED_PARTNER && (
+                  <Button
+                    onClick={handleAddNew}
+                    sx={blackButtonStyles}
+                  >
+                    Upload New
+                  </Button>
+                )
+              }
+
             </Box>
             <InvestmentsList
               isLoading={isInvestmentsLoading}
@@ -369,11 +422,16 @@ const FundView: React.FC = () => {
                 control={control}
                 placeholder="Search updates..."
               />
-              <Button
-                onClick={handleOpen}
-              >
-                Add New
-              </Button>
+              {
+                app !== Apps.LIMITED_PARTNER && (
+                  <Button
+                    onClick={handleOpen}
+                  >
+                    Add New
+                  </Button>
+                )
+              }
+
             </Box>
             <FundUpdatesList
               updates={filteredUpdates}
@@ -399,12 +457,16 @@ const FundView: React.FC = () => {
                 control={control}
                 placeholder="Search documents..."
               />
-              <Button
-                onClick={() => setIsUploadModalOpen(true)}
-                sx={blackButtonStyles}
-              >
-                Upload New
-              </Button>
+              {
+                app !== Apps.LIMITED_PARTNER && (
+                  <Button
+                    onClick={() => setIsUploadModalOpen(true)}
+                    sx={blackButtonStyles}
+                  >
+                    Upload New
+                  </Button>
+                )
+              }
             </Box>
             <DocumentsList
               documents={filteredDocs}
@@ -412,7 +474,7 @@ const FundView: React.FC = () => {
             <UploadDocumentModal
               open={isUploadModalOpen}
               onClose={handleModalClose}
-              fund={fundId}
+              fundId={fundId}
             />
           </>
         )}

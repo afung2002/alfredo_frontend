@@ -5,10 +5,14 @@ import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import Card from "../Card";
 import { useDeleteDocumentMutation, useLazyDownloadDocumentQuery } from "../../services/api/baseApi";
 import DocIcon from '@assets/doc.svg';
+import LimitedPartner from '../../apps/fund-manager/pages/LimitedPartner/index';
+import { Apps } from "../../constants/apps";
+import { useAppContext } from "@src/context/appContext";
 
 const DocumentCard: React.FC<{ document: Document, orientation: "row" | "grid" }> = ({ document: doc, orientation }) => {
   const [deleteDoc, { isLoading: isDeleting }] = useDeleteDocumentMutation();
   const [triggerDownload, { isFetching }] = useLazyDownloadDocumentQuery();
+  const {app} = useAppContext();
   const handleDocDelete = async (id) => {
     try {
       await deleteDoc(Number(id)).unwrap();
@@ -17,23 +21,17 @@ const DocumentCard: React.FC<{ document: Document, orientation: "row" | "grid" }
     }
   }
 
-  const handleDocDownload = async (id: any) => {
+  const handleDocDownload = async (id: number) => {
     try {
-      const result = await triggerDownload(id).unwrap();
-
-      const fileUrl = (result as any).file_url;
-      const fileName = (result as any).file_name || 'document';
-
-      if (fileUrl) {
-        const link = document.createElement('a');
-        link.href = fileUrl;
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-      } else {
-        console.error('Missing file URL in API response.');
-      }
+      const blob = await triggerDownload(id).unwrap();
+      const fileUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = fileUrl;
+      link.download = `document-${id}.pdf`; // or a better name if you have one
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(fileUrl); // cleanup
     } catch (err) {
       console.error('Failed to download the document:', err);
     }
@@ -43,8 +41,8 @@ const DocumentCard: React.FC<{ document: Document, orientation: "row" | "grid" }
     <div >
       <Card
         onClick={() => { }}
-        onDelete={() => handleDocDelete(doc.id)}
-        onDownload={ () => handleDocDownload(doc.id)}
+        onDelete={app === Apps.LIMITED_PARTNER ? undefined : () => handleDocDelete(doc.id)}
+        onDownload={() => handleDocDownload(doc.id)}
         title={doc.name}
         orientation={orientation}
         subtitle={
