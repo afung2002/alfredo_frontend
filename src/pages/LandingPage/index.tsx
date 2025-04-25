@@ -13,7 +13,12 @@ const LandingPage = () => {
   console.log('isSignedIn', isSignedIn);
   console.log('isLoaded', isLoaded);
   console.log('useUser', useUser());
-  
+
+  useEffect(() => {
+    if (!isLoaded || !isSignedIn) return;
+    if (user && user.id && user.publicMetadata) return;    
+  }, [user, isSignedIn, isLoaded]);
+
   useEffect(() => {
     if (!isLoaded) return;
     if (!isSignedIn) return;
