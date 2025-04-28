@@ -2,32 +2,64 @@ import { Box, Container } from '@mui/material';
 import { SignIn, SignUp, useUser } from '@clerk/clerk-react';
 import { Navigate } from 'react-router';
 import Loader from '@components/Loader';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useCreateFundLimitedPartnerMutation } from '@services/api/baseApi';
 
 const LandingPage = () => {
   const { user, isSignedIn, isLoaded } = useUser();
   const [searchParams] = useSearchParams();
   const ticket = searchParams.get('__clerk_ticket');
-  console.log('user', user);
-  console.log('isSignedIn', isSignedIn);
-  console.log('isLoaded', isLoaded);
-  console.log('useUser', useUser());
+
+  const [hasCreatedLP, setHasCreatedLP] = useState(false);
+  const [createLimitedPartner, { isLoading: creatingLP }] = useCreateFundLimitedPartnerMutation();
 
   useEffect(() => {
-    if (!isLoaded || !isSignedIn) return;
-    if (user && user.id && user.publicMetadata) return;    
-  }, [user, isSignedIn, isLoaded]);
+    if (!isLoaded || !isSignedIn || hasCreatedLP) return;
 
-  useEffect(() => {
-    if (!isLoaded) return;
-    if (!isSignedIn) return;
+    const createLimitedPartnerAfterSignup = async () => {
+      if (user && user.id && user.publicMetadata) {
+        const fundId = user.publicMetadata.fund as number | undefined;
+        const investedAmount = user.publicMetadata.invested_amount as string | undefined;
+        const name = user.publicMetadata.name as string | undefined;
+        const email = user.primaryEmailAddress?.emailAddress;
+
+        // Detect if user is newly invited based on existing metadata fields
+        const isNewlyInvited = !!(fundId && investedAmount);
+        console.log('Is newly invited:', isNewlyInvited);
+        if (isNewlyInvited) {
+          try {
+            await createLimitedPartner({
+              limited_partner: user.id,
+              invested_amount: investedAmount,
+              fund: fundId,
+            }).unwrap();
+
+            setHasCreatedLP(true); // Mark as created after API success
+          } catch (error) {
+            console.error('Error creating limited partner after sign up:', error);
+          }
+        } else {
+          // Already a saved user → no need to create again
+          setHasCreatedLP(true);
+        }
+      }
+    };
+
+    createLimitedPartnerAfterSignup();
+  }, [isLoaded, isSignedIn, user, createLimitedPartner, hasCreatedLP]);
+
+  // Show loader while user is loading, LP creation is happening, or LP not yet confirmed
+  if (!isLoaded || creatingLP || (isSignedIn && !hasCreatedLP)) {
+    return <Loader />;
   }
-    , [isSignedIn, isLoaded]);
 
-  if (!isLoaded) return <Loader />;
-  if (isSignedIn) return <Navigate to="/apps" />;
+  // After sign-in + LP created successfully
+  if (isSignedIn && hasCreatedLP) {
+    return <Navigate to="/apps" />;
+  }
 
+  // If not signed in yet (first time landing)
   return (
     <Box
       sx={{
@@ -39,30 +71,25 @@ const LandingPage = () => {
       }}
     >
       <Container maxWidth="sm">
-        {
-          ticket && (<SignUp />)
-        }
-        {
-          !ticket && (
-
-            <SignIn
-              appearance={{
-                elements: {
-                  rootBox: {
-                    margin: '0 auto',
-                  },
-                  card: {
-                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                  },
+        {ticket ? (
+          <SignUp />
+        ) : (
+          <SignIn
+            appearance={{
+              elements: {
+                rootBox: {
+                  margin: '0 auto',
                 },
-              }}
-            />
-          )
-        }
+                card: {
+                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                },
+              },
+            }}
+          />
+        )}
       </Container>
-
     </Box>
-  )
+  );
 };
 
 export default LandingPage;
