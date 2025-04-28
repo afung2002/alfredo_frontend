@@ -267,7 +267,7 @@ const Investment: React.FC = () => {
           >
             LATEST STATUS
           </Typography>
-          <Typography variant="body2" color="text.secondary" align="left">
+          <Typography variant="body2" color="text.secondary" align="left" sx={{ whiteSpace: 'pre-line' }}>
             {investmentData?.status}
           </Typography>
         </Box>
