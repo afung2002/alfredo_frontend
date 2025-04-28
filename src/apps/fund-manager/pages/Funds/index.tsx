@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, CircularProgress, Chip } from '@mui/material';
+import { Box, Typography, CircularProgress, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import FundListCard from '@components/FundListCard';
 import { Fund } from '../../../../types';
@@ -7,7 +7,6 @@ import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { Routes } from '@constants/routes';
 import Input from '@components/Input';
 import { useForm } from 'react-hook-form';
-import Button from '@components/Button';
 import { useGetFundsQuery } from '@services/api/baseApi';
 import { calculateFundTotals, formatNumberString } from '../../../../utils';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -17,18 +16,18 @@ const Funds = () => {
   const { data: fundsData, isLoading, error } = useGetFundsQuery();
 
   const { control, watch } = useForm({
-      defaultValues: {
-        'searchFunds': ''
-      }
-    });
+    defaultValues: {
+      'searchFunds': ''
+    }
+  });
 
   const searchValue = watch('searchFunds');
   const [funds, setFunds] = useState<Fund[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
-    useEffect(() => {
-        setSearchQuery(searchValue)
-      }, [searchValue]);
+  useEffect(() => {
+    setSearchQuery(searchValue)
+  }, [searchValue]);
 
   const handleAddNew = (event: React.MouseEvent) => {
     // Prevent navigation if clicking the add button
@@ -37,7 +36,7 @@ const Funds = () => {
     // }
     navigate(Routes.FUND_MANAGER_NEW_FUND);
   };
-  const {totalFundSize, totalEstimatedValue} = calculateFundTotals(fundsData || []);
+  const { totalFundSize, totalEstimatedValue } = calculateFundTotals(fundsData || []);
   useEffect(() => {
     if (searchQuery === '') {
       setFunds(fundsData || []);
@@ -78,22 +77,22 @@ const Funds = () => {
     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
       <Box sx={{ mb: 1 }}>
         <Box className="flex gap-3 items-center" sx={{ mb: 1 }}>
-        <Typography variant="h3" sx={{ mb: 1, fontWeight: 600, textAlign: 'left' }}>
-          Funds
-        </Typography>
-        <Chip
+          <Typography sx={{ textAlign: 'left', fontSize: '1.5rem', lineHeight: '1.334', fontWeight: 500 }}>
+            {fundsData?.length} Funds
+          </Typography>
+          {/* <Chip
           label={fundsData?.length}
           color="secondary"
           sx={{ fontSize: '0.875rem',  fontWeight: 700, borderRadius: '4px' }}
-        />
+        /> */}
         </Box>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1, minWidth:'475px' }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: '475px' }}>
           <Typography variant="subtitle1" sx={{ color: "text.secondary", fontWeight: 500 }}>
             {formatNumberString(totalFundSize)} AUM
           </Typography>
           <FiberManualRecordIcon sx={{ fontSize: 8, color: "black" }} />
           <Typography variant="subtitle1" sx={{ color: "text.secondary", fontWeight: 500 }}>
-            {formatNumberString(totalEstimatedValue)} ESV
+            {formatNumberString(totalEstimatedValue)} est value
           </Typography>
         </Box>
       </Box>
@@ -101,34 +100,48 @@ const Funds = () => {
       <Box sx={{ display: "flex", gap: 2, mb: 2, width: '100%' }}>
 
         <Input
-        type="text"
-        name="searchFunds"
-        control={control}
-        placeholder="Search funds..."
-        className="flex flex-col w-full"
-      />
+          rounded
+          type="text"
+          name="searchFunds"
+          control={control}
+          placeholder="Search funds..."
+          className="flex flex-col w-full"
+        />
+
         <Button
-          onClick={handleAddNew}>
+          onClick={handleAddNew}
+          variant="contained"
+          sx={{
+            flexShrink: 0,
+            textTransform: "none",
+            bgcolor: "black",
+            color: "white",
+            borderRadius: "2px",
+            "&:hover": {
+              bgcolor: "rgba(0, 0, 0, 0.8)",
+            },
+          }}
+        >
           Add New
         </Button>
       </Box>
       {!isLoading && funds && funds?.length > 0 ? (
-    <AnimatePresence mode="popLayout">
-      {
-        funds.map((fund, index) => (
-          <motion.div
-              key={fund.id}
-              layout
-              variants={itemVariants} 
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-            >
-          <FundListCard key={fund.id} fund={fund} />
-          </motion.div>
-        ))
-      }
-        
+        <AnimatePresence mode="popLayout">
+          {
+            funds.map((fund, index) => (
+              <motion.div
+                key={fund.id}
+                layout
+                variants={itemVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+              >
+                <FundListCard key={fund.id} fund={fund} />
+              </motion.div>
+            ))
+          }
+
         </AnimatePresence>
 
       ) : (

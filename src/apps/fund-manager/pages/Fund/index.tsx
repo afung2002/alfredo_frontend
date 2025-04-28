@@ -12,7 +12,8 @@ import {
   Theme,
   DialogTitle,
   DialogContent,
-  Dialog
+  Dialog,
+  Button,
 } from "@mui/material";
 import { FundUpdate, } from "../../../../types";
 import { Link } from "@mui/icons-material";
@@ -23,7 +24,6 @@ import DocumentsList from "@components/DocumentsList";
 import Input from "@components/Input";
 import { useForm } from "react-hook-form";
 import { searchByTitle } from "@utils/uiUtils";
-import Button from "@components/Button";
 import UploadDocumentModal from "@components/UploadDocumentModal";
 import LimitedPartnersList from "@components/LimitedPartnersList";
 import FundUpdatesList from "@components/FundUpdatesList";
@@ -272,7 +272,8 @@ const FundView: React.FC = () => {
 
             <Box sx={boxRowStyles}>
               <Typography variant="body2">Description:</Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary"
+              >
                 {fundData?.description}
               </Typography>
             </Box>
@@ -309,21 +310,26 @@ const FundView: React.FC = () => {
           app !== Apps.LIMITED_PARTNER &&
           filterTabs.map((tab) => (
             <Tab
+              disableFocusRipple
+              disableTouchRipple
               sx={{
                 minHeight: 32,
                 minWidth: 'auto',
                 px: 4,
                 borderRadius: '50px',
                 textTransform: 'none',
-                bgcolor: tab.value === selectedTab ? 'primary.main' : 'grey.200',
-                color: tab.value === selectedTab ? 'white' : 'black',
+                bgcolor: 'transparent !important', // Set background transparent
+                color: 'gray',
                 mx: 1,
                 fontSize: 14,
-                fontWeight: 500,
+                fontWeight: 600,
+                border: '1px solid gray',
                 '&.Mui-selected': {
-                  bgcolor: 'primary.main',
-                  color: 'white',
+                  border: '1px solid black',
+                  bgcolor: 'transparent !important', // Ensure selected tab is also transparent
+                  color: 'black', // Optional: change color for selected tab
                 },
+
               }}
               key={tab.value}
               label={tab.label}
@@ -365,6 +371,7 @@ const FundView: React.FC = () => {
           <>
             <Box sx={{ display: 'flex', gap: 2, mb: 3, width: '100%' }}>
               <Input
+                rounded
                 className="w-full"
                 type="text"
                 name="searchInvestments"
@@ -375,7 +382,17 @@ const FundView: React.FC = () => {
                 app !== Apps.LIMITED_PARTNER && (
                   <Button
                     onClick={handleAddNew}
-                    sx={blackButtonStyles}
+                    variant="contained"
+          sx={{
+            flexShrink: 0,
+            textTransform: "none",
+            bgcolor: "black",
+            color: "white",
+            borderRadius: "2px",
+            "&:hover": {
+              bgcolor: "rgba(0, 0, 0, 0.8)",
+            },
+          }}
                   >
                     Upload New
                   </Button>
@@ -395,19 +412,32 @@ const FundView: React.FC = () => {
           <>
             <Box sx={{ display: "flex", gap: 2, mb: 3, width: '100%' }}>
               <Input
+                rounded
                 className="w-full"
                 type="text"
                 name="searchLimitedPartners"
                 control={control}
                 placeholder="Search..."
               />
+
               <Button
                 onClick={() => setIsLimitedPartnerModalOpen(true)}
+                variant="contained"
+                sx={{
+                  flexShrink: 0,
+                  textTransform: "none",
+                  bgcolor: "black",
+                  color: "white",
+                  borderRadius: "2px",
+                  "&:hover": {
+                    bgcolor: "rgba(0, 0, 0, 0.8)",
+                  },
+                }}
               >
                 Add New
               </Button>
             </Box>
-            <LimitedPartnersList limitedPartners={filteredLimitedPartners} isLoading={isLoadingLimitedPartners} />
+            <LimitedPartnersList limitedPartners={fundData?.limited_partners} isLoading={isLoadingLimitedPartners} />
 
 
           </>
@@ -416,6 +446,7 @@ const FundView: React.FC = () => {
           <>
             <Box sx={{ display: "flex", gap: 2, mb: 3, width: '100%' }}>
               <Input
+                rounded
                 className="w-full"
                 type="text"
                 name="searchUpdates"
@@ -426,6 +457,17 @@ const FundView: React.FC = () => {
                 app !== Apps.LIMITED_PARTNER && (
                   <Button
                     onClick={handleOpen}
+                    variant="contained"
+                    sx={{
+                      flexShrink: 0,
+                      textTransform: "none",
+                      bgcolor: "black",
+                      color: "white",
+                      borderRadius: "2px",
+                      "&:hover": {
+                        bgcolor: "rgba(0, 0, 0, 0.8)",
+                      },
+                    }}
                   >
                     Add New
                   </Button>
@@ -451,6 +493,7 @@ const FundView: React.FC = () => {
           <>
             <Box sx={{ display: 'flex', gap: 2, mb: 3, width: '100%' }}>
               <Input
+                rounded
                 className="w-full"
                 type="text"
                 name="searchDocuments"
@@ -461,7 +504,17 @@ const FundView: React.FC = () => {
                 app !== Apps.LIMITED_PARTNER && (
                   <Button
                     onClick={() => setIsUploadModalOpen(true)}
-                    sx={blackButtonStyles}
+                    variant="contained"
+          sx={{
+            flexShrink: 0,
+            textTransform: "none",
+            bgcolor: "black",
+            color: "white",
+            borderRadius: "2px",
+            "&:hover": {
+              bgcolor: "rgba(0, 0, 0, 0.8)",
+            },
+          }}
                   >
                     Upload New
                   </Button>

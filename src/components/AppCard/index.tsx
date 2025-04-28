@@ -71,9 +71,9 @@ const AppCard: React.FC<AppCardProps> = ({
         title={title}
       />
       {
-        (title !== 'Fund Manager' &&  title !== 'Limited Partner') && 
-      <img src={LockIcon} alt="lock" className="absolute top-2 left-2 w-16" />
-        
+        (title !== 'Fund Manager' && title !== 'Limited Partner') &&
+        <img src={LockIcon} alt="lock" className="absolute top-2 left-0 w-16" />
+
       }
       <CardContent sx={{
         p: '18px',
