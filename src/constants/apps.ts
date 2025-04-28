@@ -5,4 +5,5 @@ export enum Apps {
   COMPANY_TRACKER = 'CompanyTracker.ai',
   VC_ASSOCIATE = 'VCAssociate.ai',
   MEMO_GENERATOR = 'MemoGenerator.ai',
+  PROSPECT_TRACKER = 'ProspectTracker.ai',
 }
