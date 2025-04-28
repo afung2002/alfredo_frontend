@@ -18,6 +18,17 @@ export type FundResponse = BaseFund & {
   id: number;
   created_at: string; // ISO 8601 date-time
   updated_at: string; // ISO 8601 date-time
+  limited_partners:  {
+    limited_partner: {
+      user_id: string;
+      name: string;
+      email: string;
+      website_url?: string;
+      description?: string
+    },
+    invested_amount: string;
+    created_at:string;
+  }[]; // Array of limited partners associated with the fund
 };
 
 export type FundPayload = FundRequest & {
@@ -150,3 +161,40 @@ export type FundLimitedPartnerResponse = FundLimitedPartnerRequest & {
   user_id: number;
   created_at: string; // ISO 8601 date-time
 };
+
+// --- INVITATIONS ---
+
+export type InvitationMetadata = {
+  role: 'fund_manager' | 'limited_partner'; // Based on enum in swagger
+  name: string;
+};
+
+export type BaseInvitation = {
+  email_address: string;
+  fund: number;
+  invested_amount?: string;
+  public_metadata: InvitationMetadata;
+};
+
+export type Invitation = BaseInvitation & {
+  id: string;
+  status?: string;
+  expires_at?: string; // ISO 8601 datetime
+  created_at?: string; // ISO 8601 datetime
+};
+
+// Single invitation create
+export type CreateInvitationRequest = BaseInvitation;
+
+// Bulk invitations create
+export type BulkInvitationRequest = BaseInvitation[];
+
+// --- LIMITED PARTNER DOCUMENTS ---
+
+// No extra types needed here.
+// We'll reuse your existing `DocumentResponse[]` when fetching LP documents.
+
+// --- DELETE FUND MANAGER ---
+
+// No body needed for delete fund manager mutation, 
+// just pass the `user_id` as `string`.
