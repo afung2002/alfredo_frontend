@@ -272,7 +272,8 @@ const FundView: React.FC = () => {
 
             <Box sx={boxRowStyles}>
               <Typography variant="body2">Description:</Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary"
+              >
                 {fundData?.description}
               </Typography>
             </Box>
@@ -436,7 +437,7 @@ const FundView: React.FC = () => {
                 Add New
               </Button>
             </Box>
-            <LimitedPartnersList limitedPartners={filteredLimitedPartners} isLoading={isLoadingLimitedPartners} />
+            <LimitedPartnersList limitedPartners={fundData?.limited_partners} isLoading={isLoadingLimitedPartners} />
 
 
           </>
