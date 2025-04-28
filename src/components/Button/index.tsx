@@ -12,12 +12,10 @@ const Button = ({ className, children, variant, ...props }: IButtonProps) => {
           sx={{
             flexShrink: 0,
             textTransform: "none",
-            bgcolor: "black",
-            color: "white",
             borderRadius: "2px",
-            "&:hover": {
-              bgcolor: "rgba(0, 0, 0, 0.8)",
-            },
+            // "&:hover": {
+            //   bgcolor: "rgba(0, 0, 0, 0.8)",
+            // },
           }}
       {...props}
       className={`shrink-0 px-4 ${className ?? ''}`}
