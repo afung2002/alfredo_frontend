@@ -90,3 +90,11 @@ export const getReferencedCompanies = (investments: InvestmentResponse[], invest
     return investments.filter(inv => inv.type === "ANGEL").map(inv => inv.company);
   }
 }
+
+export const formatNumberWithCommas = (value: string) => {
+  const number = value.replace(/,/g, ''); // Remove any commas first
+  if (isNaN(Number(number))) return value; // If not a number, return original
+  return Number(number).toLocaleString('en-US'); // American style commas
+};
+
+export const removeCommas = (value: string) => value.replace(/,/g, '');

@@ -22,6 +22,7 @@ import type {
   LimitedPartnerResponse,
   FundLimitedPartnerResponse,
   FundLimitedPartnerRequest,
+  Invitation,
 } from './types';
 import { baseQueryWithReauth } from './baseQueryWithReauth';
 
@@ -118,7 +119,7 @@ export const apiSlice = createApi({
           if (params.company !== undefined) queryParams.append('company', String(params.company));
           query = `?${queryParams.toString()}`;
         }
-    
+
         return {
           url: `${Endpoints.INVESTMENTS}${query}`,
           method: 'GET',
@@ -126,7 +127,7 @@ export const apiSlice = createApi({
       },
       providesTags: [Tags.INVESTMENTS],
     }),
-    
+
 
     createInvestment: builder.mutation<InvestmentResponse, InvestmentRequest>({
       query: (data) => ({ url: Endpoints.INVESTMENTS, method: 'POST', body: data }),
@@ -198,7 +199,7 @@ export const apiSlice = createApi({
       }),
       providesTags: (_r, _e, fundId) => [{ type: Tags.DOCUMENTS, id: `fund-${fundId}` }],
     }),
-    
+
     getDocumentsByInvestmentId: builder.query<DocumentResponse[], string>({
       query: (investmentId) => ({
         url: `/investments/${investmentId}/documents/`,
@@ -206,9 +207,9 @@ export const apiSlice = createApi({
       }),
       providesTags: (_r, _e, investmentId) => [{ type: Tags.DOCUMENTS, id: `investment-${investmentId}` }],
     }),
-    
 
-     // --- FUND DETAIL ---
+
+    // --- FUND DETAIL ---
     getFundDetail: builder.query<FundDetail, number>({
       query: (id) => ({
         url: `/funds/${id}/`,
@@ -277,6 +278,62 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: [Tags.LIMITED_PARTNERS],
     }),
+
+
+    // --- INVITATIONS ---
+    getInvitations: builder.query<Invitation[], void>({
+      // Fetch all invitations
+      query: () => ({ url: '/invitations/', method: 'GET' }),
+      providesTags: [Tags.LIMITED_PARTNERS], // Invitations are connected to LPs
+    }),
+
+    createInvitation: builder.mutation<Invitation, any>({
+      // Create a single invitation
+      query: (data) => ({ url: '/invitations/', method: 'POST', body: data }),
+      invalidatesTags: [Tags.LIMITED_PARTNERS],
+    }),
+
+    createBulkInvitations: builder.mutation<Invitation[], any[]>({
+      // Create multiple invitations at once
+      query: (data) => ({ url: '/invitations/bulk-create/', method: 'POST', body: data }),
+      invalidatesTags: [Tags.LIMITED_PARTNERS],
+    }),
+
+    getInvitationById: builder.query<Invitation, string>({
+      // Fetch single invitation by ID
+      query: (id) => ({ url: `/invitations/${id}/`, method: 'GET' }),
+      providesTags: (_r, _e, id) => [{ type: Tags.LIMITED_PARTNERS, id }],
+    }),
+
+    deleteInvitation: builder.mutation<void, string>({
+      // Delete invitation by ID
+      query: (id) => ({ url: `/invitations/${id}/`, method: 'DELETE' }),
+      invalidatesTags: (_r, _e, id) => [{ type: Tags.LIMITED_PARTNERS, id }, Tags.LIMITED_PARTNERS],
+    }),
+
+    acceptLimitedPartnerInvitation: builder.mutation<any, any>({
+      // Accept invitation for Limited Partner
+      query: (data) => ({ url: '/invitations/limited-partner/accept/', method: 'POST', body: data }),
+      invalidatesTags: [Tags.LIMITED_PARTNERS],
+    }),
+
+    // --- LIMITED PARTNER DOCUMENTS ---
+    getLimitedPartnerDocuments: builder.query<DocumentResponse[], string>({
+      // Fetch documents of specific limited partner
+      query: (user_id) => ({
+        url: `/limited_partner/${user_id}/documents/`,
+        method: 'GET',
+      }),
+      providesTags: (_r, _e, user_id) => [{ type: Tags.DOCUMENTS, id: `lp-${user_id}` }],
+    }),
+
+    // --- DESTROY FUND MANAGER ---
+    deleteFundManager: builder.mutation<void, string>({
+      // Delete a fund manager and cascade cleanup
+      query: (user_id) => ({ url: `/fund-manager/${user_id}/`, method: 'DELETE' }),
+      invalidatesTags: [Tags.FUNDS, Tags.INVESTMENTS, Tags.DOCUMENTS, Tags.COMPANIES, Tags.LIMITED_PARTNERS],
+    }),
+
   }),
 });
 
@@ -340,5 +397,20 @@ export const {
   usePatchLimitedPartnerMutation,
   useGetLimitedPartnerFundsQuery,
   useCreateFundLimitedPartnerMutation,
+
+  // Invitations
+  useGetInvitationsQuery,
+  useCreateInvitationMutation,
+  useCreateBulkInvitationsMutation,
+  useGetInvitationByIdQuery,
+  useDeleteInvitationMutation,
+  useAcceptLimitedPartnerInvitationMutation,
+
+  // Limited Partner Documents
+  useGetLimitedPartnerDocumentsQuery,
+
+  // Fund Manager
+  useDeleteFundManagerMutation,
 } = apiSlice;
+
 

@@ -215,7 +215,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose} disabled={uploadIsLoading}>
+        <Button variant="outlined" onClick={onClose} disabled={uploadIsLoading}>
           Cancel
         </Button>
         <Button
