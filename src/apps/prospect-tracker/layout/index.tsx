@@ -2,6 +2,8 @@ import { Box } from "@mui/material";
 import { Outlet } from "react-router";
 import AppSideMenu from "@components/AppSideMenu";
 import { Routes } from "@constants/routes";
+import { Apps } from "@constants/apps";
+import { useAppContext } from "../../../context/appContext";
 
 export default function ProspectTrackerLayout() {
   const sideMenuButtons = [
@@ -21,9 +23,11 @@ export default function ProspectTrackerLayout() {
       path: Routes.APPS,
     },
   ];
+  const { app, setApp } = useAppContext();
+  setApp(Apps.PROSPECT_TRACKER);
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
-      <AppSideMenu app="Prospecttracker.ai" sideMenuButtons={sideMenuButtons} />
+      <AppSideMenu sideMenuButtons={sideMenuButtons} />
       <div className="flex-1 bg-white">
         <Outlet />
       </div>
