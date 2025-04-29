@@ -4,15 +4,15 @@ import { Navigate } from 'react-router';
 import Loader from '@components/Loader';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useCreateFundLimitedPartnerMutation } from '@services/api/baseApi';
+import { useAcceptLimitedPartnerInvitationMutation } from '@services/api/baseApi';
 
 const LandingPage = () => {
   const { user, isSignedIn, isLoaded } = useUser();
   const [searchParams] = useSearchParams();
   const ticket = searchParams.get('__clerk_ticket');
-
+  const [createLimitedPartner, { isLoading: creatingLP }] =
+    useAcceptLimitedPartnerInvitationMutation();
   const [hasCreatedLP, setHasCreatedLP] = useState(false);
-  const [createLimitedPartner, { isLoading: creatingLP }] = useCreateFundLimitedPartnerMutation();
 
   useEffect(() => {
     if (!isLoaded || !isSignedIn || hasCreatedLP) return;
@@ -30,9 +30,9 @@ const LandingPage = () => {
         if (isNewlyInvited) {
           try {
             await createLimitedPartner({
-              limited_partner: user.id,
-              invested_amount: '1000',
-              fund: 42,
+              email,
+              name,
+              fund,
             }).unwrap();
 
             setHasCreatedLP(true); // Mark as created after API success
