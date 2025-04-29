@@ -5,6 +5,7 @@ import Loader from '@components/Loader';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAcceptLimitedPartnerInvitationMutation } from '@services/api/baseApi';
+import { Routes } from '../../constants/routes';
 
 const LandingPage = () => {
   const { user, isSignedIn, isLoaded } = useUser();
@@ -13,13 +14,13 @@ const LandingPage = () => {
   const [createLimitedPartner, { isLoading: creatingLP }] =
     useAcceptLimitedPartnerInvitationMutation();
   const [hasCreatedLP, setHasCreatedLP] = useState(false);
+  const [isNewlyInvited, setIsNewlyInvited] = useState(false);
 
   useEffect(() => {
     if (!isLoaded || !isSignedIn || hasCreatedLP) return;
 
     const createLimitedPartnerAfterSignup = async () => {
       if (user.publicMetadata) {
-        console.log(user)
         const fund = user.publicMetadata.fund_name as string | undefined;
         const fund_id = user.publicMetadata.fund_id as number | undefined;
         const name = user.publicMetadata.name as string | undefined;
@@ -27,7 +28,7 @@ const LandingPage = () => {
         console.log('User public metadata:', user.publicMetadata);
         // Detect if user is newly invited based on existing metadata fields
         const isNewlyInvited = !!(fund);
-        console.log('Is newly invited:', isNewlyInvited);
+        setIsNewlyInvited(isNewlyInvited);
         if (isNewlyInvited) {
           try {
             await createLimitedPartner({
@@ -56,8 +57,12 @@ const LandingPage = () => {
   }
 
   // After sign-in + LP created successfully
-  if (isSignedIn && hasCreatedLP) {
-    return <Navigate to="/apps" />;
+  if (isSignedIn && hasCreatedLP && !isNewlyInvited) {
+    return <Navigate to={Routes.APPS} />;
+  }
+
+  if (isSignedIn && hasCreatedLP && isNewlyInvited) {
+    return <Navigate to={Routes.LIMITED_PARTNER_FUNDS} />;
   }
 
   // If not signed in yet (first time landing)
