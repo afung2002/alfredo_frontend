@@ -7,7 +7,7 @@ import {
   filterInvestmentsByType,
   getClerkToken
 } from '@utils/index';
-import { FILTER_TABS, DEFAULT_TAB } from '@constants/index';
+import { FILTER_TABS, DEFAULT_TAB, INVESTMENTS_SORT_OPTIONS } from '@constants/index';
 import { Routes } from '@constants/routes';
 import Input from '@components/Input';
 import { useForm } from 'react-hook-form';
@@ -15,6 +15,7 @@ import InvestmentsList from '@src/components/InvestmentsList';
 import { useGetInvestmentsQuery } from '@services/api/baseApi';
 import { calculateInvestmentTotals, formatNumberString } from '../../../../utils';
 import { InvestmentResponse } from '../../../../services/api/baseApi/types';
+import SortDropdown from '../../../../components/SortDropdown';
 
 
 const Investments = () => {
@@ -29,6 +30,8 @@ const Investments = () => {
   const searchValue = watch('searchInvestments');
   const [filteredInvestments, setFilteredInvestments] = useState<InvestmentResponse[]>(investmentsData || []);
   const [selectedTab, setSelectedTab] = useState(DEFAULT_TAB);
+  const [sortOption, setSortOption] = useState<string>('recent');
+  console.log(filteredInvestments, 'filteredInvestments')
   const navigate = useNavigate();
 
   const { totalInvestments, totalFundInvested, totalEstimatedValue } = calculateInvestmentTotals(investmentsData);
@@ -60,8 +63,43 @@ const Investments = () => {
       setFilteredInvestments(investmentsData || []);
     }
   }, [searchValue,]);
+  useEffect(() => {
+    let investmentsToFilter = [...(investmentsData || [])];
 
+    if (selectedTab === 'fund') {
+      investmentsToFilter = filterInvestmentsByType(investmentsToFilter, InvestmentType.FUND);
+    } else if (selectedTab === 'angel') {
+      investmentsToFilter = filterInvestmentsByType(investmentsToFilter, InvestmentType.ANGEL);
+    }
 
+    // Apply search filtering
+    if (searchValue) {
+      investmentsToFilter = investmentsToFilter.filter((investment) =>
+        investment.company.name.toLowerCase().includes(searchValue.toLowerCase())
+      );
+    }
+
+    // Apply sort
+    setFilteredInvestments(sortInvestments(investmentsToFilter));
+  }, [selectedTab, investmentsData, searchValue, sortOption]);
+
+  const sortInvestments = (investments: InvestmentResponse[]) => {
+    if (sortOption === 'recent') {
+      return [...investments].sort(
+        (a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+      );
+    }
+
+    if (sortOption === 'alphabetical') {
+      return [...investments].sort((a, b) => a.company.name.localeCompare(b.company.name));
+    }
+
+    if (sortOption === 'investment') {
+      return [...investments].sort((a, b) => Number(b.amount) - Number(a.amount));
+    }
+
+    return investments;
+  };
   if (isLoadingInvestments) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
@@ -130,44 +168,51 @@ const Investments = () => {
           Add New
         </Button>
       </Box>
+      <div className="flex gap-2 items-center justify-between">
+        <Tabs
+          value={selectedTab}
+          onChange={(_, newValue) => setSelectedTab(newValue)}
+          variant="scrollable"
+          scrollButtons={false}
+          TabIndicatorProps={{ style: { display: 'none' } }}
+        >
+          {FILTER_TABS.map((tab) => (
+            <Tab
+              disableFocusRipple
+              disableTouchRipple
+              sx={{
+                minHeight: 32,
+                minWidth: 'auto',
+                px: 4,
+                borderRadius: '50px',
+                textTransform: 'none',
+                bgcolor: 'transparent !important', // Set background transparent
+                color: 'gray',
+                mx: 1,
+                fontSize: 14,
+                fontWeight: 600,
+                border: '1px solid gray',
+                '&.Mui-selected': {
+                  border: '1px solid black',
+                  bgcolor: 'transparent !important', // Ensure selected tab is also transparent
+                  color: 'black', // Optional: change color for selected tab
+                },
 
-      <Tabs
-        value={selectedTab}
-        onChange={(_, newValue) => setSelectedTab(newValue)}
-        variant="scrollable"
-        scrollButtons={false}
-        TabIndicatorProps={{ style: { display: 'none' } }}
-      >
-        {FILTER_TABS.map((tab) => (
-          <Tab
-            disableFocusRipple
-            disableTouchRipple
-            sx={{
-              minHeight: 32,
-              minWidth: 'auto',
-              px: 4,
-              borderRadius: '50px',
-              textTransform: 'none',
-              bgcolor: 'transparent !important', // Set background transparent
-              color: 'gray',
-              mx: 1,
-              fontSize: 14,
-              fontWeight: 600,
-              border: '1px solid gray',
-              '&.Mui-selected': {
-                border: '1px solid black',
-                bgcolor: 'transparent !important', // Ensure selected tab is also transparent
-                color: 'black', // Optional: change color for selected tab
-              },
+              }}
+              key={tab.value}
+              label={tab.label}
+              value={tab.value}
+              disableRipple
+            />
+          ))}
+        </Tabs>
+        <SortDropdown
+          options={INVESTMENTS_SORT_OPTIONS}
+          value={sortOption}
+          onChange={setSortOption}
+        />
+      </div>
 
-            }}
-            key={tab.value}
-            label={tab.label}
-            value={tab.value}
-            disableRipple
-          />
-        ))}
-      </Tabs>
 
       <InvestmentsList
         investments={filteredInvestments}

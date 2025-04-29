@@ -3,7 +3,7 @@ import { Box, Typography, Button, Card, CircularProgress, Alert, IconButton, Pap
 import { LimitedPartnerType } from "../../../../types/index";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ArrowBack, Edit } from "@mui/icons-material";
-import { useGetDocumentsQuery, useGetLimitedPartnerByIdQuery } from "@src/services/api/baseApi";
+import { useGetDocumentsQuery, useGetLimitedPartnerByIdQuery, useGetLimitedPartnerDocumentsQuery } from "@src/services/api/baseApi";
 import { Routes } from "@src/constants/routes";
 import DocumentsList from "../../../../components/DocumentsList";
 import { Link } from "@mui/icons-material";
@@ -13,7 +13,7 @@ const LimitedPartner: React.FC = () => {
   const location = useLocation();
   const { state } = location
   const { data: limitedPartner, error, isLoading } = useGetLimitedPartnerByIdQuery(limitedPartnerId);
-  const { data: documents, isLoading: isDocumentsLoading, error: documentsError } = useGetDocumentsQuery()
+  const { data: documents, isLoading: isDocumentsLoading, error: documentsError } = useGetLimitedPartnerDocumentsQuery(limitedPartnerId)
   const navigate = useNavigate();
 
 

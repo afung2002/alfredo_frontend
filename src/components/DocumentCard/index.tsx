@@ -1,27 +1,28 @@
 import { Box, CardContent, IconButton, Typography, Card } from "@mui/material";
 import { Document } from "../../types";
-
-// import Card from "../Card";
 import { useDeleteDocumentMutation, useLazyDownloadDocumentQuery } from "../../services/api/baseApi";
-import DocIcon from '@assets/doc.svg';
-import LimitedPartner from '../../apps/fund-manager/pages/LimitedPartner/index';
-import { Apps } from "../../constants/apps";
-import { useAppContext } from "@src/context/appContext";
-import FileIcon from '@mui/icons-material/InsertDriveFile';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import DownloadIcon from '@mui/icons-material/Download';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Button from "../Button";
-import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';const DocumentCard: React.FC<{ document: Document, orientation: "row" | "grid" }> = ({ document: doc, orientation }) => {
-  const [deleteDoc, { isLoading: isDeleting }] = useDeleteDocumentMutation();
-  const [triggerDownload, { isFetching }] = useLazyDownloadDocumentQuery();
+import { useState } from "react";
+import { Apps } from "../../constants/apps";
+import { useAppContext } from "@src/context/appContext";
+import DocViewer from "../DocViewer";
+
+const DocumentCard: React.FC<{ document: Document, orientation: "row" | "grid" }> = ({ document: doc, orientation }) => {
+  const [deleteDoc] = useDeleteDocumentMutation();
+  const [triggerDownload] = useLazyDownloadDocumentQuery();
+  const [docLink, setDocLink] = useState<string | null>(null);
   const { app } = useAppContext();
-  const handleDocDelete = async (id) => {
+
+  const handleDocDelete = async (id: number) => {
     try {
-      await deleteDoc(Number(id)).unwrap();
+      await deleteDoc(id).unwrap();
     } catch (error) {
       console.error("Failed to delete document:", error);
     }
-  }
+  };
 
   const handleDocDownload = async (id: number) => {
     try {
@@ -29,81 +30,53 @@ import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';co
       const fileUrl = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = fileUrl;
-      link.download = `document-${id}.pdf`; // or a better name if you have one
+      link.download = `document-${id}.pdf`;
       document.body.appendChild(link);
       link.click();
       link.remove();
-      window.URL.revokeObjectURL(fileUrl); // cleanup
+      window.URL.revokeObjectURL(fileUrl);
     } catch (err) {
       console.error('Failed to download the document:', err);
     }
   };
 
+  const handleDocView = async (id: number) => {
+    try {
+      const blob = await triggerDownload(id).unwrap();
+      const fileUrl = window.URL.createObjectURL(blob);
+      setDocLink(fileUrl);
+    } catch (err) {
+      console.error('Failed to view the document:', err);
+    }
+  };
+
+  const handleCloseViewer = () => {
+    setDocLink(null);
+  };
+
   return (
-    <div >
-      {/* <Card
-        onClick={() => { }}
-        onDelete={app === Apps.LIMITED_PARTNER ? undefined : () => handleDocDelete(doc.id)}
-        onDownload={() => handleDocDownload(doc.id)}
-        title={doc.name}
-        orientation={orientation}
-        subtitle={
-          <Typography variant="subtitle2" component="p" sx={{
-            color: 'text.secondary', fontWeight: '500', overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            display: '-webkit-box',
-            WebkitLineClamp: '1',
-            WebkitBoxOrient: 'vertical',
-          }}>
-            {doc.company_name}
-          </Typography>
-        }
-        sideImage={DocIcon}
-        className="transition-shadow duration-200"
+    <>
+      <Card
+        variant="outlined"
         sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          p: '24px',
-          borderRadius: '6px',
-          cursor: "pointer",
-          mb: '8px',
-          backgroundColor: 'grey.100',
-          ':hover': {
-            backgroundColor: '#f5f5f5',
+          height: '200px',
+          width: '224px',
+          display: 'flex',
+          flexDirection: 'column',
+          position: 'relative',
+          boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+          '&:hover': {
+            boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
           }
         }}
       >
-        <Typography variant="subtitle2" component="p" sx={{
-          color: 'text.secondary', fontWeight: '500', overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          display: '-webkit-box',
-          WebkitLineClamp: '2',
-          WebkitBoxOrient: 'vertical',
-        }}>
-          {doc.description}
-        </Typography>
-      </Card> */}
-      <Card
-        variant="outlined"
-      sx={{
-        height: '200px', // Fixed height for consistent card size
-        display: 'flex',
-        flexDirection: 'column',
-        position: 'relative',
-        boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
-        '&:hover': {
-          boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-        }
-      }}>
         <CardContent sx={{
           flex: 1,
           display: 'flex',
           flexDirection: 'column',
           p: 2,
-          '&:last-child': { pb: 2 }, // Override Material-UI's default padding
+          '&:last-child': { pb: 2 },
         }}>
-          {/* File name at the top */}
           <Typography
             variant="subtitle2"
             sx={{
@@ -116,7 +89,6 @@ import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';co
             {doc.name ?? 'Untitled Document'}
           </Typography>
 
-          {/* Centered icon */}
           <Box sx={{
             flex: 1,
             display: 'flex',
@@ -129,38 +101,47 @@ import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';co
             }} />
           </Box>
 
-          {/* Bottom actions row */}
           <Box sx={{
             display: 'flex',
             justifyContent: 'space-between',
             mt: 'auto'
           }}>
-            {/* Delete button */}
-            {
-              app === Apps.LIMITED_PARTNER ? null : (
-                <IconButton
-                  size="small"
-                  onClick={app === Apps.LIMITED_PARTNER ? undefined : () => handleDocDelete(doc.id)}
-                  sx={{
-                    color: 'black',
-                    bgcolor: 'rgba(0, 0, 0, 0.04)',
-                    '&:hover': {
-                      bgcolor: 'rgba(0, 0, 0, 0.08)'
-                    }
-                  }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              )
+            {app !== Apps.LIMITED_PARTNER && (
+              <IconButton
+                size="small"
+                onClick={() => handleDocDelete(doc.id)}
+                sx={{
+                  color: 'black',
+                  bgcolor: 'rgba(0, 0, 0, 0.04)',
+                  '&:hover': {
+                    bgcolor: 'rgba(0, 0, 0, 0.08)'
+                  }
+                }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            )}
 
-            }
+            <Button
+              variant="contained"
+              sx={{
+                bgcolor: 'gray',
+                boxShadow: 'none',
+                '&:hover': {
+                  bgcolor: 'gray',
+                  boxShadow: 'none'
+                }
+              }}
+              onClick={() => {
+                  console.log("View document:", doc.id);
+                  handleDocView(doc.id);
 
-            <Button variant="contained" sx={{bgcolor: 'gray', boxShadow: 'none', '&:hover' :{
-              bgcolor: 'gray',
-              boxShadow: 'none'
-            }}} onClick={() => { if (app === Apps.LIMITED_PARTNER) { handleDocDownload(doc.id)
-            }}} size="small">View</Button>
-            {/* Download button */}
+              }}
+              size="small"
+            >
+              View
+            </Button>
+
             <IconButton
               onClick={() => handleDocDownload(doc.id)}
               size="small"
@@ -177,8 +158,15 @@ import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';co
           </Box>
         </CardContent>
       </Card>
-    </div>
 
+      {docLink && (
+        <DocViewer
+          open={Boolean(docLink)}
+          docLink={docLink}
+          onClose={handleCloseViewer}
+        />
+      )}
+    </>
   );
 };
 

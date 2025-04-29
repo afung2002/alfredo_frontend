@@ -39,7 +39,10 @@ const DocumentsList = ({ documents, isLoading, selectedOrientation }: DocumentsL
     <>
       {documents && documents?.length > 0 && (
 
-        <div className={'grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3   gap-4'}>
+        <div className="grid gap-4"
+        style={{
+          gridTemplateColumns: 'repeat(auto-fill, minmax(224px, 1fr))',
+        }}>
           <AnimatePresence mode="popLayout">
             {documents.map((document) => (
               <motion.div
@@ -49,11 +52,8 @@ const DocumentsList = ({ documents, isLoading, selectedOrientation }: DocumentsL
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                className=""
               >
-                <div className="">
                   <DocumentCard orientation={selectedOrientation} document={document} />
-                </div>
               </motion.div>
             ))}
           </AnimatePresence>

@@ -18,3 +18,20 @@ export const FUNDS_FILTER_TABS = [
   { label: "Active", value: "active" },
   { label: "Closed", value: "closed" },
 ];
+
+export const INVESTMENTS_SORT_OPTIONS = [
+  { label: 'Recently Edited', value: 'recent' },
+  { label: 'Alphabetical', value: 'alphabetical' },
+  { label: 'Investment Amount', value: 'investment' },
+];
+
+export const FUNDS_SORT_OPTIONS = [
+  { label: 'Recently Edited', value: 'recent' },
+  { label: 'Alphabetical', value: 'alphabetical' },
+  { label: 'Fund Amount', value: 'amount' },
+];
+
+export const DOCUMENTS_SORT_OPTIONS = [
+  { label: 'Recently Edited', value: 'recent' },
+  { label: 'Alphabetical', value: 'alphabetical' },
+];

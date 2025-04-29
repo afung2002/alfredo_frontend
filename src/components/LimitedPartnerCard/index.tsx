@@ -15,7 +15,7 @@ const LimitedPartnerCard = ({ limitedPartner }: LimitedPartnerCardProps) => {
   console.log(limitedPartner, 'limitedPartner')
   return (
     <Card
-      onClick={() => navigate(Routes.FUND_MANAGER_LIMITED_PARTNER.replace(':limitedPartnerId', limitedPartner.user_id.toString()), { state: { fundId } })}
+      onClick={() => navigate(Routes.FUND_MANAGER_LIMITED_PARTNER.replace(':limitedPartnerId', limitedPartner.limited_partner.user_id.toString()), { state: { fundId } })}
       sx={{
         display: "flex",
         alignItems: "center",

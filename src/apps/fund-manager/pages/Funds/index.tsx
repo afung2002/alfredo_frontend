@@ -11,6 +11,8 @@ import { useGetFundsQuery } from '@services/api/baseApi';
 import { calculateFundTotals, formatNumberString } from '../../../../utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Apps } from '@src/constants/apps';
+import SortDropdown from '../../../../components/SortDropdown';
+import { FUNDS_SORT_OPTIONS } from '../../../../constants';
 
 const Funds = () => {
   const { data: fundsData, isLoading, error } = useGetFundsQuery();
@@ -24,6 +26,7 @@ const Funds = () => {
   const searchValue = watch('searchFunds');
   const [funds, setFunds] = useState<Fund[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortOption, setSortOption] = useState<string>('recent');
   const navigate = useNavigate();
   useEffect(() => {
     setSearchQuery(searchValue)
@@ -57,6 +60,37 @@ const Funds = () => {
     exit: { opacity: 0, y: -10, transition: { duration: 0.2 } },
   };
 
+  useEffect(() => {
+    if (!fundsData) return;
+  
+    let updatedFunds = [...fundsData];
+  
+    // Step 1: Filter by search query
+    if (searchQuery) {
+      updatedFunds = updatedFunds.filter(fund =>
+        fund.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+  
+    // Step 2: Sort by selected option
+    switch (sortOption) {
+      case 'alphabetical':
+        updatedFunds.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'amount':
+        updatedFunds.sort((a, b) => Number(b.fund_size) - Number(a.fund_size)); // Adjust key if needed
+        break;
+      case 'recent':
+      default:
+        updatedFunds.sort(
+          (a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+        );
+        break;
+    }
+  
+    setFunds(updatedFunds);
+  }, [searchQuery, fundsData, sortOption]);
+  
   if (isLoading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
@@ -125,6 +159,14 @@ const Funds = () => {
           Add New
         </Button>
       </Box>
+      <div className="flex gap-2 items-center justify-end">
+        <SortDropdown
+          options={FUNDS_SORT_OPTIONS}
+          value={sortOption}
+          onChange={setSortOption}
+        />
+      </div>
+
       {!isLoading && funds && funds?.length > 0 ? (
         <AnimatePresence mode="popLayout">
           {

@@ -9,6 +9,8 @@ import DocumentsList from '@components/DocumentsList';
 import { useGetDocumentsQuery } from '@services/api/baseApi';
 import { Apps } from '@src/constants/apps';
 import { useAppContext } from '../../../../context/appContext';
+import SortDropdown from '../../../../components/SortDropdown';
+import { DOCUMENTS_SORT_OPTIONS } from '../../../../constants';
 
 const Documents = () => {
   const { data: documentsData, isLoading: isLoadingDocuments, error: errorDocuments } = useGetDocumentsQuery();
@@ -22,6 +24,7 @@ const Documents = () => {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [filteredDocs, setFilteredDocs] = useState<Document[]>(documentsData || []);
   const [selectedOrientation, setSelectedOrientation] = useState<"row" | "grid">('row');
+  const [sortOption, setSortOption] = useState<string>('recent');
   const handleOrientationChange = (event: React.MouseEvent<HTMLElement>, newOrientation: "row" | "grid") => {
     if (newOrientation !== null) {
       setSelectedOrientation(newOrientation);
@@ -36,7 +39,33 @@ const Documents = () => {
     setFilteredDocs(filteredDocs);
   }, [searchValue, documentsData]);
 
-
+  useEffect(() => {
+    if (!documentsData) return;
+  
+    let docs = [...documentsData];
+  
+    // Step 1: Filter by search value
+    if (searchValue) {
+      docs = searchByTitle(docs, searchValue, 'name') || [];
+    }
+  
+    // Step 2: Apply sorting based on selected option
+    switch (sortOption) {
+      case 'alphabetical':
+        docs.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'recent':
+      default:
+        docs.sort(
+          (a, b) =>
+            new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+        );
+        break;
+    }
+  
+    setFilteredDocs(docs);
+  }, [searchValue, documentsData, sortOption]);
+  
   const {app} = useAppContext()
   const handleModalClose = () => {
     setIsUploadModalOpen(false);
@@ -66,11 +95,7 @@ const Documents = () => {
         <Typography sx={{ textAlign: 'left', fontSize: '1.5rem', lineHeight: '1.334', fontWeight: 500 }}>
         {documentsData?.length} Documents
         </Typography>
-        {/* <Chip
-          label={documentsData?.length}
-          color="secondary"
-          sx={{ fontSize: '0.875rem', fontWeight: 700, borderRadius: '4px' }}
-        /> */}
+
       </Box>
 
       <Box sx={{ display: "flex", gap: 2, mb: 2, width: '100%' }}>
@@ -83,6 +108,7 @@ const Documents = () => {
           placeholder="Search documents..."
           className="flex flex-col w-full"
         />
+      
         {
           app !== Apps.LIMITED_PARTNER && (
             <Button
@@ -106,16 +132,12 @@ const Documents = () => {
         
 
       </Box>
-      {/* <div className="flex justify-end mb-2">
-        <ToggleButtonGroup  color="secondary" value={selectedOrientation} exclusive onChange={handleOrientationChange}>
-          <ToggleButton  value="grid" onClick={() => setSelectedOrientation('grid')} sx={{ textTransform: 'none' }}>
-            <AppsIcon sx={{ fontSize: '1.2rem' }} />
-          </ToggleButton>
-          <ToggleButton value="row" onClick={() => setSelectedOrientation('row')} sx={{ textTransform: 'none' }}>
-            <TableRowsIcon sx={{ fontSize: '1.2rem' }} />
-          </ToggleButton>
-        </ToggleButtonGroup>
-      </div> */}
+      <div className="flex gap-2 items-center justify-end">
+        <SortDropdown options={DOCUMENTS_SORT_OPTIONS} value={sortOption}
+          onChange={setSortOption}
+          />
+
+      </div>
 
       <DocumentsList selectedOrientation={selectedOrientation}  documents={filteredDocs} isLoading={isLoadingDocuments} />
 
