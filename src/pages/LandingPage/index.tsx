@@ -18,21 +18,21 @@ const LandingPage = () => {
     if (!isLoaded || !isSignedIn || hasCreatedLP) return;
 
     const createLimitedPartnerAfterSignup = async () => {
-      if (user && user.id && user.publicMetadata) {
-        const fundId = user.publicMetadata.fund as number | undefined;
-        const investedAmount = user.publicMetadata.invested_amount as string | undefined;
+      if (user.publicMetadata) {
+        console.log(user)
+        const fund = user.publicMetadata.fund_name as number | undefined;
         const name = user.publicMetadata.name as string | undefined;
-        const email = user.primaryEmailAddress?.emailAddress;
+        const email = user.publicMetadata?.fund_manager_email;
         console.log('User public metadata:', user.publicMetadata);
         // Detect if user is newly invited based on existing metadata fields
-        const isNewlyInvited = !!(fundId && investedAmount);
+        const isNewlyInvited = !!(fund);
         console.log('Is newly invited:', isNewlyInvited);
         if (isNewlyInvited) {
           try {
             await createLimitedPartner({
               limited_partner: user.id,
-              invested_amount: investedAmount,
-              fund: fundId,
+              invested_amount: '1000',
+              fund: 42,
             }).unwrap();
 
             setHasCreatedLP(true); // Mark as created after API success
