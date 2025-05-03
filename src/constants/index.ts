@@ -28,10 +28,15 @@ export const INVESTMENTS_SORT_OPTIONS = [
 export const FUNDS_SORT_OPTIONS = [
   { label: 'Recently Edited', value: 'recent' },
   { label: 'Alphabetical', value: 'alphabetical' },
-  { label: 'Fund Amount', value: 'amount' },
+  { label: 'Fund Size', value: 'amount' },
 ];
 
 export const DOCUMENTS_SORT_OPTIONS = [
+  { label: 'Recently Edited', value: 'recent' },
+  { label: 'Alphabetical', value: 'alphabetical' },
+];
+
+export const FUND_UPDATES_SORT_OPTIONS = [
   { label: 'Recently Edited', value: 'recent' },
   { label: 'Alphabetical', value: 'alphabetical' },
 ];
