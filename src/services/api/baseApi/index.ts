@@ -276,7 +276,9 @@ export const apiSlice = createApi({
         method: 'POST',
         body: data,
       }),
-      invalidatesTags: [Tags.LIMITED_PARTNERS],
+      invalidatesTags: (result, error, data) => [
+        { type: Tags.FUNDS, id: data.fund }, // <-- This will trigger getFundById (fund id from request)
+      ],
     }),
 
 
