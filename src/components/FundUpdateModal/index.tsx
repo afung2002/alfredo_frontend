@@ -2,7 +2,7 @@ import React from "react";
 import { Modal, Box, Typography, Dialog } from "@mui/material";
 import Button from "@components/Button";
 import Input from "@components/Input";
-
+import { EditorProvider, useCurrentEditor } from '@tiptap/react'
 type FundUpdateModalProps = {
   open: boolean;
   onClose: () => void;
@@ -51,7 +51,7 @@ const FundUpdateModal: React.FC<FundUpdateModalProps> = ({
             />
           </div>
 
-          <Input
+          {/* <Input
             name="postDescription"
             control={control}
             label="Message"
@@ -59,12 +59,12 @@ const FundUpdateModal: React.FC<FundUpdateModalProps> = ({
             rows={5}
             rounded={false}
             error={!!errors?.postDescription?.message}
-          />
-
+          /> */}
+        <EditorProvider />
           <Box
             className="mt-4 gap-2"
             sx={{ display: "flex", justifyContent: "flex-end" }}
-          >
+          > 
             <Button variant="outlined" onClick={onClose}>
               Cancel
             </Button>
