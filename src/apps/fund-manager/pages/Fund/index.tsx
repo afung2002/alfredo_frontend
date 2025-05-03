@@ -164,7 +164,6 @@ const FundView: React.FC = () => {
   // const handleAddLimitedPartner = () => {
   //   navigate(Routes.FUND_MANAGER_NEW_LIMITED_PARTNER);
   // };
-  console.log("app", app);
   useEffect(() => {
     if (app === Apps.LIMITED_PARTNER) return
     getLimitedPartners();
