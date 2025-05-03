@@ -69,10 +69,10 @@ export enum InvestmentType {
 }
 
 export enum InvitationStatus {
-  PENDING = 'PENDING',
-  REGISTERED = 'REGISTERED',
-  REJECTED = 'REJECTED',
-    EXPIRED = 'EXPIRED',
+  PENDING = 'pending',
+  REGISTERED = 'registered',
+  REJECTED = 'rejected',
+    EXPIRED = 'expired',
   }
 
 // Unchanged, frontend-only type
