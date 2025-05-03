@@ -17,7 +17,7 @@ const LandingPage = () => {
   const [isNewlyInvited, setIsNewlyInvited] = useState(false);
 
   useEffect(() => {
-    if (!isLoaded || !isSignedIn || hasCreatedLP) return;
+    if (!isLoaded || !isSignedIn || hasCreatedLP || !ticket) return;
 
     const createLimitedPartnerAfterSignup = async () => {
       if (user.publicMetadata) {
@@ -27,9 +27,9 @@ const LandingPage = () => {
         const email = user.emailAddresses[0].emailAddress as string | undefined;    ;
         console.log('User:', user);
         // Detect if user is newly invited based on existing metadata fields
-        const isNewlyInvited = !!(fund);
-        setIsNewlyInvited(isNewlyInvited);
-        if (isNewlyInvited) {
+            // const isNewlyInvited = !!(fund);
+            // setIsNewlyInvited(isNewlyInvited);
+        if (!hasCreatedLP) {
           try {
             await createLimitedPartner({
               email,
@@ -49,7 +49,7 @@ const LandingPage = () => {
     };
 
     createLimitedPartnerAfterSignup();
-  }, [isLoaded, isSignedIn, user, createLimitedPartner, hasCreatedLP]);
+  }, [isLoaded, isSignedIn, user, createLimitedPartner, hasCreatedLP, ticket]);
 
   // Show loader while user is loading, LP creation is happening, or LP not yet confirmed
   if (!isLoaded || creatingLP || (isSignedIn && !hasCreatedLP)) {
