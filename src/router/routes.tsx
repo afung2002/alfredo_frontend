@@ -32,6 +32,7 @@ import NewProspect from "@src/apps/prospect-tracker/pages/new";
 import Prospect from "@src/apps/prospect-tracker/pages/prospect";
 import Heat from "@src/apps/prospect-tracker/pages/heat";
 import Updates from "@src/apps/prospect-tracker/pages/update";
+import LimitedPartners from "@src/apps/fund-manager/pages/LimitedPartners";
 
 export const routes: RouteObject[] = [
   {
@@ -122,6 +123,10 @@ export const routes: RouteObject[] = [
         path: Routes.FUND_MANAGER_LIMITED_PARTNER_EDIT,
         element: <NewLimitedPartner />,
       },
+      {
+        path: Routes.FUND_MANAGER_LIMITED_PARTNERS,
+        element: <LimitedPartners />,
+      }
     ],
   },
   {
