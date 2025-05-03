@@ -80,7 +80,7 @@ const LimitedPartners = () => {
     if (selectedTab === 'pending') {
       invitationsToFilter = filterInvitationsByStatus(invitationsToFilter, InvitationStatus.PENDING);
     } else if (selectedTab === 'registered') {
-      invitationsToFilter = filterInvitationsByStatus(invitationsToFilter, InvitationStatus.RE);
+      invitationsToFilter = filterInvitationsByStatus(invitationsToFilter, InvitationStatus.REGISTERED);
     }
 
     // Apply search filtering
