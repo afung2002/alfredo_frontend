@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography, Button, Card, CircularProgress, Alert, IconButton, Paper } from "@mui/material";
-import { LimitedPartnerType } from "../../../../types/index";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ArrowBack, Edit } from "@mui/icons-material";
-import { useGetDocumentsQuery, useGetLimitedPartnerByIdQuery, useGetLimitedPartnerDocumentsQuery } from "@src/services/api/baseApi";
+import { useGetLimitedPartnerByIdQuery, useGetLimitedPartnerDocumentsQuery } from "@src/services/api/baseApi";
 import { Routes } from "@src/constants/routes";
 import DocumentsList from "../../../../components/DocumentsList";
 import { Link } from "@mui/icons-material";
+import Input from "../../../../components/Input";
+import UploadDocumentModal from "../../../../components/UploadDocumentModal";
+import { useForm } from "react-hook-form";
+import { searchByTitle } from "../../../../utils/uiUtils";
 
 const LimitedPartner: React.FC = () => {
   const { limitedPartnerId } = useParams<{ limitedPartnerId: string }>();
@@ -14,10 +17,28 @@ const LimitedPartner: React.FC = () => {
   const { state } = location
   const { data: limitedPartner, error, isLoading } = useGetLimitedPartnerByIdQuery(limitedPartnerId);
   const { data: documents, isLoading: isDocumentsLoading, error: documentsError } = useGetLimitedPartnerDocumentsQuery(limitedPartnerId)
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [filteredDocs, setFilteredDocs] = useState<any[]>(documents || []);
+  const handleModalClose = () => {
+    setIsUploadModalOpen(false);
+  }
   const navigate = useNavigate();
 
+  const { control, watch } = useForm({
+    defaultValues: {
+      'searchDocuments': ''
+    }
+  });
+  const searchValue = watch('searchDocuments');
 
-
+  useEffect(() => {
+    if (searchValue === '') {
+      setFilteredDocs(documents || []);
+      return;
+    }
+    const filteredDocs = searchByTitle(documents, searchValue, 'name');
+    setFilteredDocs(filteredDocs || []);
+  }, [searchValue, documents]);
   const handleBack = () => {
     navigate(-1);
   };
@@ -96,12 +117,6 @@ const LimitedPartner: React.FC = () => {
           >
 
             <Box sx={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
-              {/* <div className="flex gap-1 items-center">
-                <Typography variant="body2">Name: </Typography>
-                <Typography variant="body1" >
-                  {limitedPartner?.name}
-                </Typography>
-              </div> */}
               <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
                 <Typography variant="h6" sx={{ fontWeight: 500 }}>
                   {limitedPartner?.name}
@@ -134,13 +149,41 @@ const LimitedPartner: React.FC = () => {
             </Box>
           </Box>
         </Paper>
-
-
-
       </Box>
-      <DocumentsList
-        documents={documents}
-        isLoading={isDocumentsLoading}
+      <Typography variant="h5" sx={{ mb: 2, fontWeight: 500 }}>
+        Documents
+      </Typography>
+      <Box sx={{ display: "flex", gap: 2, mb: 2, width: '100%' }}>
+        <Input
+          rounded
+          type="text"
+          name="searchDocuments"
+          control={control}
+          placeholder="Search documents..."
+          className="flex flex-col w-full"
+        />
+        <Button
+          onClick={() => setIsUploadModalOpen(true)}
+          variant="contained"
+          sx={{
+            flexShrink: 0,
+            textTransform: "none",
+            bgcolor: "black",
+            color: "white",
+            borderRadius: "2px",
+            "&:hover": {
+              bgcolor: "rgba(0, 0, 0, 0.8)",
+            },
+          }}
+          >
+          Upload New
+        </Button>
+      </Box>
+      <DocumentsList documents={filteredDocs} isLoading={isDocumentsLoading} />
+      <UploadDocumentModal
+        open={isUploadModalOpen}
+        onClose={handleModalClose}
+        limitedPartnerId={limitedPartnerId}
       />
     </>
 
