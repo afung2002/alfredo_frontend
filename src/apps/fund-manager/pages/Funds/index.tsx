@@ -17,7 +17,6 @@ import { FUNDS_SORT_OPTIONS } from '../../../../constants';
 const Funds = () => {
   const { data: fundsData, isLoading, error } = useGetFundsQuery();
   const { user } = useUser();
-  console.log(user, 'user')
   const { control, watch } = useForm({
     defaultValues: {
       'searchFunds': ''

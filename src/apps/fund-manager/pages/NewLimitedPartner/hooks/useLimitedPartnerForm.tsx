@@ -42,8 +42,6 @@ const useLimitedPartnerForm = (limitedPartnerId: string) => {
   }, [data, reset]);
 
   const onSubmit = async (values: LimitedPartnerFormFields) => {
-    console.log('Form submitted with values:', values);
-    console.log('Limited Partner ID:', limitedPartnerId);
     try {
       await updateLimitedPartner({user_id: limitedPartnerId, ...values }).unwrap();
       navigate(-1); // Navigate back after successful update

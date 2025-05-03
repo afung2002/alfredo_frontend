@@ -31,7 +31,6 @@ const Investments = () => {
   const [filteredInvestments, setFilteredInvestments] = useState<InvestmentResponse[]>(investmentsData || []);
   const [selectedTab, setSelectedTab] = useState(DEFAULT_TAB);
   const [sortOption, setSortOption] = useState<string>('recent');
-  console.log(filteredInvestments, 'filteredInvestments')
   const navigate = useNavigate();
 
   const { totalInvestments, totalFundInvested, totalEstimatedValue } = calculateInvestmentTotals(investmentsData);

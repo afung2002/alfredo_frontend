@@ -52,17 +52,7 @@ const LimitedPartners = () => {
     }
     navigate(Routes.FUND_MANAGER_NEW_INVESTMENT);
   };
-  // useEffect(() => {
-  //   if (selectedTab === 'all') {
-  //     setFilteredLimitedPartners(invitations || []);
-  //   } else if (selectedTab === 'pending') {
-  //     setFilteredLimitedPartners(filterInvitationsByStatus(invitations || [], InvitationStatus.PENDING));
-  //   } else if (selectedTab === 'registered') {
-  //     console.log('selectedTab', selectedTab)
-  //     console.log(filterInvitationsByStatus(invitations || [], InvitationStatus.REGISTERED))
-  //     setFilteredLimitedPartners(filterInvitationsByStatus(invitations || [], InvitationStatus.REGISTERED));
-  //   }
-  // }, [selectedTab, invitations]);
+
 
   useEffect(() => {
     if (searchValue) {
@@ -131,7 +121,6 @@ const LimitedPartners = () => {
     );
   }
 
-  console.log(filteredLimitedPartners, 'filteredLimitedPartners')
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
       <Box sx={{ mb: 1 }}>
