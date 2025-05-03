@@ -52,9 +52,10 @@ const LandingPage = () => {
   }, [isLoaded, isSignedIn, user, createLimitedPartner, hasCreatedLP, ticket]);
 
   // Show loader while user is loading, LP creation is happening, or LP not yet confirmed
-  if (!isLoaded || creatingLP || (isSignedIn && !hasCreatedLP)) {
+  if (!isLoaded || creatingLP ) {
     return <Loader />;
   }
+
 
   // After sign-in + LP created successfully
   if (isSignedIn && hasCreatedLP && !isNewlyInvited) {
@@ -81,6 +82,7 @@ const LandingPage = () => {
           <SignUp />
         ) : (
           <SignIn
+          forceRedirectUrl={Routes.APPS}  
             appearance={{
               elements: {
                 rootBox: {
