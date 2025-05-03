@@ -1,4 +1,4 @@
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Typography } from "@mui/material";
 import LimitedPartnerCard from "../LimitedPartnerCard";
 import InvitationCard from "../InvitationCard";
 
@@ -18,7 +18,7 @@ const LimitedPartnersList = ({limitedPartners, isLoading, page}: LimitedPartners
   }
 
   return (
-    <div className="flex flex-col w-full h-full gap-4">
+    <div className="flex flex-col w-full h-full gap-4 mt-2">
       {
         page === 'Fund' && limitedPartners && limitedPartners?.length > 0 && limitedPartners.map((partner, index) => (
           <LimitedPartnerCard key={index} limitedPartner={partner} />
@@ -29,6 +29,13 @@ const LimitedPartnersList = ({limitedPartners, isLoading, page}: LimitedPartners
         limitedPartners.map((partner, index) => (
           <InvitationCard key={index} limitedPartner={partner} />
         ))
+      }
+      {
+        !limitedPartners || limitedPartners?.length === 0 && (
+          <div className="w-full flex justify-center items-center h-full">
+            <Typography>No limited partners found</Typography>
+          </div>
+        )
       }
     </div>
   )
