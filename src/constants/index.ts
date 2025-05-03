@@ -6,6 +6,11 @@ export const FILTER_TABS = [
   { label: "Angel", value: "angel" },
 ];
 
+export const LIMITED_PARTNERS_FILTER_TABS = [
+  { label: "All", value: "all" },
+  { label: "Registered", value: "registered" },
+  { label: "Pending", value: "pending" },
+];
 export const DEFAULT_TAB = "all"; 
 
 export const APPS_FILTER_TABS = [  { label: 'All', value: 'all' },
