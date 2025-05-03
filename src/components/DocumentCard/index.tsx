@@ -1,4 +1,4 @@
-import { Box, CardContent, IconButton, Typography, Card } from "@mui/material";
+import { Box, CardContent, IconButton, Typography, Card, CircularProgress } from "@mui/material";
 import { Document } from "../../types";
 import { useDeleteDocumentMutation, useLazyDownloadDocumentQuery } from "../../services/api/baseApi";
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
@@ -11,8 +11,8 @@ import { useAppContext } from "@src/context/appContext";
 import DocViewer from "../DocViewer";
 
 const DocumentCard: React.FC<{ document: Document, orientation: "row" | "grid" }> = ({ document: doc, orientation }) => {
-  const [deleteDoc] = useDeleteDocumentMutation();
-  const [triggerDownload] = useLazyDownloadDocumentQuery();
+  const [deleteDoc, { isLoading: isDeleteDocLoading }] = useDeleteDocumentMutation();
+  const [triggerDownload, { isLoading }] = useLazyDownloadDocumentQuery();
   const [docLink, setDocLink] = useState<string | null>(null);
   const { app } = useAppContext();
 
@@ -54,6 +54,8 @@ const DocumentCard: React.FC<{ document: Document, orientation: "row" | "grid" }
     setDocLink(null);
   };
 
+
+
   return (
     <>
       <Card
@@ -76,7 +78,16 @@ const DocumentCard: React.FC<{ document: Document, orientation: "row" | "grid" }
           flexDirection: 'column',
           p: 2,
           '&:last-child': { pb: 2 },
+          position: 'relative',
         }}>
+          {
+            isLoading || isDeleteDocLoading && (
+              <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-gray-100">
+                <CircularProgress size={24} sx={{ color: 'gray' }} />
+              </div>
+            )
+          }
+
           <Typography
             variant="subtitle2"
             sx={{
@@ -133,8 +144,8 @@ const DocumentCard: React.FC<{ document: Document, orientation: "row" | "grid" }
                 }
               }}
               onClick={() => {
-                  console.log("View document:", doc.id);
-                  handleDocView(doc.id);
+                console.log("View document:", doc.id);
+                handleDocView(doc.id);
 
               }}
               size="small"
