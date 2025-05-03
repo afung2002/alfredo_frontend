@@ -54,7 +54,7 @@ const Investment: React.FC = () => {
     }
     const filteredDocs = searchByTitle(documentsData, searchValue, 'name');
     setFilteredDocs(filteredDocs || []);
-  }, [searchValue, documentsData, documentsData]);
+  }, [searchValue, documentsData]);
   const navigate = useNavigate();
   const handleModalClose = () => {
     setIsUploadModalOpen(false);
