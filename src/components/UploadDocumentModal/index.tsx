@@ -47,7 +47,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
   }, investmentId, fundId, limitedPartnerId);
   const documentType = watch('documentType');
   const fund = watch('fund');
-  console.log(watch('company'), 'company')
+
   useEffect(() => {
     if (!documentType) return;
     switch (documentType) {
@@ -99,7 +99,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
                 error={!!uploadErrors.docTitle?.message}
               />
             </Grid>
-            {fundId || investmentId ? (null) : (
+            {fundId || investmentId || limitedPartnerId ? (null) : (
               <Grid size={{ xs: 12 }}>
                 <Select
                   rounded={false}
