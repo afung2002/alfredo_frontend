@@ -1,11 +1,13 @@
 import { CircularProgress } from "@mui/material";
 import LimitedPartnerCard from "../LimitedPartnerCard";
+import InvitationCard from "../InvitationCard";
 
 type LimitedPartnersListProps = {
   limitedPartners: any[];
   isLoading?: boolean;
+  page?: 'LimitedPartners' | 'Fund';
 }
-const LimitedPartnersList = ({limitedPartners, isLoading}: LimitedPartnersListProps) => {
+const LimitedPartnersList = ({limitedPartners, isLoading, page}: LimitedPartnersListProps) => {
     
   if (isLoading) {
     return (
@@ -18,8 +20,14 @@ const LimitedPartnersList = ({limitedPartners, isLoading}: LimitedPartnersListPr
   return (
     <div className="flex flex-col w-full h-full gap-4">
       {
-        limitedPartners && limitedPartners?.length > 0 && limitedPartners.map((partner, index) => (
+        page === 'Fund' && limitedPartners && limitedPartners?.length > 0 && limitedPartners.map((partner, index) => (
           <LimitedPartnerCard key={index} limitedPartner={partner} />
+        ))
+      }
+      {
+        page === 'LimitedPartners' && limitedPartners?.length > 0 && 
+        limitedPartners.map((partner, index) => (
+          <InvitationCard key={index} limitedPartner={partner} />
         ))
       }
     </div>
