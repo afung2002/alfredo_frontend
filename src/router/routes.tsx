@@ -33,6 +33,7 @@ import Prospect from "@src/apps/prospect-tracker/pages/prospect";
 import Heat from "@src/apps/prospect-tracker/pages/heat";
 import Updates from "@src/apps/prospect-tracker/pages/update";
 import LimitedPartners from "@src/apps/fund-manager/pages/LimitedPartners";
+import RoleBasedProtectedRoute from "../components/RoleBasedProtectedRoute";
 
 export const routes: RouteObject[] = [
   {
@@ -49,7 +50,9 @@ export const routes: RouteObject[] = [
     path: Routes.APPS,
     element: (
       <ProtectedRoute>
-        <MasterLayout />
+        {/* <RoleBasedProtectedRoute> */}
+          <MasterLayout />
+        {/* </RoleBasedProtectedRoute> */}
       </ProtectedRoute>
     ),
     children: [
