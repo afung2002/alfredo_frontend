@@ -25,7 +25,7 @@ const LandingPage = () => {
         const fund_id = user.publicMetadata.fund_id as number | undefined;
         const name = user.publicMetadata.name as string | undefined;
         const email = user.emailAddresses[0].emailAddress as string | undefined;    ;
-        console.log('User public metadata:', user.publicMetadata);
+        console.log('User:', user);
         // Detect if user is newly invited based on existing metadata fields
         const isNewlyInvited = !!(fund);
         setIsNewlyInvited(isNewlyInvited);
