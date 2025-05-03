@@ -40,7 +40,6 @@ const Input = ({
     if (type === 'file') {
       onChange(e.target.files); // pass FileList to RHF
     } else {
-      console.log('value', e.target.value);
       onChange(e.target.value);
     }
   };

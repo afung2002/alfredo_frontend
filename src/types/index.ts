@@ -68,6 +68,13 @@ export enum InvestmentType {
   ANGEL = 'ANGEL',
 }
 
+export enum InvitationStatus {
+  PENDING = 'pending',
+  REGISTERED = 'registered',
+  REJECTED = 'rejected',
+    EXPIRED = 'expired',
+  }
+
 // Unchanged, frontend-only type
 export interface AppType {
   title: string;

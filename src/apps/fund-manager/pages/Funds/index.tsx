@@ -10,13 +10,14 @@ import { useForm } from 'react-hook-form';
 import { useGetFundsQuery } from '@services/api/baseApi';
 import { calculateFundTotals, formatNumberString } from '../../../../utils';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Apps } from '@src/constants/apps';
+import { useUser } from '@clerk/clerk-react';
 import SortDropdown from '../../../../components/SortDropdown';
 import { FUNDS_SORT_OPTIONS } from '../../../../constants';
 
 const Funds = () => {
   const { data: fundsData, isLoading, error } = useGetFundsQuery();
-
+  const { user } = useUser();
+  console.log(user, 'user')
   const { control, watch } = useForm({
     defaultValues: {
       'searchFunds': ''

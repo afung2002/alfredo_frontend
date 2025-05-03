@@ -58,6 +58,10 @@ export const filterInvestmentsByType = (investments: InvestmentResponse[], type:
   return investments.filter(inv => inv.type === type);
 }; 
 
+export const filterInvitationsByStatus = (invitations: any[], status: string): any[] => {
+  return invitations.filter(inv => inv.status === status);
+};
+
 const clerk = new Clerk( import.meta.env.VITE_PUBLIC_CLERK_FRONTEND_API_KEY!);
 
 export const getClerkToken = async (template?: string) => {
@@ -98,3 +102,24 @@ export const formatNumberWithCommas = (value: string) => {
 };
 
 export const removeCommas = (value: string) => value.replace(/,/g, '');
+
+export const calculateInvitationsTotals = (invitations: any[]) => {
+  let totalInvitations = 0;
+  let totalPending = 0;
+  let totalRegistered = 0;
+
+  for (const invitation of invitations) {
+    if (invitation.status === "pending") {
+      totalPending += 1;
+    } else if (invitation.status === "registered") {
+      totalRegistered += 1;
+    }
+    totalInvitations += 1;
+  }
+
+  return {
+    totalInvitations,
+    totalPending,
+    totalRegistered,
+  };
+}
