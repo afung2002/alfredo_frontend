@@ -27,9 +27,9 @@ const DocumentsList = ({ documents, isLoading, selectedOrientation }: DocumentsL
     );
   }
 
-  if (!documents || documents.length === 0 && !isLoading) {
+  if (documents.length === 0 && !isLoading) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
+      <Box sx={{ display: "flex", justifyContent: "center" }}>
         <p>No documents available</p>
       </Box>
     )
