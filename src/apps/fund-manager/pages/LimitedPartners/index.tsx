@@ -41,7 +41,6 @@ const LimitedPartners = () => {
   const [filteredLimitedPartners, setFilteredLimitedPartners] = useState<any[]>(invitations || []);
   const [selectedTab, setSelectedTab] = useState(DEFAULT_TAB);
   const [sortOption, setSortOption] = useState<string>('recent');
-  console.log(filteredLimitedPartners, 'filteredLimitedPartners')
   const navigate = useNavigate();
 
   const { totalInvitations, totalPending, totalRegistered } = calculateInvitationsTotals(invitations || []);
@@ -53,20 +52,22 @@ const LimitedPartners = () => {
     }
     navigate(Routes.FUND_MANAGER_NEW_INVESTMENT);
   };
-  useEffect(() => {
-    if (selectedTab === 'all') {
-      setFilteredLimitedPartners(invitations || []);
-    } else if (selectedTab === 'pending') {
-      setFilteredLimitedPartners(filterInvitationsByStatus(invitations || [], InvitationStatus.PENDING));
-    } else if (selectedTab === 'registered') {
-      setFilteredLimitedPartners(filterInvitationsByStatus(invitations || [], InvitationStatus.REGISTERED));
-    }
-  }, [selectedTab, invitations]);
+  // useEffect(() => {
+  //   if (selectedTab === 'all') {
+  //     setFilteredLimitedPartners(invitations || []);
+  //   } else if (selectedTab === 'pending') {
+  //     setFilteredLimitedPartners(filterInvitationsByStatus(invitations || [], InvitationStatus.PENDING));
+  //   } else if (selectedTab === 'registered') {
+  //     console.log('selectedTab', selectedTab)
+  //     console.log(filterInvitationsByStatus(invitations || [], InvitationStatus.REGISTERED))
+  //     setFilteredLimitedPartners(filterInvitationsByStatus(invitations || [], InvitationStatus.REGISTERED));
+  //   }
+  // }, [selectedTab, invitations]);
 
   useEffect(() => {
     if (searchValue) {
-      const filtered = filteredLimitedPartners?.filter(investment =>
-        investment.company.name.toLowerCase()?.includes(searchValue.toLowerCase())
+      const filtered = filteredLimitedPartners?.filter(invitation =>
+        invitation.public_metadata.name.toLowerCase()?.includes(searchValue.toLowerCase())
       );
       setFilteredLimitedPartners(filtered || []);
     } else {
@@ -76,10 +77,10 @@ const LimitedPartners = () => {
   useEffect(() => {
     let invitationsToFilter = [...(invitations || [])];
 
-    if (selectedTab === 'fund') {
-      invitationsToFilter = filterInvitationsByStatus(invitationsToFilter, InvestmentType.FUND);
-    } else if (selectedTab === 'angel') {
-      invitationsToFilter = filterInvitationsByStatus(invitationsToFilter, InvestmentType.ANGEL);
+    if (selectedTab === 'pending') {
+      invitationsToFilter = filterInvitationsByStatus(invitationsToFilter, InvitationStatus.PENDING);
+    } else if (selectedTab === 'registered') {
+      invitationsToFilter = filterInvitationsByStatus(invitationsToFilter, InvitationStatus.RE);
     }
 
     // Apply search filtering
@@ -121,12 +122,16 @@ const LimitedPartners = () => {
   if (errorInvitations) {
     return (
       <Box p={3}>
-        <Alert severity="error"><>{errorInvitations}</></Alert>
+        <Alert severity="error">
+          <>
+            {errorInvitations}
+          </>
+        </Alert>
       </Box>
     );
   }
 
-
+  console.log(filteredLimitedPartners, 'filteredLimitedPartners')
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
       <Box sx={{ mb: 1 }}>
@@ -152,7 +157,7 @@ const LimitedPartners = () => {
         <Input
           rounded
           type="text"
-          name="searchLP"
+          name="searchLimitedPartners"
           control={control}
           placeholder="Search limited partners..."
           className="flex flex-col w-full"
