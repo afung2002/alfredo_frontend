@@ -2,12 +2,14 @@ import React from "react";
 import { Modal, Box, Typography, Dialog } from "@mui/material";
 import Button from "@components/Button";
 import Input from "@components/Input";
-import { EditorProvider, useCurrentEditor } from '@tiptap/react'
+import TextEditor from "@components/TextEditor";
+
 type FundUpdateModalProps = {
   open: boolean;
   onClose: () => void;
   onSubmit: () => void;
   control: any;
+  setValue: (field: string, value: string) => void;
   errors: {
     postTitle?: { message?: string };
     postDescription?: { message?: string };
@@ -20,6 +22,7 @@ const FundUpdateModal: React.FC<FundUpdateModalProps> = ({
   onSubmit,
   control,
   errors,
+  setValue
 }) => {
   return (
     <Dialog
@@ -51,16 +54,7 @@ const FundUpdateModal: React.FC<FundUpdateModalProps> = ({
             />
           </div>
 
-          {/* <Input
-            name="postDescription"
-            control={control}
-            label="Message"
-            multiline
-            rows={5}
-            rounded={false}
-            error={!!errors?.postDescription?.message}
-          /> */}
-        <EditorProvider />
+          <TextEditor onEditorChange={(value: string) => setValue("postDescription", value)} />
           <Box
             className="mt-4 gap-2"
             sx={{ display: "flex", justifyContent: "flex-end" }}
