@@ -70,9 +70,10 @@ const UpdateCard: React.FC<UpdateListCardProps> = ({ update }) => {
                 WebkitLineClamp: isCollapsed ? '3' : 'unset',
               }}
             >
-              <Typography variant="body1" sx={{ color: "text.secondary", whiteSpace: 'pre-line' }}>
-                {update.description}
-              </Typography>
+              <Typography 
+                dangerouslySetInnerHTML={{ __html: update.description }}
+                variant="body1" sx={{ color: "text.secondary", whiteSpace: 'pre-line' }} />
+                
             </div>
 
             {showReadMore && (
