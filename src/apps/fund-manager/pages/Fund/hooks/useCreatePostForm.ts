@@ -14,7 +14,7 @@ type CreatePostFormState = z.infer<typeof createPostSchema>;
 const useCreatePostForm = (handleClose: () => void) => {
   const { fundId } = useParams();
   const [createFundUpdate, { isLoading }] = useCreateFundUpdateMutation();
-
+  
   const {
     control,
     handleSubmit,
@@ -22,6 +22,7 @@ const useCreatePostForm = (handleClose: () => void) => {
     formState: { errors },
     setError,
     reset,
+    setValue,
   } = useForm<CreatePostFormState>({
     resolver: zodResolver(createPostSchema),
     defaultValues: {
@@ -30,10 +31,10 @@ const useCreatePostForm = (handleClose: () => void) => {
     },
     mode: 'onChange',
   });
-
+  console.log(errors);
   const postTitle = watch('postTitle');
   const postDescription = watch('postDescription');
-
+  console.log(watch('postDescription'));
   const onSubmit = async (data: CreatePostFormState) => {
     try {
       if (!fundId) {
@@ -65,6 +66,7 @@ const useCreatePostForm = (handleClose: () => void) => {
     setError,
     reset,
     isLoading,
+    setValue,
   };
 };
 
