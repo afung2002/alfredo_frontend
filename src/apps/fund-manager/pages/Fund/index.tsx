@@ -94,7 +94,7 @@ const FundView: React.FC = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const { control: postControl, handleSubmit: handlePostSubmit, errors: postErrors } = useCreatePostForm(handleClose);
+  const { control: postControl, handleSubmit: handlePostSubmit, errors: postErrors, setValue } = useCreatePostForm(handleClose);
 
   useEffect(() => {
     if (fundId && fundUpdatesData) {
@@ -484,6 +484,7 @@ const FundView: React.FC = () => {
               onSubmit={handlePostSubmit}
               control={postControl}
               errors={postErrors}
+              setValue={setValue}
             />
           </>
         )}
