@@ -341,22 +341,25 @@ const FundView: React.FC = () => {
           app === Apps.LIMITED_PARTNER &&
           limitedPartnersAppFilterTabs.map((tab) => (
             <Tab
-              sx={{
-                minHeight: 32,
-                minWidth: 'auto',
-                px: 4,
-                borderRadius: '50px',
-                textTransform: 'none',
-                bgcolor: tab.value === selectedTab ? 'primary.main' : 'grey.200',
-                color: tab.value === selectedTab ? 'white' : 'black',
-                mx: 1,
-                fontSize: 14,
-                fontWeight: 500,
-                '&.Mui-selected': {
-                  bgcolor: 'primary.main',
-                  color: 'white',
-                },
-              }}
+            sx={{
+              minHeight: 32,
+              minWidth: 'auto',
+              px: 4,
+              borderRadius: '50px',
+              textTransform: 'none',
+              bgcolor: 'transparent !important', // Set background transparent
+              color: 'gray',
+              mx: 1,
+              fontSize: 14,
+              fontWeight: 600,
+              border: '1px solid gray',
+              '&.Mui-selected': {
+                border: '1px solid black',
+                bgcolor: 'transparent !important', // Ensure selected tab is also transparent
+                color: 'black', // Optional: change color for selected tab
+              },
+
+            }}
               key={tab.value}
               label={tab.label}
               value={tab.value}

@@ -1,5 +1,5 @@
-import Logo from '@assets/predictiveLogo.svg'
-import LoginGraphics from '@assets/loginGraphic.png'
+import Logo from '@assets/alfred_white_logo.png'
+import LoginGraphics from '@assets/product_image.png'
 import { Box, Typography } from '@mui/material'
 const LandingSideBanner = () => {
   return (
@@ -16,7 +16,7 @@ const LandingSideBanner = () => {
   >
     <img 
       src={Logo}
-      alt="Predictive Logo"
+      alt="Alfred Logo"
       className="w-3/4 h-auto mb-4"
     />
     <Typography
