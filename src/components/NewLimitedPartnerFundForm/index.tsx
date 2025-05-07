@@ -54,7 +54,7 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal }: NewLimitedPartnerFund
             />
           </Grid>
           <Grid size={{ xs: 12 }}>
-            <Input rounded={false} label="Invested Amount" name="investedAmount" control={existingLpForm.control} />
+            <Input rounded={false} label="Amount Invested" name="investedAmount" control={existingLpForm.control} />
           </Grid>
           <Grid size={{ xs: 12 }} className="flex justify-end">
             <Button type="submit" variant="contained" disabled={isAddingExisting}>
@@ -83,7 +83,7 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal }: NewLimitedPartnerFund
             <Input type="text" rounded={false} label="Website" name="website" control={inviteLpForm.control} />
           </Grid>
           <Grid size={{ xs: 12, lg: 6 }}>
-            <Input type="text" rounded={false} label="Fund Amount" name="fundAmount" control={inviteLpForm.control} />
+            <Input type="text" rounded={false} label="Amount Invested" name="fundAmount" control={inviteLpForm.control} />
           </Grid>
           <Grid size={{ xs: 12 }}>
             <Input multiline rows={4} rounded={false} label="Description" name="description" control={inviteLpForm.control} />
