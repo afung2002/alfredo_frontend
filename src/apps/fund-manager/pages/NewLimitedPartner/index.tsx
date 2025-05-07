@@ -8,7 +8,7 @@ import useLimitedPartnerFundForm from "./hooks/useLimitedPartnerFundForm";
 import { ArrowBack } from "@mui/icons-material";
 
 type NewLimitedPartnerFundFormProps = {
-  closeModal: () => void;
+  closeModal?: () => void;
   fundId?: number | string;
 };
 
