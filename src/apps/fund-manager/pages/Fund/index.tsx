@@ -396,7 +396,7 @@ const FundView: React.FC = () => {
             },
           }}
                   >
-                    Upload New
+                    Add New
                   </Button>
                 )
               }

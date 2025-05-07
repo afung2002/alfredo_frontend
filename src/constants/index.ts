@@ -8,8 +8,8 @@ export const FILTER_TABS = [
 
 export const LIMITED_PARTNERS_FILTER_TABS = [
   { label: "All", value: "all" },
-  { label: "Registered", value: "registered" },
   { label: "Pending", value: "pending" },
+  { label: "Expired", value: "expired" },
 ];
 export const DEFAULT_TAB = "all"; 
 
@@ -44,4 +44,10 @@ export const DOCUMENTS_SORT_OPTIONS = [
 export const FUND_UPDATES_SORT_OPTIONS = [
   { label: 'Recently Edited', value: 'recent' },
   { label: 'Alphabetical', value: 'alphabetical' },
+];
+
+export const LPS_SORT_OPTIONS = [
+  { label: 'Recently Added', value: 'recent' },
+  { label: 'Alphabetical', value: 'alphabetical' },
+  { label: 'Investment Amount', value: 'investment' },
 ];

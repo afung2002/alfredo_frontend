@@ -208,6 +208,24 @@ export const apiSlice = createApi({
       providesTags: (_r, _e, investmentId) => [{ type: Tags.DOCUMENTS, id: `investment-${investmentId}` }],
     }),
 
+    getDocumentsByCompanyId: builder.query<DocumentResponse[], string>({
+      query: (companyId) => ({
+        url: `/companies/${companyId}/documents/`,
+        method: 'GET',
+      }),
+      providesTags: (_r, _e, companyId) => [{ type: Tags.DOCUMENTS, id: `company-${companyId}` }],
+    }),
+
+    getDocumentsByLimitedPartnerId: builder.query<DocumentResponse[], string>({
+      query: (user_id) => ({
+        url: `/limited-partner/${user_id}/documents/`,
+        method: 'GET',
+      }),
+      providesTags: (_r, _e, user_id) => [{ type: Tags.DOCUMENTS, id: `lp-${user_id}` }],
+    }),
+    
+    
+
 
     // --- FUND DETAIL ---
     getFundDetail: builder.query<FundDetail, number>({
@@ -281,6 +299,18 @@ export const apiSlice = createApi({
       ],
     }),
 
+    deleteLimitedPartner: builder.mutation<void, string>({
+      query: (user_id) => ({
+        url: `/limited-partner/${user_id}/`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (_r, _e, user_id) => [
+        { type: Tags.LIMITED_PARTNERS, id: user_id },
+        Tags.LIMITED_PARTNERS,
+      ],
+    }),
+    
+
 
     // --- INVITATIONS ---
     getInvitations: builder.query<Invitation[], void>({
@@ -318,6 +348,42 @@ export const apiSlice = createApi({
       query: (data) => ({ url: '/invitations/limited-partner/accept/', method: 'POST', body: data }),
       invalidatesTags: [Tags.LIMITED_PARTNERS],
     }),
+
+    updateInvitation: builder.mutation<Invitation, { id: string; data: Partial<Invitation> }>({
+      query: ({ id, data }) => ({
+        url: `/invitations/${id}/`,
+        method: 'PUT',
+        body: data,
+      }),
+      invalidatesTags: (_r, _e, { id }) => [{ type: Tags.LIMITED_PARTNERS, id }, Tags.LIMITED_PARTNERS],
+    }),
+    
+    patchInvitation: builder.mutation<Invitation, { id: string; data: Partial<Invitation> }>({
+      query: ({ id, data }) => ({
+        url: `/invitations/${id}/`,
+        method: 'PATCH',
+        body: data,
+      }),
+      invalidatesTags: (_r, _e, { id }) => [{ type: Tags.LIMITED_PARTNERS, id }, Tags.LIMITED_PARTNERS],
+    }),
+
+    getInvitationsGroupedByEmail: builder.query<Invitation[], void>({
+      query: () => ({
+        url: '/invitations/grouped-by-email/',
+        method: 'GET',
+      }),
+      providesTags: [Tags.LIMITED_PARTNERS],
+    }),
+    
+    acceptInvitation: builder.mutation<any, { invitation_id: string }>({
+      query: (data) => ({
+        url: '/invitations/accept/',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: [Tags.LIMITED_PARTNERS],
+    }),    
+    
 
     // --- LIMITED PARTNER DOCUMENTS ---
     getLimitedPartnerDocuments: builder.query<DocumentResponse[], string>({
@@ -386,6 +452,7 @@ export const {
   useLazyDownloadDocumentQuery,
   useGetDocumentsByFundIdQuery,
   useGetDocumentsByInvestmentIdQuery,
+  useGetDocumentsByCompanyIdQuery,
 
   // Fund Detail
   useGetFundDetailQuery,
@@ -399,6 +466,8 @@ export const {
   usePatchLimitedPartnerMutation,
   useGetLimitedPartnerFundsQuery,
   useCreateFundLimitedPartnerMutation,
+  useDeleteLimitedPartnerMutation,
+  useGetDocumentsByLimitedPartnerIdQuery,
 
   // Invitations
   useGetInvitationsQuery,
@@ -407,6 +476,10 @@ export const {
   useGetInvitationByIdQuery,
   useDeleteInvitationMutation,
   useAcceptLimitedPartnerInvitationMutation,
+  useUpdateInvitationMutation,
+  usePatchInvitationMutation,
+  useGetInvitationsGroupedByEmailQuery,
+  useAcceptInvitationMutation,
 
   // Limited Partner Documents
   useGetLimitedPartnerDocumentsQuery,

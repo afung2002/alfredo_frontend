@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, CircularProgress, Alert, Tab, Tabs, Button } from '@mui/material';
+import { Box, Typography, CircularProgress, Alert, Tab, Tabs, Button,
+  DialogTitle,
+  DialogContent,
+  Dialog,
+ } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { InvestmentDetails, InvestmentType, InvitationStatus } from '../../../../types';
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
@@ -8,21 +12,25 @@ import {
   filterInvitationsByStatus,
   getClerkToken
 } from '@utils/index';
-import { DEFAULT_TAB, INVESTMENTS_SORT_OPTIONS, LIMITED_PARTNERS_FILTER_TABS } from '@constants/index';
+import { DEFAULT_TAB, INVESTMENTS_SORT_OPTIONS, LIMITED_PARTNERS_FILTER_TABS, LPS_SORT_OPTIONS } from '@constants/index';
 import { Routes } from '@constants/routes';
 import Input from '@components/Input';
 import { useForm } from 'react-hook-form';
 import InvestmentsList from '@src/components/InvestmentsList';
-import { useGetInvestmentsQuery, useGetInvitationsQuery } from '@services/api/baseApi';
+import { useGetInvestmentsQuery, useGetInvitationsGroupedByEmailQuery, useGetInvitationsQuery, useGetLimitedPartnersQuery } from '@services/api/baseApi';
 import { calculateInvitationsTotals, formatNumberString } from '../../../../utils';
 import { InvestmentResponse } from '../../../../services/api/baseApi/types';
 import SortDropdown from '../../../../components/SortDropdown';
 import LimitedPartnersList from '@src/components/LimitedPartnersList';
+import NewLimitedPartnerFundForm from '../../../../components/NewLimitedPartnerFundForm';
 
 
 const LimitedPartners = () => {
   getClerkToken();
   const { data: invitationsData, isLoading: isLoadingInvitations, error: errorInvitations } = useGetInvitationsQuery();
+  const { data: limitedPartnersData, isLoading: isLoadingLimitedPartners, error: errorLimitedPartners } = useGetLimitedPartnersQuery();
+  const { data: invitationsGroupedByEmailData, isLoading: isLoadingInvitationsGroupedByEmail, error: errorInvitationsGroupedByEmail } = useGetInvitationsGroupedByEmailQuery();
+  console.log(invitationsGroupedByEmailData);
   const { control, watch } = useForm({
     defaultValues: {
       'searchLimitedPartners': ''
@@ -41,9 +49,9 @@ const LimitedPartners = () => {
   const [filteredLimitedPartners, setFilteredLimitedPartners] = useState<any[]>(invitations || []);
   const [selectedTab, setSelectedTab] = useState(DEFAULT_TAB);
   const [sortOption, setSortOption] = useState<string>('recent');
+  const [isLimitedPartnerModelOpen, setIsLimitedPartnerModalOpen] = useState(false);
   const navigate = useNavigate();
-
-  const { totalInvitations, totalPending, totalRegistered } = calculateInvitationsTotals(invitations || []);
+  const { totalInvitations, totalPending, totalRegistered, totalExpired } = calculateInvitationsTotals(invitations || []);
 
 
   const handleAddNew = (event: React.MouseEvent) => {
@@ -71,6 +79,8 @@ const LimitedPartners = () => {
       invitationsToFilter = filterInvitationsByStatus(invitationsToFilter, InvitationStatus.PENDING);
     } else if (selectedTab === 'registered') {
       invitationsToFilter = filterInvitationsByStatus(invitationsToFilter, InvitationStatus.REGISTERED);
+    } else if (selectedTab === 'expired') {
+      invitationsToFilter = filterInvitationsByStatus(invitationsToFilter, InvitationStatus.EXPIRED);
     }
 
     // Apply search filtering
@@ -132,12 +142,16 @@ const LimitedPartners = () => {
         </Box>
 
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: '475px' }}>
-          <Typography variant="subtitle1" sx={{ color: "text.secondary", fontWeight: 500 }}>
+          {/* <Typography variant="subtitle1" sx={{ color: "text.secondary", fontWeight: 500 }}>
             {totalRegistered} registered
+          </Typography> */}
+          {/* <FiberManualRecordIcon sx={{ fontSize: 8, color: "black" }} /> */}
+          <Typography variant="subtitle1" sx={{ color: "text.secondary", fontWeight: 500 }}>
+            {totalPending} pending
           </Typography>
           <FiberManualRecordIcon sx={{ fontSize: 8, color: "black" }} />
           <Typography variant="subtitle1" sx={{ color: "text.secondary", fontWeight: 500 }}>
-            {totalPending} pending
+            {totalExpired} expired
           </Typography>
         </Box>
       </Box>
@@ -152,7 +166,7 @@ const LimitedPartners = () => {
           className="flex flex-col w-full"
         />
         <Button
-          onClick={handleAddNew}
+          onClick={() =>navigate(Routes.FUND_MANAGER_NEW_LIMITED_PARTNER)}
           variant="contained"
           sx={{
             flexShrink: 0,
@@ -197,7 +211,6 @@ const LimitedPartners = () => {
                   bgcolor: 'transparent !important', // Ensure selected tab is also transparent
                   color: 'black', // Optional: change color for selected tab
                 },
-
               }}
               key={tab.value}
               label={tab.label}
@@ -207,7 +220,7 @@ const LimitedPartners = () => {
           ))}
         </Tabs>
         <SortDropdown
-          options={INVESTMENTS_SORT_OPTIONS}
+          options={LPS_SORT_OPTIONS}
           value={sortOption}
           onChange={setSortOption}
         />
@@ -219,6 +232,14 @@ const LimitedPartners = () => {
         isLoading={isLoadingInvitations}
         page='LimitedPartners'
       />
+      <Dialog open={isLimitedPartnerModelOpen} onClose={() => setIsLimitedPartnerModalOpen(false)}>
+        <DialogTitle>Add Limited Partner</DialogTitle>
+        <DialogContent>
+          <NewLimitedPartnerFundForm 
+          
+          closeModal={() => setIsLimitedPartnerModalOpen(false)} />
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 };
