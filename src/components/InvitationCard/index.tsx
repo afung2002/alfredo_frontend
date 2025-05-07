@@ -5,6 +5,7 @@ import { Routes } from "../../constants/routes";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import LimitedPartner from '../../apps/fund-manager/pages/LimitedPartner/index';
 import CheckIcon from '@mui/icons-material/Check';
+import Button from "../Button";
 interface LimitedPartnerCardProps {
   limitedPartner: any;
 }
@@ -15,7 +16,7 @@ const InvitationCard = ({limitedPartner}) => {
   const limitedPartnerStatus = (
     <div>
       <Typography variant="body2" sx={{ color: "text.secondary", }}>
-        {limitedPartner.status}
+        {limitedPartner.status} invitation
       </Typography>
       {
         limitedPartner.status === 'Registered' && (
@@ -56,14 +57,20 @@ const InvitationCard = ({limitedPartner}) => {
     </Box>
     <Box>
     <div className="flex gap-2 items-center">
+      <Button
+      onClick={() => {}}
+
+      >
+        Resend
+      </Button>
     <Chip
       label={limitedPartnerStatus}
       size="small"
       variant="outlined"
       />
-    <IconButton size="small" sx={{ color: "text.secondary" }}>
+    {/* <IconButton size="small" sx={{ color: "text.secondary" }}>
         <ArrowForwardIcon />
-      </IconButton>
+      </IconButton> */}
     </div>
 
     </Box>
