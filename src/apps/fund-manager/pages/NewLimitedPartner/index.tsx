@@ -9,6 +9,7 @@ import { ArrowBack } from "@mui/icons-material";
 
 type NewLimitedPartnerFundFormProps = {
   closeModal: () => void;
+  fundId?: number | string;
 };
 
 const NewLimitedPartnerFundForm = ({ closeModal }: NewLimitedPartnerFundFormProps) => {
@@ -30,6 +31,7 @@ const NewLimitedPartnerFundForm = ({ closeModal }: NewLimitedPartnerFundFormProp
 
   return (
     <Card sx={{ border: '1px solid', borderColor: 'grey.200', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', p: '30px' }}>
+
       <form onSubmit={inviteLpForm.handleSubmit(onSubmitInvitation)}>
         <Grid container spacing={3}>
           <Grid size={{ xs: 12}}>

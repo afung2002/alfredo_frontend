@@ -56,21 +56,25 @@ const InvitationCard = ({limitedPartner}) => {
       </Typography>
     </Box>
     <Box>
-    <div className="flex gap-2 items-center">
-      <Button
-      onClick={() => {}}
-
-      >
-        Resend
-      </Button>
+    <div className="flex gap-3 items-center">
+      
     <Chip
       label={limitedPartnerStatus}
-      size="small"
       variant="outlined"
       />
-    {/* <IconButton size="small" sx={{ color: "text.secondary" }}>
-        <ArrowForwardIcon />
-      </IconButton> */}
+      {
+        limitedPartner.status === 'expired' && (
+          <Button
+            onClick={() => {}}
+            size="small"
+            sx={{
+              width: '100px',
+            }}
+          >
+            Resend
+          </Button>
+        )
+      }
     </div>
 
     </Box>

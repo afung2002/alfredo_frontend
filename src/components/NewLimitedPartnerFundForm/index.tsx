@@ -9,7 +9,7 @@ import useLimitedPartnerFundForm from "./hooks/useLimitedPartnerFundForm";
 
 type NewLimitedPartnerFundFormProps = {
   fundId?: number | string;
-  closeModal: () => void;
+  closeModal?: () => void;
 };
 
 const NewLimitedPartnerFundForm = ({ fundId, closeModal }: NewLimitedPartnerFundFormProps) => {

@@ -17,7 +17,7 @@ import { Routes } from '@constants/routes';
 import Input from '@components/Input';
 import { useForm } from 'react-hook-form';
 import InvestmentsList from '@src/components/InvestmentsList';
-import { useGetInvestmentsQuery, useGetInvitationsQuery, useGetLimitedPartnersQuery } from '@services/api/baseApi';
+import { useGetInvestmentsQuery, useGetInvitationsGroupedByEmailQuery, useGetInvitationsQuery, useGetLimitedPartnersQuery } from '@services/api/baseApi';
 import { calculateInvitationsTotals, formatNumberString } from '../../../../utils';
 import { InvestmentResponse } from '../../../../services/api/baseApi/types';
 import SortDropdown from '../../../../components/SortDropdown';
@@ -29,7 +29,8 @@ const LimitedPartners = () => {
   getClerkToken();
   const { data: invitationsData, isLoading: isLoadingInvitations, error: errorInvitations } = useGetInvitationsQuery();
   const { data: limitedPartnersData, isLoading: isLoadingLimitedPartners, error: errorLimitedPartners } = useGetLimitedPartnersQuery();
-  console.log(limitedPartnersData);
+  const { data: invitationsGroupedByEmailData, isLoading: isLoadingInvitationsGroupedByEmail, error: errorInvitationsGroupedByEmail } = useGetInvitationsGroupedByEmailQuery();
+  console.log(invitationsGroupedByEmailData);
   const { control, watch } = useForm({
     defaultValues: {
       'searchLimitedPartners': ''
