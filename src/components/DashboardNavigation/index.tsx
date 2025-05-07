@@ -59,7 +59,7 @@ const DashboardNavigation: React.FC = () => {
       <img
       src={LogoBlack}
       alt="Predictive Logo"
-      className="w-3/4 h-auto mb-4 text-center"
+      className="w-full h-auto mb-4 text-center"
       />
       </div>
       
