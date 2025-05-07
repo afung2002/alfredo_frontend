@@ -23,7 +23,6 @@ import { InvestmentResponse } from '../../../../services/api/baseApi/types';
 import SortDropdown from '../../../../components/SortDropdown';
 import LimitedPartnersList from '@src/components/LimitedPartnersList';
 import NewLimitedPartnerFundForm from '../../../../components/NewLimitedPartnerFundForm';
-import { generateInvitationsLike } from '../../../../utils/generateInvitationsLike';
 
 
 const LimitedPartners = () => {
