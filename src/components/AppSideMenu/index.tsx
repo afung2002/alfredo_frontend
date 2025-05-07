@@ -7,6 +7,7 @@ import { selectUserInvestments } from "@redux/selectors/user.selector";
 import { JSX, useContext, useState } from "react";
 import { Apps } from "@src/constants/apps";
 import { useAppContext } from "@src/context/appContext";
+import { Logos } from "../../constants/logos";
 
 
 type SideMenuButton = {
@@ -24,14 +25,13 @@ type AppSideMenuProps = {
 const AppSideMenu = ({ sideMenuButtons }: AppSideMenuProps) => {
   const navigate = useNavigate();
   const { app } = useAppContext();
-
   const [selectedButton, setSelectedButton] = useState(sideMenuButtons[0].value);
 
   const handleButtonClick = async (item) => {
     setSelectedButton(item.value);
     navigate(item.path);
   };
-
+  
   return (
     <Box
       sx={{
@@ -46,10 +46,9 @@ const AppSideMenu = ({ sideMenuButtons }: AppSideMenuProps) => {
       }}
     >
       {/* Logo */}
-      <div>
-        <Typography variant="h5" sx={{ margin: '0px 25px 30px', fontSize: '1.3rem', textAlign: 'left' }}>{app}</Typography>
+      <div className="pl-5 pb-5">
+        <img src={Logos[app]} alt="logo" className="w-full   h-auto mb-4 text-center" />
       </div>
-
 
       {/* Vertical Button Group */}
       <ButtonGroup
