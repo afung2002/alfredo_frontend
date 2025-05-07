@@ -107,12 +107,15 @@ export const calculateInvitationsTotals = (invitations: any[]) => {
   let totalInvitations = 0;
   let totalPending = 0;
   let totalRegistered = 0;
+  let totalExpired = 0;
 
   for (const invitation of invitations) {
     if (invitation.status === "pending") {
       totalPending += 1;
     } else if (invitation.status === "registered") {
       totalRegistered += 1;
+    } else if (invitation.status === "expired") {
+      totalExpired += 1;
     }
     totalInvitations += 1;
   }
@@ -121,5 +124,6 @@ export const calculateInvitationsTotals = (invitations: any[]) => {
     totalInvitations,
     totalPending,
     totalRegistered,
+    totalExpired,
   };
 }
