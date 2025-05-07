@@ -12,7 +12,7 @@ import {
   filterInvitationsByStatus,
   getClerkToken
 } from '@utils/index';
-import { DEFAULT_TAB, INVESTMENTS_SORT_OPTIONS, LIMITED_PARTNERS_FILTER_TABS } from '@constants/index';
+import { DEFAULT_TAB, INVESTMENTS_SORT_OPTIONS, LIMITED_PARTNERS_FILTER_TABS, LPS_SORT_OPTIONS } from '@constants/index';
 import { Routes } from '@constants/routes';
 import Input from '@components/Input';
 import { useForm } from 'react-hook-form';
@@ -211,7 +211,6 @@ const LimitedPartners = () => {
                   bgcolor: 'transparent !important', // Ensure selected tab is also transparent
                   color: 'black', // Optional: change color for selected tab
                 },
-
               }}
               key={tab.value}
               label={tab.label}
@@ -221,7 +220,7 @@ const LimitedPartners = () => {
           ))}
         </Tabs>
         <SortDropdown
-          options={INVESTMENTS_SORT_OPTIONS}
+          options={LPS_SORT_OPTIONS}
           value={sortOption}
           onChange={setSortOption}
         />
