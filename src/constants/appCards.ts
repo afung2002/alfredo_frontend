@@ -10,24 +10,24 @@ import { Routes } from "@constants/routes";
 
 export const APP_CARDS = [
   {
-    title: "Fund Manager",
-    description: "AI-powered fund admin for nimble funds & super angels",
+    title: "Fund Manager: Manage LP Comms",
+    description: "AI-powered fund admin for nimble funds & super angels.",
     imageUrl: AppImage1,
     category: "For Investors",
     categoryValue: "investors",
     path: Routes.FUND_MANAGER,
   },
   {
-    title: "Limited Partner",
+    title: "Limited Partner: Receive LP Updates",
     description:
-      "AI-powered control panel for high-performing limited partners ",
+      "AI-powered fund portfolio tracking, update collection, and document management.",
     imageUrl: AppImage2,
     category: "For Limited Partners",
     categoryValue: "limited-partners",
     path: Routes.LIMITED_PARTNER_FUNDS,
   },
   {
-    title: "Find Intros",
+    title: "Find Intros: Pinpoint Customer Intros",
     description:
       "Harness your investor ecosystem to pinpoint customers & request intros",
     imageUrl: AppImage3,
@@ -36,43 +36,43 @@ export const APP_CARDS = [
     path: "/apps",
   },
   {
-    title: "Company Tracker",
+    title: "Company Tracker: Track Investment Prospects",
     description:
-      "Input investment prospects and track all relevant updates, in real-time",
+      "Input hundreds of people, companies, and funds and track when they’re ripe for engagement, in real-time.",
     imageUrl: AppImage4,
     category: "For Investors",
     categoryValue: "investors",
     path: Routes.PROSPECT_TRACKER,
   },
   {
-    title: "VC Associate",
+    title: "VC Associate: Source Deals Autonomously",
     description:
-      "Enter characteristics and comb target websites for relevant prospects",
+      "Enter characteristics and precisely comb target websites for relevant investment prospects.",
     imageUrl: AppImage5,
     category: "For Investors",
     categoryValue: "investors",
     path: "/apps",
   },
   {
-    title: "Memo Generator",
-    description: "AI-powered investment memo generation",
+    title: "Memo Generator: Automate Memo Creation",
+    description: "AI-powered investment memo generation. Input decks, files, Q&A, and more.",
     imageUrl: AppImage6,
     category: "For Investors",
     categoryValue: "investors",
     path: "/apps",
   },
   {
-    title: "Automate Social Media Content Creation",
-    description: "AI-powered Linkedin and Twitter post creation",
+    title: "AI Content Creation: Automate Socials",
+    description: "AI-powered LinkedIn and Twitter post creation with configurable guardrails.",
     imageUrl: AppImage7,
     category: "For Investors",
     categoryValue: "investors",
     path: "/apps",
   },
   {
-    title: "AI Powered Investment Scoring",
+    title: "Screen Top of Funnel Autonomously",
     description:
-      "Harness our proprietary investment rubric to score investment prospect characteristics",
+      "Harness Predictive’s proprietary investment framework to score investment prospects and sift from the noise.",
     imageUrl: AppImage8,
     category: "For Investors",
     categoryValue: "investors",
