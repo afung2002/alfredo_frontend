@@ -99,6 +99,7 @@ const SavedApps = () => {
         {filteredCards?.map((card, index) => (
           <Grid size={{ xs: 12, sm: 6, md: 4, xl: 3 }} key={index}>
             <AppCard
+              id={card.id}
               key={index}
               title={card.title}
               description={card.description}
