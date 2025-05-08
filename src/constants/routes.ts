@@ -32,4 +32,5 @@ export enum Routes {
   PROSPECT_TRACKER_COMPANY = `${Routes.PROSPECT_TRACKER}/company/:companyId`,
   PROSPECT_TRACKER_HEAT = `${Routes.PROSPECT_TRACKER}/heat`,
   PROSPECT_TRACKER_UPDATES = `${Routes.PROSPECT_TRACKER}/update`,
+  
 }
