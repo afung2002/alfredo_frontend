@@ -25,9 +25,11 @@ interface AppCardProps {
   category: string;
   path: string;
   onAdd?: () => void;
+  id: string;
 }
 
 const AppCard: React.FC<AppCardProps> = ({
+  id,
   title,
   description,
   imageUrl,
@@ -71,12 +73,13 @@ const AppCard: React.FC<AppCardProps> = ({
         title={title}
       />
       {
-        (title !== 'Fund Manager' && title !== 'Limited Partner') &&
+        (id !== 'fund-manager' && id !== 'limited-partner') &&
         <img src={LockIcon} alt="lock" className="absolute top-2 left-0 w-16" />
 
       }
       <CardContent sx={{
         p: '18px',
+        flex: 1,
       }}>
         <Typography gutterBottom sx={{
           fontSize: '1rem',
