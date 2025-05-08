@@ -16,6 +16,7 @@ export const APP_CARDS = [
     category: "For Investors",
     categoryValue: "investors",
     path: Routes.FUND_MANAGER,
+    id: 'fund-manager'
   },
   {
     title: "Limited Partner — Receive LP Updates",
@@ -25,6 +26,7 @@ export const APP_CARDS = [
     category: "For Limited Partners",
     categoryValue: "limited-partners",
     path: Routes.LIMITED_PARTNER_FUNDS,
+    id: 'limited-partner'
   },
   {
     title: "Find Intros — Pinpoint Customer Intros",
@@ -34,6 +36,7 @@ export const APP_CARDS = [
     category: "For Founders",
     categoryValue: "founders",
     path: "/apps",
+    id: 'find-intros'
   },
   {
     title: "Company Tracker — Track Investment Prospects",
@@ -42,7 +45,9 @@ export const APP_CARDS = [
     imageUrl: AppImage4,
     category: "For Investors",
     categoryValue: "investors",
-    path: Routes.PROSPECT_TRACKER,
+    // path: Routes.PROSPECT_TRACKER,
+    path: "/apps",
+    id: 'company-tracker'
   },
   {
     title: "VC Associate — Source Deals Autonomously",
@@ -52,6 +57,7 @@ export const APP_CARDS = [
     category: "For Investors",
     categoryValue: "investors",
     path: "/apps",
+    id: 'vc-associate'
   },
   {
     title: "Memo Generator — Automate Memo Creation",
@@ -60,6 +66,7 @@ export const APP_CARDS = [
     category: "For Investors",
     categoryValue: "investors",
     path: "/apps",
+    id: 'memo-generator'
   },
   {
     title: "Content Creator — Automate Social Posts",
@@ -68,6 +75,7 @@ export const APP_CARDS = [
     category: "For Investors",
     categoryValue: "investors",
     path: "/apps",
+    id: 'content-creator'
   },
   {
     title: "Deal Screener — Screen Top of Funnel Autonomously",
@@ -77,5 +85,6 @@ export const APP_CARDS = [
     category: "For Investors",
     categoryValue: "investors",
     path: "/apps",
+    id: 'deal-screener'
   },
 ];

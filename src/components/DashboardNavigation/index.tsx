@@ -55,7 +55,7 @@ const DashboardNavigation: React.FC = () => {
       }}
     >
       {/* Logo */}
-      <div className="pl-5 pb-5">
+      <div className="pl-5 pb-5 pr-7">
       <img
       src={LogoBlack}
       alt="Predictive Logo"

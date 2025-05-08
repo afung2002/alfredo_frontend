@@ -6,11 +6,25 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import LimitedPartner from '../../apps/fund-manager/pages/LimitedPartner/index';
 import CheckIcon from '@mui/icons-material/Check';
 import Button from "../Button";
+import { useCreateInvitationMutation } from "../../services/api/baseApi";
 interface LimitedPartnerCardProps {
   limitedPartner: any;
 }
 
 const InvitationCard = ({limitedPartner}) => {
+  console.log("limitedPartner", limitedPartner);
+  const [createInvitation, { isLoading: invitingLP }] = useCreateInvitationMutation();
+  const handleResendInvitation = async () => {
+    await createInvitation({
+      email_address: limitedPartner.email_address,
+      fund: limitedPartner.fund,
+      public_metadata: {
+        name: limitedPartner.public_metadata.name,
+        role: 'limited_partner',
+      },
+      invested_amount: limitedPartner.invested_amount,
+    });
+  }
   const { fundId } = useParams<{ fundId: string }>();
   const navigate = useNavigate();
   const limitedPartnerStatus = (
@@ -65,7 +79,7 @@ const InvitationCard = ({limitedPartner}) => {
       {
         limitedPartner.status === 'expired' && (
           <Button
-            onClick={() => {}}
+            onClick={handleResendInvitation}
             size="small"
             sx={{
               width: '100px',
