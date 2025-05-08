@@ -83,4 +83,5 @@ export interface AppType {
   categoryValue: string;
   category: string;
   path: string;
+  id: string;
 }
