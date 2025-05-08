@@ -46,7 +46,7 @@ const AppSideMenu = ({ sideMenuButtons }: AppSideMenuProps) => {
       }}
     >
       {/* Logo */}
-      <div className="pl-5 pb-5">
+      <div className="pl-5 pb-5 pr-7">
         <img src={Logos[app]} alt="logo" className="w-full   h-auto mb-4 text-center" />
       </div>
 
