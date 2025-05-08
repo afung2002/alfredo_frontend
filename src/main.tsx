@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 
 
-const clerkPubKey = import.meta.env.VITE_CLERK_KEY;
+const clerkPubKey = import.meta.env.VITE_CLERK_KEY_PROD;
 
 createRoot(document.getElementById('root')!).render(
 
