@@ -34,7 +34,7 @@ const userSlice = createSlice({
       state.user = null;
       state.isAuthenticated = false;
     },
-    addAppToUser: (state, action: PayloadAction<{ title: string; description: string; imageUrl: string; categoryValue: string; category: string; path: string }>) => {
+    addAppToUser: (state, action: PayloadAction<{ id: string; title: string; description: string; imageUrl: string; categoryValue: string; category: string; path: string }>) => {
       if (state.savedApps) {
         if (!state.savedApps.find((app) => app.title === action.payload.title)) {
           state.savedApps.push(action.payload);
