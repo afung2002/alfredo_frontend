@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCreateFundLimitedPartnerMutation, useCreateInvitationMutation } from '@services/api/baseApi';
+import { useNavigate } from 'react-router-dom';
 
 // Validation schemas
 const selectExistingSchema = z.object({
@@ -29,7 +30,7 @@ export type InviteLimitedPartnerFormData = z.infer<typeof inviteNewSchema>;
 const useLimitedPartnerFundForm = (closeModal: () => void) => {
   const [createLimitedPartner, { isLoading: creatingLP }] = useCreateFundLimitedPartnerMutation();
   const [createInvitation, { isLoading: invitingLP }] = useCreateInvitationMutation();
-
+  const navigate = useNavigate();
   const existingLpForm = useForm<SelectLimitedPartnerFormData>({
     resolver: zodResolver(selectExistingSchema),
     defaultValues: { limitedPartner: '', investedAmount: '', fund: '' },
@@ -51,6 +52,7 @@ const useLimitedPartnerFundForm = (closeModal: () => void) => {
         fund: Number(data.fund),
       }).unwrap();
       existingLpForm.reset();
+      navigate(-1)
       closeModal(); // Close modal after success
     } catch (err) {
       console.error('Error adding existing LP:', err);
@@ -71,6 +73,7 @@ const useLimitedPartnerFundForm = (closeModal: () => void) => {
       }).unwrap();
       inviteLpForm.reset();
       closeModal(); // Close modal after success
+      navigate(-1)
     } catch (err) {
       console.error('Error inviting new LP:', err);
     }
