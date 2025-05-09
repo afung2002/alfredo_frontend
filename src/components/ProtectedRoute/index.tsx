@@ -14,6 +14,7 @@ type ProtectedRouteProps = {
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const dispatch = useDispatch();
   const { isLoaded, isSignedIn } = useUser();
+  console.log('user', useUser());
   const { getToken } = useAuth();
   const [token, setTokenState] = useState<string | null>(null);
   useEffect(() => {

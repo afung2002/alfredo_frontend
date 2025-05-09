@@ -18,6 +18,7 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { CardMedia } from '@mui/material';
 import Button from '../Button';
 import LockIcon from '../../assets/lock.svg';
+import { useUserContext } from '../../context/userContext';
 interface AppCardProps {
   title: string;
   description: string;
@@ -39,14 +40,32 @@ const AppCard: React.FC<AppCardProps> = ({
 }) => {
   const navigate = useNavigate();
   const savedApps = useSelector(selectUserApps);
+  const { userRole } = useUserContext();    
+  const isAdmin = userRole === 'admin';
+  const isFundManager = userRole === 'fund_manager';
+  const isLimitedPartner = userRole === 'limited_partner';
   const handleCardClick = (event: React.MouseEvent) => {
     // Prevent navigation if clicking the add button
     if ((event.target as HTMLElement).closest('.MuiIconButton-root')) {
       return;
     }
+    console.log(id, isAdmin, isFundManager, isLimitedPartner);
+    // according to the app card id, check if the user has access to the app
+    if (id === 'fund-manager' && !(isFundManager || isAdmin)) {
+      console.log('fund manager');
+      return;
+    }
+    if (id === 'limited-partner' && !(isLimitedPartner || isAdmin || isFundManager)) {
+      console.log('limited partner');
+      return;
+    }
+    console.log(path);
     navigate(path);
   };
   const isSaved = savedApps?.some((app) => app.title === title);
+
+
+
   return (
     <Card
       onClick={handleCardClick}

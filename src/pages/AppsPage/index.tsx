@@ -18,13 +18,14 @@ import { useForm } from 'react-hook-form';
 import { SignUp } from '@clerk/clerk-react';
 import { useSignUp } from '@clerk/clerk-react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { UserProvider, useUserContext } from '../../context/userContext';
 const AppsPage = () => {
   const { signUp, setActive } = useSignUp();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-
+  const { userRole } = useUserContext();
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState('');   
   const [verifying, setVerifying] = useState(false);
   const [error, setError] = useState('');
 
@@ -92,7 +93,8 @@ const AppsPage = () => {
 
   
   return (
-    <div className='min-h-screen w-full p-4 flex-1 mt-[55px]'>
+    
+        <div className='min-h-screen w-full p-4 flex-1 mt-[55px]'>
       {
         ticket && (
           <div>
@@ -136,42 +138,7 @@ const AppsPage = () => {
         placeholder="Search Apps..."
         className="flex flex-col mb-[30px]"
       />
-      {/* <Tabs
-        className='mb-2'
-        value={selectedTab}
-        onChange={(_, newValue) => setSelectedTab(newValue)}
-        variant="scrollable"
-        scrollButtons={false}
-        TabIndicatorProps={{ style: { display: 'none' } }}
-
-      >
-        {APPS_FILTER_TABS.map((tab) => (
-          <Tab
-            sx={{
-              minHeight: 32,
-              minWidth: 'auto',
-              px: 4,
-              borderRadius: '50px',
-              textTransform: 'none',
-              bgcolor: tab.value === selectedTab ? 'primary.main' : 'grey.200',
-              color: tab.value === selectedTab ? 'white' : 'black',
-              mx: 1,
-              fontSize: 14,
-              fontWeight: 500,
-              '&.Mui-selected': {
-                bgcolor: 'primary.main',
-                color: 'white',
-              },
-            }}
-            key={tab.value}
-            label={tab.label}
-            value={tab.value}
-            disableRipple
-          />
-        ))}
-      </Tabs> */}
       <Grid container spacing={4} className="mb-4 w-full">
-        {/* <div className="flex flex-col gap-4 min-w-[600px]"> */}
         {filteredCards.map((card, index) => (
           <Grid size={{ xs: 12, sm: 6, md: 4, xl: 3 }} key={index}>
             <AppCard
@@ -185,13 +152,13 @@ const AppsPage = () => {
             />
           </Grid>
         ))}
-        {/* </div> */}
       </Grid>
           </>
         )
       }
       
     </div>
+  
   )
 }
 
