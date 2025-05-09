@@ -5,16 +5,19 @@ import { ClerkProvider } from '@clerk/clerk-react';
 import { persistor, store } from './redux/store.ts';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
+import { UserProvider } from './context/userContext.tsx';
 
 
-const clerkPubKey = import.meta.env.VITE_CLERK_KEY;
+const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
 createRoot(document.getElementById('root')!).render(
 
     <ClerkProvider publishableKey={clerkPubKey}>
         <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
-                <App />
+                <UserProvider>
+                    <App />
+                </UserProvider>
             </PersistGate>
         </Provider>
     </ClerkProvider>
