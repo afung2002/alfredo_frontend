@@ -6,16 +6,19 @@ import Input from "../Input";
 import Select from "../Select";
 import { useGetLimitedPartnersQuery } from "../../services/api/baseApi";
 import useLimitedPartnerFundForm from "./hooks/useLimitedPartnerFundForm";
+import { useEffect, useState } from "react";
 
 type NewLimitedPartnerFundFormProps = {
   fundId?: number | string;
   closeModal?: () => void;
+  fundLimitedPartners?: any[];
 };
 
-const NewLimitedPartnerFundForm = ({ fundId, closeModal }: NewLimitedPartnerFundFormProps) => {
+const NewLimitedPartnerFundForm = ({ fundId, closeModal, fundLimitedPartners }: NewLimitedPartnerFundFormProps) => {
   const navigate = useNavigate();
   const { data: limitedPartnersData, isLoading: limitedPartnersLoading } = useGetLimitedPartnersQuery();
-  
+  const [filteredLimitedPartners, setFilteredLimitedPartners] = useState<any[]>([]);
+
   // Pass closeModal to the hook
   const {
     existingLpForm,
@@ -25,10 +28,24 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal }: NewLimitedPartnerFund
     isAddingExisting,
     isInvitingNew,
   } = useLimitedPartnerFundForm(fundId, closeModal);
-
+  console.log('limitedPartnersData', limitedPartnersData);
+  useEffect(() => {
+    console.log('fundLimitedPartners', fundLimitedPartners);
+    console.log('limitedPartnersData', limitedPartnersData);
+  
+    // Extract user_ids of already added limited partners
+    const existingLpIds = fundLimitedPartners.map(fp => fp.limited_partner.user_id);
+  
+    // Filter out limited partners that are already in fundLimitedPartners
+    const filteredLimitedPartners = limitedPartnersData?.filter(
+      (lp) => !existingLpIds.includes(lp.user_id)
+    );
+    setFilteredLimitedPartners(filteredLimitedPartners);
+    console.log('Filtered Limited Partners', filteredLimitedPartners);
+  }, [limitedPartnersData, fundLimitedPartners]);
   return (
     <Card sx={{ border: '1px solid', borderColor: 'grey.200', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', p: '30px' }}>
-      
+
       {/* --- Form for selecting existing LP --- */}
       <form onSubmit={existingLpForm.handleSubmit(onSubmitExisting)}>
         <Grid container spacing={3}>
@@ -44,11 +61,11 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal }: NewLimitedPartnerFund
               options={
                 limitedPartnersLoading
                   ? [{ value: '', label: 'Loading limited partners...' }]
-                  : limitedPartnersData && limitedPartnersData.length > 0
-                    ? limitedPartnersData.map((lp) => ({
-                        value: String(lp.user_id ?? 'Unknown'),
-                        label: lp.name ?? 'Unknown',
-                      }))
+                  : filteredLimitedPartners && filteredLimitedPartners.length > 0
+                    ? filteredLimitedPartners.map((lp) => ({
+                      value: lp, // this is now an object
+                      label: lp.name ?? 'Unknown',
+                    }))
                     : [{ value: 'no_limited_partner', label: 'No limited partner found' }]
               }
             />
