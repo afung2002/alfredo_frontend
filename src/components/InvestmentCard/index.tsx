@@ -1,4 +1,4 @@
-import { Chip, Box, Typography, IconButton, Card } from "@mui/material";
+import { Chip, Box, Typography, IconButton, Card, CardHeader, Menu, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router";
 import { Routes } from "@constants/routes";
 // import Card from "../Card";
@@ -9,6 +9,11 @@ import { Apps } from "../../constants/apps";
 import { useAppContext } from "../../context/appContext";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { useState } from "react";
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+
+
 interface InvestmentCardProps {
   investment: InvestmentResponse;
   onClick?: () => void;
@@ -17,69 +22,27 @@ interface InvestmentCardProps {
 const InvestmentCard: React.FC<InvestmentCardProps> = ({ investment }) => {
   const navigate = useNavigate();
   const [deleteInvestment] = useDeleteInvestmentMutation();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const handleCardClick = () => {
     navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':investmentId', investment.id.toString()))
   }
   const { app } = useAppContext();
-  const handleInvestmentDelete = (investmentId: number) => {
-    // Implement the delete functionality here
-    deleteInvestment(investmentId)
+  const handleInvestmentDelete = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    handleClose();
+    deleteInvestment(investment.id)
       .unwrap()
   }
-  return (
-    // <div className="">
-    //   <Card
-    //     onClick={() => handleCardClick}
-    //     // onDelete={() => handleInvestmentDelete(investment.id)}
-    //     title={investment?.company?.name || ''}
-    //     subtitle={`$${Number(investment?.amount).toLocaleString('en-US')}`}
-    //     sideImage={InvestmentIcon}
-    //     actions={[
-    //       {
-    //         label: "View Investment",
-    //         onClick: () => {
-    //           app === Apps.LIMITED_PARTNER && navigate(Routes.LIMITED_PARTNER_FUND_INVESTMENT.replace(':investmentId', investment.id.toString()))
+  const handleMoreMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation(); // Prevent the card click event from firing
+    setAnchorEl(event.currentTarget);
+  };
+  const open = Boolean(anchorEl);
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
-    //           app === Apps.FUND_MANAGER && navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':investmentId', investment.id.toString()))},
-    //       },
-    //     ]}
-    //     tags={[
-    //       {
-    //         label: `$${Number(investment?.amount)?.toLocaleString('en-US')} Invested`,
-    //         color: "secondary",
-    //         onClick: () => { },
-    //       },
-    //       {
-    //         label: `$${Number(investment?.estimated_value)?.toLocaleString('en-US')} EV`,
-    //         color: "secondary",
-    //         onClick: () => { },
-    //       },
-    //     ]}
-    //     className="transition-shadow duration-200"
-    //     sx={{
-    //       display: "flex",
-    //       alignItems: "center",
-    //       justifyContent: "space-between",
-    //       p: '24px',
-    //       borderRadius: '6px',
-    //       cursor: "pointer",
-    //       mb: '8px',
-    //       backgroundColor: 'grey.100',
-    //       ':hover': {
-    //         backgroundColor: '#f5f5f5',
-    //       }
-    //     }}
-    //   >
-    //     {investment.type && (
-    //       <div>
-    //         <Chip
-    //           label={investment.type}
-    //           size="medium"
-    //         />
-    //       </div>
-    //     )}
-    //   </Card>
-    // </div>
+  return (
     <Card
       onClick={handleCardClick}
       sx={{
@@ -98,7 +61,8 @@ const InvestmentCard: React.FC<InvestmentCardProps> = ({ investment }) => {
         },
       }}
     >
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+      <div className="flex items-center justify-between w-full">
+        <div className="flex items-center gap-1">
         <Typography variant="subtitle1" sx={{ fontWeight: 500, flex: 1 }}>
           {investment?.company?.name || ''}
         </Typography>
@@ -109,25 +73,37 @@ const InvestmentCard: React.FC<InvestmentCardProps> = ({ investment }) => {
         >
           {`$${Number(investment?.amount).toLocaleString('en-US')}`}
         </Typography>
-      </Box>
+        </div>
+        <IconButton onClick={handleMoreMenuClick}>
+            <MoreVertIcon />
+          </IconButton>
+      </div>
       <Box>
-        {/* {showFundChip && <Chip
-            label={
-              investment.fundInvested ? investment.fundInvested : "Angel"
-            }
-            size="small"
-            sx={{
-              backgroundColor: "grey.100",
-              borderRadius: "2px",
-              color:  investment.fundInvested ? "primary.main" : "gray",
-              width: "100px"
-            }}
-          />} */}
 
         <IconButton size="small" sx={{ color: "text.secondary" }}>
           <ArrowForwardIcon />
         </IconButton>
       </Box>
+      <Menu
+        id="demo-positioned-menu"
+        aria-labelledby="demo-positioned-button"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        <MenuItem onClick={handleInvestmentDelete}>
+          <DeleteOutlineIcon />
+          Delete
+        </MenuItem>
+      </Menu>
     </Card>
   )
 }
