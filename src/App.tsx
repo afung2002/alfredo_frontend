@@ -10,6 +10,8 @@ function App() {
   const [isDarkMode, setIsDarkMode] = useState(false); // Can toggle or use system preference
 
   const theme = useMemo(() => (isDarkMode ? darkTheme : lightTheme), [isDarkMode]);
+  console.log(import.meta.env.VITE_CLERK_PUBLISHABLE_KEY);
+  console.log(import.meta.env.VITE_ENV_NAME);
   return (
 
     <BrowserRouter>

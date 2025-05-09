@@ -2,7 +2,7 @@ import { FormControl, MenuItem, Select as MuiSelect, Typography } from '@mui/mat
 import { Control, useController } from 'react-hook-form';
 
 interface Option {
-  value: string;
+  value: any;
   label: string;
 }
 
