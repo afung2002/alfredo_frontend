@@ -4,7 +4,7 @@ import { Navigate } from 'react-router';
 import Loader from '@components/Loader';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useAcceptLimitedPartnerInvitationMutation, useCreateFundLimitedPartnerMutation } from '@services/api/baseApi';
+import { useAcceptLimitedPartnerInvitationMutation } from '@services/api/baseApi';
 import { Routes } from '../../constants/routes';
 
 const LandingPage = () => {
@@ -13,8 +13,6 @@ const LandingPage = () => {
   const ticket = searchParams.get('__clerk_ticket');
   const [createLimitedPartner, { isLoading: creatingLP }] =
     useAcceptLimitedPartnerInvitationMutation();
-  const [createFundLimitedPartner, { isLoading: creatingFundLP }] =
-    useCreateFundLimitedPartnerMutation();
   const [hasCreatedLP, setHasCreatedLP] = useState(false);
   const [isNewlyInvited, setIsNewlyInvited] = useState(false);
 
@@ -26,8 +24,6 @@ const LandingPage = () => {
         const fund = user.publicMetadata.fund_name as string | undefined;
         const fund_id = user.publicMetadata.fund_id as number | undefined;
         const name = user.publicMetadata.name as string | undefined;
-        const limited_partner = user.id;
-        const invested_amount = user.publicMetadata.invested_amount as string | undefined;
         const email = user.emailAddresses[0].emailAddress as string | undefined;    ;
         console.log('User:', user);
         // Detect if user is newly invited based on existing metadata fields
@@ -35,10 +31,10 @@ const LandingPage = () => {
             // setIsNewlyInvited(isNewlyInvited);
         if (!hasCreatedLP) {
           try {
-            await createFundLimitedPartner({
+            await createLimitedPartner({
+              email,
+              name,
               fund: fund_id,
-              limited_partner,
-              invested_amount,
             }).unwrap();
 
             setHasCreatedLP(true); // Mark as created after API success
