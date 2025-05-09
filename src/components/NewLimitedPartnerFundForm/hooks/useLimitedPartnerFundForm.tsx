@@ -5,7 +5,13 @@ import { useCreateFundLimitedPartnerMutation, useCreateInvitationMutation } from
 
 // Validation schemas
 const selectExistingSchema = z.object({
-  limitedPartner: z.string().min(1, 'Limited partner is required'),
+  limitedPartner: z.object({
+    email: z.string().email(),
+    name: z.string().min(1),
+    // you can add more fields if necessary
+  }, {
+    required_error: 'Limited partner is required'
+  }),
   investedAmount: z.string().refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
     message: 'Invested amount must be a positive number',
   }),
@@ -30,7 +36,10 @@ const useLimitedPartnerFundForm = (fundId: number | string | undefined, closeMod
 
   const existingLpForm = useForm<SelectLimitedPartnerFormData>({
     resolver: zodResolver(selectExistingSchema),
-    defaultValues: { limitedPartner: '', investedAmount: '' },
+    defaultValues: { 
+      limitedPartner: undefined,
+      investedAmount: '' 
+    },
     mode: 'onChange',
   });
 
@@ -44,10 +53,19 @@ const useLimitedPartnerFundForm = (fundId: number | string | undefined, closeMod
   const onSubmitExisting = async (data: SelectLimitedPartnerFormData) => {
     if (!fundId) return;
     try {
-      await createLimitedPartner({
-        limited_partner: data.limitedPartner,
-        invested_amount: data.investedAmount,
+      // await createLimitedPartner({
+      //   limited_partner: data.limitedPartner,
+      //   invested_amount: data.investedAmount,
+      //   fund: Number(fundId),
+      // }).unwrap();
+      await createInvitation({
         fund: Number(fundId),
+        invested_amount: data.investedAmount,
+        email_address: data.limitedPartner.email,
+        public_metadata: {
+          name: data.limitedPartner.name,
+          role: 'limited_partner',
+        },
       }).unwrap();
       existingLpForm.reset();
       closeModal(); // Close modal after success
