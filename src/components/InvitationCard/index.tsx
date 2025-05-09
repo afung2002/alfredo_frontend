@@ -6,7 +6,7 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import LimitedPartner from '../../apps/fund-manager/pages/LimitedPartner/index';
 import CheckIcon from '@mui/icons-material/Check';
 import Button from "../Button";
-import { useCreateInvitationMutation } from "../../services/api/baseApi";
+import { useCreateInvitationMutation, useDeleteInvitationMutation } from "../../services/api/baseApi";
 interface LimitedPartnerCardProps {
   limitedPartner: any;
 }
@@ -14,8 +14,10 @@ interface LimitedPartnerCardProps {
 const InvitationCard = ({limitedPartner}) => {
   console.log("limitedPartner", limitedPartner);
   const [createInvitation, { isLoading: invitingLP }] = useCreateInvitationMutation();
+  const [deleteInvitation, { isLoading: deletingLP }] = useDeleteInvitationMutation();
   const handleResendInvitation = async () => {
-    await createInvitation({
+    console.log("limitedPartnerResend", limitedPartner);
+    const limitedPartnerData = {
       email_address: limitedPartner.email_address,
       fund: limitedPartner.fund,
       public_metadata: {
@@ -23,7 +25,9 @@ const InvitationCard = ({limitedPartner}) => {
         role: 'limited_partner',
       },
       invested_amount: limitedPartner.invested_amount,
-    });
+    }
+    await deleteInvitation(limitedPartner.id);
+      await createInvitation(limitedPartnerData);
   }
   const { fundId } = useParams<{ fundId: string }>();
   const navigate = useNavigate();
