@@ -72,7 +72,6 @@ const useLimitedPartnerFundForm = (closeModal: () => void) => {
         },
       }).unwrap();
       inviteLpForm.reset();
-      closeModal(); // Close modal after success
       navigate(-1)
     } catch (err) {
       console.error('Error inviting new LP:', err);
