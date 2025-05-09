@@ -30,7 +30,7 @@ const NewLimitedPartnerFundForm = ({ closeModal }: NewLimitedPartnerFundFormProp
       })) ?? [];
 
   return (
-    <Card sx={{ border: '1px solid', borderColor: 'grey.200', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', p: '30px' }}>
+    <Card sx={{ border: '1px solid', borderColor: 'grey.200', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', p: '30px', maxWidth: '745px' }} className="mx-auto">
 
       <form onSubmit={inviteLpForm.handleSubmit(onSubmitInvitation)}>
         <Grid container spacing={3}>

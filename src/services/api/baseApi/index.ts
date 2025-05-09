@@ -322,7 +322,6 @@ export const apiSlice = createApi({
     createInvitation: builder.mutation<Invitation, any>({
       // Create a single invitation
       query: (data) => ({ url: '/invitations/', method: 'POST', body: data }),
-      invalidatesTags: [Tags.LIMITED_PARTNERS],
     }),
 
     createBulkInvitations: builder.mutation<Invitation[], any[]>({
