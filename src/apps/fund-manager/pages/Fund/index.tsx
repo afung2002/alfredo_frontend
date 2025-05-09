@@ -538,7 +538,10 @@ const FundView: React.FC = () => {
       <Dialog open={isLimitedPartnerModelOpen} onClose={() => setIsLimitedPartnerModalOpen(false)}>
         <DialogTitle>Add Limited Partner</DialogTitle>
         <DialogContent>
-          <NewLimitedPartnerFundForm fundId={fundId} closeModal={() => setIsLimitedPartnerModalOpen(false)} />
+          <NewLimitedPartnerFundForm 
+          fundId={fundId} 
+          closeModal={() => setIsLimitedPartnerModalOpen(false)} 
+          fundLimitedPartners={fundData?.limited_partners} />
         </DialogContent>
       </Dialog>
     </Box>
