@@ -69,11 +69,11 @@ const LimitedPartners = () => {
       );
       setFilteredLimitedPartners(filtered || []);
     } else {
-      setFilteredLimitedPartners(invitations || []);
+      setFilteredLimitedPartners(invitationsGroupedByEmailData || []);
     }
   }, [searchValue,]);
   useEffect(() => {
-    let invitationsToFilter = [...(invitations || [])];
+    let invitationsToFilter = [...(invitationsGroupedByEmailData || [])];
 
     if (selectedTab === 'pending') {
       invitationsToFilter = filterInvitationsByStatus(invitationsToFilter, InvitationStatus.PENDING);
@@ -92,7 +92,7 @@ const LimitedPartners = () => {
 
     // Apply sort
     setFilteredLimitedPartners(sortInvitations(invitationsToFilter));
-  }, [selectedTab, invitations, searchValue, sortOption]);
+  }, [selectedTab, invitationsGroupedByEmailData, searchValue, sortOption]);
 
   const sortInvitations = (invitations: any[]) => {
     if (sortOption === 'recent') {
@@ -111,7 +111,7 @@ const LimitedPartners = () => {
 
     return invitations;
   };
-  if (isLoadingInvitations) {
+  if (isLoadingInvitationsGroupedByEmail) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
         <CircularProgress />
@@ -119,7 +119,7 @@ const LimitedPartners = () => {
     );
   }
 
-  if (errorInvitations) {
+  if (errorInvitationsGroupedByEmail) {
     return (
       <Box p={3}>
         <Alert severity="error">
