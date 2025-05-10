@@ -47,7 +47,6 @@ const LimitedPartnerUpdates = () => {
         );
         break;
     }
-
     setFilteredUpdates(updatedUpdates);
   }, [searchValue, updatesData, sortOption]);
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, CircularProgress, Button } from '@mui/material';
+import { Box, Typography, CircularProgress, Button, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import FundListCard from '@components/FundListCard';
 import { Fund } from '../../../../types';
@@ -102,7 +102,7 @@ const Funds = () => {
   if (error) {
     return (
       <Box p={3}>
-        <Typography color="error">Error loading funds: {error.toString()}</Typography>
+        <Alert severity="error">Something went wrong</Alert>
       </Box>
     );
   }

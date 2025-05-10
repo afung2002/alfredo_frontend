@@ -122,11 +122,7 @@ const LimitedPartners = () => {
   if (errorInvitationsGroupedByEmail) {
     return (
       <Box p={3}>
-        <Alert severity="error">
-          <>
-            {errorInvitations}
-          </>
-        </Alert>
+        <Alert severity="error">Something went wrong</Alert>
       </Box>
     );
   }
