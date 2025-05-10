@@ -17,7 +17,7 @@ const FundUpdatesList = ({ updates, isLoading, error}: any) => {
   if (error) {
     return (
       <Box p={3}>
-        <Alert severity="error">{error}</Alert>
+        <Alert severity="error">Something went wrong</Alert>
       </Box>
     );
   }

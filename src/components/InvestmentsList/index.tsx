@@ -1,4 +1,4 @@
-import { CircularProgress, Typography } from "@mui/material";
+import { Alert, CircularProgress, Typography } from "@mui/material";
 import InvestmentCard from "../InvestmentCard";
 import { useNavigate } from "react-router";
 import { noDataMessageStyles } from "@src/utils/uiUtils";
@@ -38,11 +38,7 @@ const InvestmentsList = ({ investments, isLoading, error }: InvestmentsListProps
   if (error) {
     return (
       <div className="flex justify-center items-center w-full h-full">
-        <Typography variant="body1" sx={noDataMessageStyles}>
-          {typeof error === "string"
-            ? error
-            : "An error occurred. Please try again."}
-        </Typography>
+        <Alert severity="error">Something went wrong</Alert>
       </div>
     );
   }

@@ -82,8 +82,7 @@ const Documents = () => {
   if (errorDocuments) {
     return (
       <Box p={3}>
-        <Alert severity="error">
-          <>{errorDocuments}</></Alert>
+        <Alert severity="error">Something went wrong</Alert>
       </Box>
     );
   }

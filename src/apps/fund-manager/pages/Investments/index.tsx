@@ -110,7 +110,7 @@ const Investments = () => {
   if (errorInvestments) {
     return (
       <Box p={3}>
-        <Alert severity="error"><>{errorInvestments}</></Alert>
+        <Alert severity="error">Something went wrong</Alert>
       </Box>
     );
   }
