@@ -13,6 +13,7 @@ interface UserState {
   isAuthenticated: boolean;
   savedApps: AppType[] | null;
   investments: InvestmentDetails[] | null;
+  ticket: string | null;
 }
 
 const initialState: UserState = {
@@ -20,6 +21,7 @@ const initialState: UserState = {
   isAuthenticated: false,
   savedApps: null,
   investments: null,
+  ticket: null,
 };
 
 const userSlice = createSlice({
@@ -48,8 +50,14 @@ const userSlice = createSlice({
     addInvestmentsToUser: (state, action: PayloadAction<InvestmentDetails[]>) => {
       state.investments = action.payload;
     },
+    setTicket: (state, action: PayloadAction<string | null>) => {
+      state.ticket = action.payload;
+    },
+    removeTicket: (state) => {
+      state.ticket = null;
+    },
   },
 });
 
-export const { setUser, removeUser, addAppToUser, addInvestmentsToUser } = userSlice.actions;
+export const { setUser, removeUser, addAppToUser, addInvestmentsToUser, setTicket, removeTicket } = userSlice.actions;
 export default userSlice.reducer;
