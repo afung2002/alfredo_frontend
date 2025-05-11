@@ -6,52 +6,52 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAcceptLimitedPartnerInvitationMutation, useCreateFundLimitedPartnerMutation } from '@services/api/baseApi';
 import { Routes } from '../../constants/routes';
-
+import { setTicket } from '../../redux/slices/user';
+import { useDispatch } from 'react-redux';
 const LandingPage = () => {
-  const { user, isSignedIn, isLoaded } = useUser();
+  const dispatch = useDispatch();
+const { user, isSignedIn, isLoaded } = useUser();
   const [searchParams] = useSearchParams();
   const ticket = searchParams.get('__clerk_ticket');
   const [createLimitedPartner, { isLoading: creatingLP }] =
     useAcceptLimitedPartnerInvitationMutation();
   const [createFundLimitedPartner, { isLoading: creatingFundLP }] =
     useCreateFundLimitedPartnerMutation();
-    console.log('ticket', ticket);
-
+  
   useEffect(() => {
-    console.log('isLoaded', isLoaded);
-    // if (!isLoaded || !isSignedIn || hasCreatedLP || !ticket) return;
-    console.log('ticket', ticket);
+    // console.log('user', user);
+    // if (!ticket) return;
+    // const createLimitedPartnerAfterSignup = async () => {
+    //   console.log('createLimitedPartnerAfterSignup');
+      
+    //   if (user.publicMetadata) {
+    //     console.log('user.publicMetadata', user.publicMetadata);
+    //     const fund = user.publicMetadata.fund_name as string | undefined;
+    //     const fund_id = user.publicMetadata.fund_id as number | undefined;
+    //     const name = user.publicMetadata.name as string | undefined;
+    //     const email = user.emailAddresses[0].emailAddress as string | undefined;
+    //     const limited_partner = user.id;
+    //     const invested_amount = user.publicMetadata.invested_amount as string | undefined;
+    //     console.log('User:', user);
+    //       console.log('Creating fund limited partner');
+    //       try {
+    //         await createFundLimitedPartner({
+    //           fund: fund_id,
+    //           limited_partner,
+    //           invested_amount,
+    //         }).unwrap();
 
-    if (!ticket) return;
+    //       } catch (error) {
+    //         console.error('Error creating limited partner after sign up:', error);
+    //       }
+    //   }
+    // };
 
-    const createLimitedPartnerAfterSignup = async () => {
-      console.log('createLimitedPartnerAfterSignup');
-      console.log('user', user);
-      if (user.publicMetadata) {
-        console.log('user.publicMetadata', user.publicMetadata);
-        const fund = user.publicMetadata.fund_name as string | undefined;
-        const fund_id = user.publicMetadata.fund_id as number | undefined;
-        const name = user.publicMetadata.name as string | undefined;
-        const email = user.emailAddresses[0].emailAddress as string | undefined;
-        const limited_partner = user.id;
-        const invested_amount = user.publicMetadata.invested_amount as string | undefined;
-        console.log('User:', user);
-          console.log('Creating fund limited partner');
-          try {
-            await createFundLimitedPartner({
-              fund: fund_id,
-              limited_partner,
-              invested_amount,
-            }).unwrap();
-
-          } catch (error) {
-            console.error('Error creating limited partner after sign up:', error);
-          }
-      }
-    };
-
-    createLimitedPartnerAfterSignup();
-  }, [ticket, user]);
+    // createLimitedPartnerAfterSignup();
+    if (ticket) {
+      dispatch(setTicket(ticket));
+    }
+  }, [ticket]);
 
   if (!isLoaded || creatingLP ) {
     return <Loader />;
