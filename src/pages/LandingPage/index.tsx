@@ -22,7 +22,9 @@ const LandingPage = () => {
     if (!isLoaded || !isSignedIn || hasCreatedLP || !ticket) return;
 
     const createLimitedPartnerAfterSignup = async () => {
+      console.log('createLimitedPartnerAfterSignup');
       if (user.publicMetadata) {
+        console.log('user.publicMetadata', user.publicMetadata);
         const fund = user.publicMetadata.fund_name as string | undefined;
         const fund_id = user.publicMetadata.fund_id as number | undefined;
         const name = user.publicMetadata.name as string | undefined;
@@ -34,6 +36,7 @@ const LandingPage = () => {
             // const isNewlyInvited = !!(fund);
             // setIsNewlyInvited(isNewlyInvited);
         if (!hasCreatedLP) {
+          console.log('Creating fund limited partner');
           try {
             await createFundLimitedPartner({
               fund: fund_id,
