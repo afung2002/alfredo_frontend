@@ -48,9 +48,6 @@ const LandingPage = () => {
           } catch (error) {
             console.error('Error creating limited partner after sign up:', error);
           }
-        } else {
-          // Already a saved user → no need to create again
-          setHasCreatedLP(true);
         }
       }
     };
