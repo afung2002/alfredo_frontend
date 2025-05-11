@@ -15,11 +15,11 @@ const LandingPage = () => {
     useAcceptLimitedPartnerInvitationMutation();
   const [createFundLimitedPartner, { isLoading: creatingFundLP }] =
     useCreateFundLimitedPartnerMutation();
-  const [hasCreatedLP, setHasCreatedLP] = useState(false);
-  const [isNewlyInvited, setIsNewlyInvited] = useState(false);
 
   useEffect(() => {
-    if (!isLoaded || !isSignedIn || hasCreatedLP || !ticket) return;
+    // if (!isLoaded || !isSignedIn || hasCreatedLP || !ticket) return;
+
+    if (!ticket) return;
 
     const createLimitedPartnerAfterSignup = async () => {
       console.log('createLimitedPartnerAfterSignup');
@@ -32,10 +32,6 @@ const LandingPage = () => {
         const limited_partner = user.id;
         const invested_amount = user.publicMetadata.invested_amount as string | undefined;
         console.log('User:', user);
-        // Detect if user is newly invited based on existing metadata fields
-            // const isNewlyInvited = !!(fund);
-            // setIsNewlyInvited(isNewlyInvited);
-        if (!hasCreatedLP) {
           console.log('Creating fund limited partner');
           try {
             await createFundLimitedPartner({
@@ -44,33 +40,24 @@ const LandingPage = () => {
               invested_amount,
             }).unwrap();
 
-            setHasCreatedLP(true); // Mark as created after API success
           } catch (error) {
             console.error('Error creating limited partner after sign up:', error);
           }
-        }
       }
     };
 
     createLimitedPartnerAfterSignup();
-  }, [isLoaded, isSignedIn, user, createLimitedPartner, hasCreatedLP, ticket]);
+  }, [ticket]);
 
-  // Show loader while user is loading, LP creation is happening, or LP not yet confirmed
   if (!isLoaded || creatingLP ) {
     return <Loader />;
   }
 
 
-  // After sign-in + LP created successfully
-  if (isSignedIn && hasCreatedLP && !isNewlyInvited) {
+  if (isSignedIn) {
     return <Navigate to={Routes.APPS} />;
   }
 
-  if (isSignedIn && hasCreatedLP && isNewlyInvited) {
-    return <Navigate to={Routes.LIMITED_PARTNER_FUNDS} />;
-  }
-
-  // If not signed in yet (first time landing)
   return (
     <Box
       sx={{
