@@ -15,10 +15,13 @@ const LandingPage = () => {
     useAcceptLimitedPartnerInvitationMutation();
   const [createFundLimitedPartner, { isLoading: creatingFundLP }] =
     useCreateFundLimitedPartnerMutation();
+    console.log('ticket', ticket);
 
   useEffect(() => {
+    console.log('isLoaded', isLoaded);
     // if (!isLoaded || !isSignedIn || hasCreatedLP || !ticket) return;
-
+    console.log('ticket', ticket);
+    
     if (!ticket) return;
 
     const createLimitedPartnerAfterSignup = async () => {
