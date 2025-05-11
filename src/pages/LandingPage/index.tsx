@@ -21,7 +21,7 @@ const LandingPage = () => {
     console.log('isLoaded', isLoaded);
     // if (!isLoaded || !isSignedIn || hasCreatedLP || !ticket) return;
     console.log('ticket', ticket);
-    
+
     if (!ticket) return;
 
     const createLimitedPartnerAfterSignup = async () => {
@@ -50,7 +50,7 @@ const LandingPage = () => {
     };
 
     createLimitedPartnerAfterSignup();
-  }, [ticket]);
+  }, [ticket, user]);
 
   if (!isLoaded || creatingLP ) {
     return <Loader />;
