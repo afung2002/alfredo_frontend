@@ -26,6 +26,7 @@ const LandingPage = () => {
 
     const createLimitedPartnerAfterSignup = async () => {
       console.log('createLimitedPartnerAfterSignup');
+      console.log('user', user);
       if (user.publicMetadata) {
         console.log('user.publicMetadata', user.publicMetadata);
         const fund = user.publicMetadata.fund_name as string | undefined;
