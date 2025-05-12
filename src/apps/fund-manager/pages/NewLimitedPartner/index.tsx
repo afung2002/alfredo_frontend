@@ -20,6 +20,7 @@ const NewLimitedPartnerFundForm = ({ closeModal }: NewLimitedPartnerFundFormProp
     inviteLpForm,
     onSubmitInvitation,
     isInvitingNew,
+    handleInviteWebsiteBlur,
   } = useLimitedPartnerFundForm(closeModal);
 
   const fundOptions = isFundsLoading
@@ -62,7 +63,7 @@ const NewLimitedPartnerFundForm = ({ closeModal }: NewLimitedPartnerFundFormProp
             <Input type="email" rounded={false} label="Email" name="email" control={inviteLpForm.control} />
           </Grid>
           <Grid size={{ xs: 12, lg: 6 }}>
-            <Input type="text" rounded={false} label="Website" name="website" control={inviteLpForm.control} />
+            <Input type="text" rounded={false} label="Website"  onBlur={handleInviteWebsiteBlur} name="website" control={inviteLpForm.control} />
           </Grid>
           <Grid size={{ xs: 12, lg: 6 }}>
             <Input type="text" rounded={false} label="Amount Invested" name="fundAmount" control={inviteLpForm.control} />
