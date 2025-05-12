@@ -147,3 +147,10 @@ export const setFormattedCommaValue = <TFieldValues>(
     });
   }
 };
+
+export const normalizeUrl = (url: string): string => {
+  if (!url) return '';
+  return url.startsWith('http://') || url.startsWith('https://')
+    ? url
+    : `http://${url}`;
+};
