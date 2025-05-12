@@ -5,7 +5,7 @@ import { setToken } from '@redux/slices/configs'; // adjust path if needed
 import { getClerkToken } from '@utils/index'; // you’ll create this next
 
 const rawBaseQuery = fetchBaseQuery({
-  baseUrl: import.meta.env.VITE_BASE_URL,
+  baseUrl: import.meta.env.VITE_BASE_URL_DEV,
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as any).configs.token;
     if (token) headers.set('Authorization', `Bearer ${token}`);
