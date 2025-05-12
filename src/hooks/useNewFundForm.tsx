@@ -1,4 +1,3 @@
-// useNewFundForm.ts
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,12 +11,24 @@ import {
   formatNumberWithCommas,
   setFormattedCommaValue,
   parseCommaSeparatedNumber,
+  normalizeUrl,
 } from '@utils/index';
 import { useCommaFormattingWatcher } from '@hooks/useCommaFormattingWatcher';
 
 const schema = z.object({
   name: z.string().min(1, 'Fund name is required'),
-  websiteUrl: z.string().url('Must be a valid URL'),
+  websiteUrl: z
+    .string()
+    .min(1, 'Website is required')
+    .transform((val) => normalizeUrl(val))
+    .refine((val) => {
+      try {
+        new URL(val);
+        return true;
+      } catch {
+        return false;
+      }
+    }, { message: 'Must be a valid URL' }),
   description: z.string().min(1, 'Description is required'),
   legalEntity: z.string().min(1, 'Legal entity is required'),
   fundSize: z.string()
@@ -58,6 +69,21 @@ const useNewFundForm = (fundId: string | null) => {
 
   useCommaFormattingWatcher(watch, setValue, ['fundSize', 'estimatedValue']);
 
+  // 🔁 Normalize websiteUrl on blur
+  useEffect(() => {
+    const subscription = watch((value, { name, type }) => {
+      if (type === 'blur' && name === 'websiteUrl') {
+        const current = value[name];
+        if (current) {
+          const normalized = normalizeUrl(current);
+          setValue('websiteUrl', normalized, { shouldValidate: true });
+        }
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch, setValue]);
+
   useEffect(() => {
     if (fundId) {
       getFund(Number(fundId)).unwrap();
@@ -69,7 +95,7 @@ const useNewFundForm = (fundId: string | null) => {
     if (fundData) {
       reset({
         name: fundData.name,
-        websiteUrl: fundData.website_url ?? '',
+        websiteUrl: normalizeUrl(fundData.website_url ?? ''),
         description: fundData.description ?? '',
         legalEntity: fundData.legal_entity ?? '',
         fundSize: formatNumberWithCommas(fundData.fund_size ?? ''),
@@ -77,7 +103,12 @@ const useNewFundForm = (fundId: string | null) => {
       });
     }
   }, [isFundLoading, fundData]);
-
+  const handleWebsiteBlur = () => {
+    const current = watch('websiteUrl');
+    if (current) {
+      setValue('websiteUrl', normalizeUrl(current), { shouldValidate: true });
+    }
+  };
   const submitNewFund = async (): Promise<number | null> => {
     let result: number | null = null;
 
@@ -115,6 +146,7 @@ const useNewFundForm = (fundId: string | null) => {
     newFundIsLoading: isLoading,
     newFundIsUpdateLoading: isUpdateLoading,
     newFundCreated: createdFund,
+    handleWebsiteBlur
   };
 };
 

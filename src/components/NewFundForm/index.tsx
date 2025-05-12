@@ -22,6 +22,7 @@ const NewFundForm = ({ fundId, onClose, selectCreatedFund, onSave  }: NewFundFor
     newFundIsLoading,
     newFundIsUpdateLoading,
     newFundCreated,
+    handleWebsiteBlur,
   } = useNewFundForm(fundId || null);
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -62,6 +63,7 @@ const NewFundForm = ({ fundId, onClose, selectCreatedFund, onSave  }: NewFundFor
             name="websiteUrl"
             control={newFundControl}
             error={!!newFundErrors.websiteUrl?.message}
+            onBlur={handleWebsiteBlur}
           />
         </Grid>
 
