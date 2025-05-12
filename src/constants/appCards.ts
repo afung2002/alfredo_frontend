@@ -16,7 +16,7 @@ export const APP_CARDS = [
     category: "For Investors",
     categoryValue: "investors",
     path: Routes.FUND_MANAGER,
-    id: 'fund-manager'
+    id: "fund-manager",
   },
   {
     title: "Limited Partner — Receive LP Updates",
@@ -26,7 +26,7 @@ export const APP_CARDS = [
     category: "For Limited Partners",
     categoryValue: "limited-partners",
     path: Routes.LIMITED_PARTNER_FUNDS,
-    id: 'limited-partner'
+    id: "limited-partner",
   },
   {
     title: "Find Intros — Pinpoint Customer Intros",
@@ -36,7 +36,7 @@ export const APP_CARDS = [
     category: "For Founders",
     categoryValue: "founders",
     path: "/apps",
-    id: 'find-intros'
+    id: "find-intros",
   },
   {
     title: "Company Tracker — Track Investment Prospects",
@@ -45,9 +45,8 @@ export const APP_CARDS = [
     imageUrl: AppImage4,
     category: "For Investors",
     categoryValue: "investors",
-    // path: Routes.PROSPECT_TRACKER,
-    path: "/apps",
-    id: 'company-tracker'
+    id: "company-tracker",
+    path: Routes.PROSPECT_TRACKER_PROSPECTS,
   },
   {
     title: "VC Associate — Source Deals Autonomously",
@@ -57,25 +56,27 @@ export const APP_CARDS = [
     category: "For Investors",
     categoryValue: "investors",
     path: "/apps",
-    id: 'vc-associate'
+    id: "vc-associate",
   },
   {
     title: "Memo Generator — Automate Memo Creation",
-    description: "AI-powered investment memo generation. Input decks, files, Q&A, and more.",
+    description:
+      "AI-powered investment memo generation. Input decks, files, Q&A, and more.",
     imageUrl: AppImage6,
     category: "For Investors",
     categoryValue: "investors",
     path: "/apps",
-    id: 'memo-generator'
+    id: "memo-generator",
   },
   {
     title: "Content Creator — Automate Social Posts",
-    description: "AI-powered LinkedIn and Twitter post creation with configurable guardrails.",
+    description:
+      "AI-powered LinkedIn and Twitter post creation with configurable guardrails.",
     imageUrl: AppImage7,
     category: "For Investors",
     categoryValue: "investors",
     path: "/apps",
-    id: 'content-creator'
+    id: "content-creator",
   },
   {
     title: "Deal Screener — Screen Top of Funnel Autonomously",
@@ -85,6 +86,6 @@ export const APP_CARDS = [
     category: "For Investors",
     categoryValue: "investors",
     path: "/apps",
-    id: 'deal-screener'
+    id: "deal-screener",
   },
 ];

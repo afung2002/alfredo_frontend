@@ -8,6 +8,11 @@ import { useAppContext } from "../../../context/appContext";
 export default function ProspectTrackerLayout() {
   const sideMenuButtons = [
     {
+      label: "Prospects",
+      value: "prospects",
+      path: Routes.PROSPECT_TRACKER_PROSPECTS,
+    },
+    {
       label: "Heat",
       value: "heat",
       path: Routes.PROSPECT_TRACKER_HEAT,

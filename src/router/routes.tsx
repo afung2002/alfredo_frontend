@@ -27,7 +27,7 @@ import LimitedPartnerDocuments from "@src/apps/limited-partner/pages/LimitedPart
 import LimitedPartnerUpdates from "@src/apps/limited-partner/pages/LimitedPartnerUpdates";
 
 import ProspectTrackerLayout from "@src/apps/prospect-tracker/layout";
-import ProspectTracker from "@src/apps/prospect-tracker/pages";
+import ProspectTracker from "@src/apps/prospect-tracker/pages/prospects";
 import NewProspect from "@src/apps/prospect-tracker/pages/new";
 import Prospect from "@src/apps/prospect-tracker/pages/prospect";
 import Heat from "@src/apps/prospect-tracker/pages/heat";
@@ -163,14 +163,14 @@ export const routes: RouteObject[] = [
     ],
   },
   {
-    path: Routes.PROSPECT_TRACKER,
+    path: Routes.PROSPECT_TRACKER_PATH,
     element: (
       <ProtectedRoute>
         <ProspectTrackerLayout />
       </ProtectedRoute>
     ),
     children: [
-      { path: Routes.PROSPECT_TRACKER, element: <ProspectTracker /> },
+      { path: Routes.PROSPECT_TRACKER_PROSPECTS, element: <ProspectTracker /> },
       { path: Routes.PROSPECT_TRACKER_NEW, element: <NewProspect /> },
       {
         path: Routes.PROSPECT_TRACKER_PROSPECT,
