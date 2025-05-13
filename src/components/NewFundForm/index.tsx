@@ -11,8 +11,9 @@ type NewFundFormProps = {
   onClose?: () => void;
   selectCreatedFund?: (fund: any) => void;
   onSave?: () => void;
+  action?: 'create' | 'edit';
 };
-const NewFundForm = ({ fundId, onClose, selectCreatedFund, onSave  }: NewFundFormProps) => {
+const NewFundForm = ({ fundId, onClose, selectCreatedFund, onSave, action }: NewFundFormProps) => {
   const navigate = useNavigate();
   console.log('fundId', fundId)
   const {
@@ -127,7 +128,7 @@ const NewFundForm = ({ fundId, onClose, selectCreatedFund, onSave  }: NewFundFor
                   '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.8)' },
                 }}
               >
-                {(newFundIsLoading || newFundIsUpdateLoading) ? <CircularProgress size={24} /> : 'Create Fund'}
+                {(newFundIsLoading || newFundIsUpdateLoading) ? <CircularProgress size={24} /> : action === 'create' ? 'Create Fund' : 'Update'}
               </Button>
             </Box>
           </Grid>

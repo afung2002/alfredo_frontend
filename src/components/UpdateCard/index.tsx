@@ -64,7 +64,7 @@ const UpdateCard: React.FC<UpdateListCardProps> = ({ update }) => {
               style={{
                 overflow: 'hidden',
                 transition: 'max-height 0.3s ease',
-                maxHeight: isCollapsed ? '4.5em' : '1000px', // 3 lines * line-height ~1.5em
+                maxHeight: isCollapsed ? '4.5em' : 'fit-content', // 3 lines * line-height ~1.5em
                 display: '-webkit-box',
                 WebkitBoxOrient: 'vertical',
                 WebkitLineClamp: isCollapsed ? '3' : 'unset',

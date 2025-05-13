@@ -1,5 +1,6 @@
 import { FormControl, MenuItem, Select as MuiSelect, Typography } from '@mui/material';
 import { Control, useController } from 'react-hook-form';
+import React from 'react';
 
 interface Option {
   value: any;
@@ -17,6 +18,7 @@ interface SelectProps {
   disabled?: boolean;
   rounded?: boolean;
   reason?: string;
+  onValueChange?: (value: any) => void;
 }
 
 const Select = ({
@@ -30,9 +32,10 @@ const Select = ({
   disabled = false,
   rounded = true,
   reason,
+  onValueChange,
 }: SelectProps) => {
   const {
-    field: { onChange, value },
+    field: { onChange, value, ref },
     fieldState: { error },
   } = useController({
     name,
@@ -40,35 +43,51 @@ const Select = ({
     defaultValue,
   });
 
+  const handleSelect = (e: React.MouseEvent<HTMLLIElement, MouseEvent>, selectedValue: any) => {
+    if (selectedValue === value) {
+      // User selected the same value again
+      onValueChange?.(selectedValue);
+    }
+  };
+
   return (
     <div className={className}>
       {label && (
-        <Typography
-          component="label"
-          htmlFor={name}
-          className={labelClassName}
-        >
+        <Typography component="label" htmlFor={name} className={labelClassName}>
           {label}
         </Typography>
       )}
+
       <FormControl fullWidth size="small" error={!!error}>
         <MuiSelect
-          size='small'
+          size="small"
           id={name}
           value={value}
-          onChange={onChange}
+          onChange={(e) => {
+            onChange(e); // react-hook-form update
+            onValueChange?.(e.target.value); // external handler
+          }}
           displayEmpty
+          defaultValue={defaultValue}
           disabled={disabled}
+          inputRef={ref}
           sx={{
             borderRadius: rounded ? '50px' : '8px',
             backgroundColor: disabled ? '#f5f5f5' : 'inherit',
           }}
         >
-          <MenuItem disabled value="">
-            <em>Select {label?.toLowerCase()}</em>
-          </MenuItem>
+          {value === '' && (
+            <MenuItem disabled value="">
+              <em>Select {label?.toLowerCase()}</em>
+            </MenuItem>
+          )}
+
           {options.map((opt) => (
-            <MenuItem key={opt.value} value={opt.value}>
+            <MenuItem
+              key={opt.value}
+              value={opt.value}
+              onClick={(e) => handleSelect(e, opt.value)} // 👈 this enables triggering modal even if selected again
+            >
               {opt.label}
             </MenuItem>
           ))}

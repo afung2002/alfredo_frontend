@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 // Validation schemas
 const selectExistingSchema = z.object({
   limitedPartner: z.string().min(1, 'Limited partner is required'),
-  investedAmount: z.string().refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
+  investedAmount: z.string().refine((val) => !isNaN(Number(val)) && Number(val) >=0, {
     message: 'Invested amount must be a positive number',
   }),
   fund: z.string().min(1, 'Fund is required'),
@@ -17,7 +17,7 @@ const inviteNewSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.string().email('Valid email is required'),
   website: z.string().optional(),
-  fundAmount: z.string().refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
+  fundAmount: z.string().refine((val) => !isNaN(Number(val)) && Number(val) >= 0, {
     message: 'Fund amount must be a positive number',
   }),
   description: z.string().optional(),
