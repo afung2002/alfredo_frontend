@@ -42,7 +42,7 @@ export const DOCUMENTS_SORT_OPTIONS = [
 ];
 
 export const FUND_UPDATES_SORT_OPTIONS = [
-  { label: 'Recently Edited', value: 'recent' },
+  { label: 'Latest', value: 'recent' },
   { label: 'Alphabetical', value: 'alphabetical' },
 ];
 

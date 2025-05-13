@@ -77,6 +77,7 @@ const AppSideMenu = ({ sideMenuButtons }: AppSideMenuProps) => {
                 selectedButton === button.value ? "black" : "text.secondary",
               fontWeight: selectedButton === button.value ? 500 : 400,
             }}
+            startIcon={button.label === 'Back to Apps' ?  button.icon : null} 
           >
             {button.label}
           </Button>

@@ -4,7 +4,7 @@ import AppSideMenu from "@components/AppSideMenu";
 import { Routes } from "@constants/routes";
 import { Apps } from "@constants/apps";
 import { useAppContext } from "../../../context/appContext";
-
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 export default function ProspectTrackerLayout() {
   const sideMenuButtons = [
     {
@@ -26,6 +26,7 @@ export default function ProspectTrackerLayout() {
       label: "Back to Apps",
       value: "back-to-apps",
       path: Routes.APPS,
+      icon: <ArrowBackIosNewIcon sx={{color: '#D0D0D0'}} />
     },
   ];
   const { app, setApp } = useAppContext();

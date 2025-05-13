@@ -158,8 +158,16 @@ const FundView: React.FC = () => {
   }, [searchInvestmentsValue, investmentsData]);
 
   const handleAddNew = () => {
-    navigate(Routes.FUND_MANAGER_NEW_INVESTMENT);
+    console.log('fundId', fundId)
+    console.log('fundName', fundData?.name)
+    navigate(Routes.FUND_MANAGER_NEW_INVESTMENT, {
+      state: {
+        fundId: fundId,
+        fundName: fundData?.name
+      }
+    });
   };
+
 
   // const handleAddLimitedPartner = () => {
   //   navigate(Routes.FUND_MANAGER_NEW_LIMITED_PARTNER);
