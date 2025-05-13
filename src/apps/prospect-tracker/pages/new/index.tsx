@@ -63,7 +63,7 @@ export default function NewProspect() {
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white h-screen flex flex-col">
-      <Link to={Routes.PROSPECT_TRACKER}>
+      <Link to={Routes.PROSPECT_TRACKER_PROSPECTS}>
         <Button variant="ghost" size="sm">
           <ArrowLeftIcon className="w-4 h-4 mr-1" />
           Back
