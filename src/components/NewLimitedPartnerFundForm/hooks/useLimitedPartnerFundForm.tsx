@@ -24,7 +24,7 @@ const selectExistingSchema = z.object({
   ),
   investedAmount: z
     .string()
-    .refine((val) => parseCommaSeparatedNumber(val)! > 0, {
+    .refine((val) => parseCommaSeparatedNumber(val)! >= 0, {
       message: 'Invested amount must be a positive number',
     }),
 });
