@@ -30,7 +30,7 @@ const inviteNewSchema = z.object({
 export type SelectLimitedPartnerFormData = z.infer<typeof selectExistingSchema>;
 export type InviteLimitedPartnerFormData = z.infer<typeof inviteNewSchema>;
 
-const useLimitedPartnerFundForm = (fundId: number | string | undefined, closeModal: () => void) => {
+const useLimitedPartnerFundForm = (fundId: number | string | undefined, closeModal: () => void, openFeedbackModal: () => void) => {
   const [createLimitedPartner, { isLoading: creatingLP }] = useCreateFundLimitedPartnerMutation();
   const [createInvitation, { isLoading: invitingLP }] = useCreateInvitationMutation();
 
@@ -69,6 +69,7 @@ const useLimitedPartnerFundForm = (fundId: number | string | undefined, closeMod
       }).unwrap();
       existingLpForm.reset();
       closeModal(); // Close modal after success
+      openFeedbackModal();
     } catch (err) {
       console.error('Error adding existing LP:', err);
     }
@@ -89,6 +90,7 @@ const useLimitedPartnerFundForm = (fundId: number | string | undefined, closeMod
       }).unwrap();
       inviteLpForm.reset();
       closeModal(); // Close modal after success
+      openFeedbackModal();
     } catch (err) {
       console.error('Error inviting new LP:', err);
     }

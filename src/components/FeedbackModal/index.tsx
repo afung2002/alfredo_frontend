@@ -2,26 +2,22 @@ import { Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material
 import Button from "../Button";
 
 type FeedbackModalProps = {
-  isFeedback: { open: boolean, name: string, email: string };
-  setIsFeedback: (isFeedbackOpen: { open: boolean, name: string, email: string }) => void;
+  setIsFeedbackModalOpen: (open: boolean) => void;
+  open: boolean;
   title: string;
   children: React.ReactNode;
   buttonText: string;
 }
 
-const FeedbackModal = ({ isFeedback, setIsFeedback, title, children, buttonText }: FeedbackModalProps) => {
+const FeedbackModal = ({ open, setIsFeedbackModalOpen, title, children, buttonText }: FeedbackModalProps) => {
   return (
-    <Dialog open={isFeedback.open}>
+    <Dialog open={open}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         {children}
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => setIsFeedback({
-          open: false,
-          name: '',
-          email: '',
-        })}>{buttonText}</Button>
+        <Button onClick={() => setIsFeedbackModalOpen(false)}>{buttonText}</Button>
       </DialogActions>
     </Dialog>
   )

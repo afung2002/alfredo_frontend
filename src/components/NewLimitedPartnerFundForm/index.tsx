@@ -7,6 +7,7 @@ import Select from "../Select";
 import { useGetLimitedPartnersQuery } from "../../services/api/baseApi";
 import useLimitedPartnerFundForm from "./hooks/useLimitedPartnerFundForm";
 import { useEffect, useState } from "react";
+import FeedbackModal from "../FeedbackModal";
 
 type NewLimitedPartnerFundFormProps = {
   fundId?: number | string;
@@ -18,7 +19,10 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal, fundLimitedPartners }: 
   const navigate = useNavigate();
   const { data: limitedPartnersData, isLoading: limitedPartnersLoading } = useGetLimitedPartnersQuery();
   const [filteredLimitedPartners, setFilteredLimitedPartners] = useState<any[]>([]);
-
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+  const openFeedbackModal = () => {
+    setIsFeedbackModalOpen(true);
+  };
   // Pass closeModal to the hook
   const {
     existingLpForm,
@@ -27,8 +31,7 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal, fundLimitedPartners }: 
     onSubmitInvitation,
     isAddingExisting,
     isInvitingNew,
-  } = useLimitedPartnerFundForm(fundId, closeModal);
-  console.log('limitedPartnersData', limitedPartnersData);
+  } = useLimitedPartnerFundForm(fundId, closeModal, openFeedbackModal);
   useEffect(() => {
     console.log('fundLimitedPartners', fundLimitedPartners);
     console.log('limitedPartnersData', limitedPartnersData);
@@ -43,7 +46,9 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal, fundLimitedPartners }: 
     setFilteredLimitedPartners(filteredLimitedPartners);
     console.log('Filtered Limited Partners', filteredLimitedPartners);
   }, [limitedPartnersData, fundLimitedPartners]);
+ 
   return (
+    <>
     <Card sx={{ border: '1px solid', borderColor: 'grey.200', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', p: '30px' }}>
 
       {/* --- Form for selecting existing LP --- */}
@@ -119,6 +124,15 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal, fundLimitedPartners }: 
       </form>
 
     </Card>
+    <FeedbackModal
+      open={isFeedbackModalOpen}
+      setIsFeedbackModalOpen={setIsFeedbackModalOpen}
+      title="Limited Partner Added"
+      buttonText="Close"
+    >
+      <Typography>The limited partner has been added to the fund.</Typography>
+    </FeedbackModal>
+    </>
   );
 };
 
