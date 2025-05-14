@@ -6,71 +6,62 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAcceptLimitedPartnerInvitationMutation, useCreateFundLimitedPartnerMutation } from '@services/api/baseApi';
 import { Routes } from '../../constants/routes';
-
+import { setTicket } from '../../redux/slices/user';
+import { useDispatch } from 'react-redux';
 const LandingPage = () => {
-  const { user, isSignedIn, isLoaded } = useUser();
+  const dispatch = useDispatch();
+const { user, isSignedIn, isLoaded } = useUser();
   const [searchParams] = useSearchParams();
   const ticket = searchParams.get('__clerk_ticket');
   const [createLimitedPartner, { isLoading: creatingLP }] =
     useAcceptLimitedPartnerInvitationMutation();
   const [createFundLimitedPartner, { isLoading: creatingFundLP }] =
     useCreateFundLimitedPartnerMutation();
-  const [hasCreatedLP, setHasCreatedLP] = useState(false);
-  const [isNewlyInvited, setIsNewlyInvited] = useState(false);
-
+  
   useEffect(() => {
-    if (!isLoaded || !isSignedIn || hasCreatedLP || !ticket) return;
+    // console.log('user', user);
+    // if (!ticket) return;
+    // const createLimitedPartnerAfterSignup = async () => {
+    //   console.log('createLimitedPartnerAfterSignup');
+      
+    //   if (user.publicMetadata) {
+    //     console.log('user.publicMetadata', user.publicMetadata);
+    //     const fund = user.publicMetadata.fund_name as string | undefined;
+    //     const fund_id = user.publicMetadata.fund_id as number | undefined;
+    //     const name = user.publicMetadata.name as string | undefined;
+    //     const email = user.emailAddresses[0].emailAddress as string | undefined;
+    //     const limited_partner = user.id;
+    //     const invested_amount = user.publicMetadata.invested_amount as string | undefined;
+    //     console.log('User:', user);
+    //       console.log('Creating fund limited partner');
+    //       try {
+    //         await createFundLimitedPartner({
+    //           fund: fund_id,
+    //           limited_partner,
+    //           invested_amount,
+    //         }).unwrap();
 
-    const createLimitedPartnerAfterSignup = async () => {
-      if (user.publicMetadata) {
-        const fund = user.publicMetadata.fund_name as string | undefined;
-        const fund_id = user.publicMetadata.fund_id as number | undefined;
-        const name = user.publicMetadata.name as string | undefined;
-        const email = user.emailAddresses[0].emailAddress as string | undefined;
-        const limited_partner = user.id;
-        const invested_amount = user.publicMetadata.invested_amount as string | undefined;
-        console.log('User:', user);
-        // Detect if user is newly invited based on existing metadata fields
-            // const isNewlyInvited = !!(fund);
-            // setIsNewlyInvited(isNewlyInvited);
-        if (!hasCreatedLP) {
-          try {
-            await createFundLimitedPartner({
-              fund: fund_id,
-              limited_partner,
-              invested_amount,
-            }).unwrap();
+    //       } catch (error) {
+    //         console.error('Error creating limited partner after sign up:', error);
+    //       }
+    //   }
+    // };
 
-            setHasCreatedLP(true); // Mark as created after API success
-          } catch (error) {
-            console.error('Error creating limited partner after sign up:', error);
-          }
-        } else {
-          // Already a saved user → no need to create again
-          setHasCreatedLP(true);
-        }
-      }
-    };
+    // createLimitedPartnerAfterSignup();
+    if (ticket) {
+      dispatch(setTicket(ticket));
+    }
+  }, [ticket]);
 
-    createLimitedPartnerAfterSignup();
-  }, [isLoaded, isSignedIn, user, createLimitedPartner, hasCreatedLP, ticket]);
-
-  // Show loader while user is loading, LP creation is happening, or LP not yet confirmed
   if (!isLoaded || creatingLP ) {
     return <Loader />;
   }
 
 
-  // After sign-in + LP created successfully
-  if (isSignedIn && hasCreatedLP && !isNewlyInvited) {
+  if (isSignedIn) {
     return <Navigate to={Routes.APPS} />;
   }
 
-  if (isSignedIn && hasCreatedLP && isNewlyInvited) {
-    return <Navigate to={Routes.LIMITED_PARTNER_FUNDS} />;
-  }
-
-  // If not signed in yet (first time landing)
   return (
     <Box
       sx={{

@@ -1,39 +1,41 @@
+// useNewInvestmentForm.ts
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 import { Routes } from '@constants/routes';
-import { useCreateInvestmentMutation, useGetInvestmentByIdQuery, useLazyGetCompanyByIdQuery, useUpdateInvestmentMutation } from '@services/api/baseApi';
+import {
+  useCreateInvestmentMutation,
+  useGetInvestmentByIdQuery,
+  useLazyGetCompanyByIdQuery,
+  useUpdateInvestmentMutation,
+} from '@services/api/baseApi';
 import { useEffect } from 'react';
-import { removeCommas, formatNumberWithCommas } from '@utils/index'; // ✅
+import {
+  removeCommas,
+  formatNumberWithCommas,
+  setFormattedCommaValue,
+  parseCommaSeparatedNumber,
+} from '@utils/index';
+import { useCommaFormattingWatcher } from '@hooks/useCommaFormattingWatcher';
 
 const schema = z.object({
   company: z.string().min(1, 'Company is required'),
   investedAmount: z.string()
-    .min(1, 'Invested amount is required')
-    .refine((val) => {
-      const num = Number(val.replace(/,/g, ''));
-      return !isNaN(num) && num > 0;
-    }, { message: 'Invested amount must be greater than 0' }),
+    .min(1)
+    .refine((val) => parseCommaSeparatedNumber(val)! > 0, { message: 'Must be greater than 0' }),
   estimatedValue: z.string()
-    .min(1, 'Estimated value is required')
-    .refine((val) => {
-      const num = Number(val.replace(/,/g, ''));
-      return !isNaN(num) && num > 0;
-    }, { message: 'Estimated value must be greater than 0' }),
+    .min(1)
+    .refine((val) => parseCommaSeparatedNumber(val)! > 0, { message: 'Must be greater than 0' }),
   postMoneyValuation: z.string()
-    .min(1, 'Post-money valuation is required')
-    .refine((val) => {
-      const num = Number(val.replace(/,/g, ''));
-      return !isNaN(num) && num > 0;
-    }, { message: 'Post-money valuation must be greater than 0' }),
-  investmentDate: z.string().min(1, 'Investment date is required'),
+    .min(1)
+    .refine((val) => parseCommaSeparatedNumber(val)! > 0, { message: 'Must be greater than 0' }),
+  investmentDate: z.string().min(1),
   investmentType: z.enum(['FUND', 'ANGEL']),
   fund: z.string().optional(),
-  status: z.string().min(1, 'Status is required'),
+  status: z.string().min(1),
   limitedPartner: z.string().optional(),
 });
-
 
 const useNewInvestmentForm = (id: string | null) => {
   const navigate = useNavigate();
@@ -68,21 +70,11 @@ const useNewInvestmentForm = (id: string | null) => {
     mode: 'onChange',
   });
 
-  // Watch and Format while typing
-  useEffect(() => {
-    const subscription = watch((value, { name, type }) => {
-      if (type !== 'change') return;
-      if (!name) return;
-
-      if (['investedAmount', 'estimatedValue', 'postMoneyValuation'].includes(name)) {
-        const raw = value[name]?.replace(/,/g, '');
-        if (!isNaN(Number(raw)) && raw !== undefined) {
-          setValue(name, formatNumberWithCommas(raw), { shouldValidate: true });
-        }
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [watch, setValue]);
+  useCommaFormattingWatcher(watch, setValue, [
+    'investedAmount',
+    'estimatedValue',
+    'postMoneyValuation',
+  ]);
 
   useEffect(() => {
     if (investmentData) {

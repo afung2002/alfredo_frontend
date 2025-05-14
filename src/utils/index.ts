@@ -1,6 +1,7 @@
 import { FundResponse, InvestmentResponse } from "../services/api/baseApi/types";
 import { InvestmentDetails } from "../types";
 import { Clerk } from '@clerk/clerk-js';
+import { Path, UseFormSetValue } from 'react-hook-form';
 
 export type InvestmentTotals = {
   totalFundInvested: number;
@@ -128,3 +129,29 @@ export const calculateInvitationsTotals = (invitations: any[]) => {
     totalExpired,
   };
 }
+
+export const parseCommaSeparatedNumber = (value: string): number | null => {
+  const raw = value.replace(/,/g, '');
+  const num = Number(raw);
+  return isNaN(num) ? null : num;
+};
+
+export const setFormattedCommaValue = <TFieldValues>(
+  setValue: UseFormSetValue<TFieldValues>,
+  name: Path<TFieldValues>,
+  rawValue: string
+) => {
+  const cleaned = rawValue.replace(/,/g, '');
+  if (!isNaN(Number(cleaned))) {
+    setValue(name, formatNumberWithCommas(cleaned) as any, {
+      shouldValidate: true,
+    });
+  }
+};
+
+export const normalizeUrl = (url: string): string => {
+  if (!url) return '';
+  return url.startsWith('http://') || url.startsWith('https://')
+    ? url
+    : `http://${url}`;
+};

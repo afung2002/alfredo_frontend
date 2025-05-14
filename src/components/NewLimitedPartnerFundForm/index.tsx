@@ -31,6 +31,7 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal, fundLimitedPartners }: 
     onSubmitInvitation,
     isAddingExisting,
     isInvitingNew,
+    handleInviteWebsiteBlur,
   } = useLimitedPartnerFundForm(fundId, closeModal, openFeedbackModal);
   useEffect(() => {
     console.log('fundLimitedPartners', fundLimitedPartners);
@@ -102,7 +103,7 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal, fundLimitedPartners }: 
             <Input type="email" rounded={false} label="Email" name="email" control={inviteLpForm.control} />
           </Grid>
           <Grid size={{ xs: 12, lg: 6 }}>
-            <Input type="text" rounded={false} label="Website" name="website" control={inviteLpForm.control} />
+            <Input type="text" rounded={false}  onBlur={handleInviteWebsiteBlur} label="Website" name="website" control={inviteLpForm.control} />
           </Grid>
           <Grid size={{ xs: 12, lg: 6 }}>
             <Input type="text" rounded={false} label="Amount Invested" name="fundAmount" control={inviteLpForm.control} />

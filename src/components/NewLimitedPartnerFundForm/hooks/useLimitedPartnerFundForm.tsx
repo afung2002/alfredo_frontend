@@ -1,95 +1,150 @@
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useCreateFundLimitedPartnerMutation, useCreateInvitationMutation } from '@services/api/baseApi';
+import {
+  useCreateFundLimitedPartnerMutation,
+  useCreateInvitationMutation,
+} from '@services/api/baseApi';
+import { useCommaFormattingWatcher } from '@hooks/useCommaFormattingWatcher';
+import {
+  normalizeUrl,
+  parseCommaSeparatedNumber,
+} from '@utils/index';
 
 // Validation schemas
 const selectExistingSchema = z.object({
-  limitedPartner: z.object({
-    email: z.string().email(),
-    name: z.string().min(1),
-    // you can add more fields if necessary
-  }, {
-    required_error: 'Limited partner is required'
-  }),
-  investedAmount: z.string().refine((val) => !isNaN(Number(val)) && Number(val) >= 0, {
-    message: 'Invested amount must be a positive number',
-  }),
+  limitedPartner: z.object(
+    {
+      email: z.string().email(),
+      name: z.string().min(1),
+    },
+    {
+      required_error: 'Limited partner is required',
+    }
+  ),
+  investedAmount: z
+    .string()
+    .refine((val) => parseCommaSeparatedNumber(val)! >= 0, {
+      message: 'Invested amount must be a positive number',
+    }),
 });
 
 const inviteNewSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.string().email('Valid email is required'),
-  website: z.string().optional(),
-  fundAmount: z.string().refine((val) => !isNaN(Number(val)) && Number(val) >= 0, {
-    message: 'Fund amount must be a positive number',
-  }),
+  website: z
+    .string()
+    .optional()
+    .transform((val) => (val ? normalizeUrl(val) : ''))
+    .refine(
+      (val) => {
+        if (!val) return true;
+        try {
+          new URL(val);
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      { message: 'Website must be a valid URL' }
+    ),
+  fundAmount: z
+    .string()
+    .refine((val) => parseCommaSeparatedNumber(val)! >= 0, {
+      message: 'Fund amount must be a positive number',
+    }),
   description: z.string().optional(),
 });
 
 export type SelectLimitedPartnerFormData = z.infer<typeof selectExistingSchema>;
 export type InviteLimitedPartnerFormData = z.infer<typeof inviteNewSchema>;
 
-const useLimitedPartnerFundForm = (fundId: number | string | undefined, closeModal: () => void, openFeedbackModal: () => void) => {
-  const [createLimitedPartner, { isLoading: creatingLP }] = useCreateFundLimitedPartnerMutation();
-  const [createInvitation, { isLoading: invitingLP }] = useCreateInvitationMutation();
+const useLimitedPartnerFundForm = (
+  fundId: number | string | undefined,
+  closeModal: () => void
+, openFeedbackModal: () => void) => {
+  const [createLimitedPartner, { isLoading: creatingLP }] =
+    useCreateFundLimitedPartnerMutation();
+  const [createInvitation, { isLoading: invitingLP }] =
+    useCreateInvitationMutation();
 
   const existingLpForm = useForm<SelectLimitedPartnerFormData>({
     resolver: zodResolver(selectExistingSchema),
-    defaultValues: { 
+    defaultValues: {
       limitedPartner: undefined,
-      investedAmount: '' 
+      investedAmount: '',
     },
     mode: 'onChange',
   });
 
   const inviteLpForm = useForm<InviteLimitedPartnerFormData>({
     resolver: zodResolver(inviteNewSchema),
-    defaultValues: { name: '', email: '', website: '', fundAmount: '', description: '' },
+    defaultValues: {
+      name: '',
+      email: '',
+      website: '',
+      fundAmount: '',
+      description: '',
+    },
     mode: 'onChange',
   });
 
-  // onSubmit for adding existing limited partner
+  // ✅ Auto-format numeric fields
+  useCommaFormattingWatcher(existingLpForm.watch, existingLpForm.setValue, ['investedAmount']);
+  useCommaFormattingWatcher(inviteLpForm.watch, inviteLpForm.setValue, ['fundAmount']);
+
+  // ✅ Normalize website on blur
+  const handleInviteWebsiteBlur = () => {
+    const current = inviteLpForm.watch('website');
+    if (current) {
+      inviteLpForm.setValue('website', normalizeUrl(current), { shouldValidate: true });
+    }
+  };
+
+  // ✅ Existing LP submission
   const onSubmitExisting = async (data: SelectLimitedPartnerFormData) => {
     if (!fundId) return;
     try {
-      // await createLimitedPartner({
-      //   limited_partner: data.limitedPartner,
-      //   invested_amount: data.investedAmount,
-      //   fund: Number(fundId),
-      // }).unwrap();
       await createInvitation({
         fund: Number(fundId),
-        invested_amount: data.investedAmount,
+        invested_amount: data.investedAmount.replace(/,/g, ''),
         email_address: data.limitedPartner.email,
         public_metadata: {
           name: data.limitedPartner.name,
           role: 'limited_partner',
         },
       }).unwrap();
+
       existingLpForm.reset();
-      closeModal(); // Close modal after success
+      closeModal();
       openFeedbackModal();
     } catch (err) {
       console.error('Error adding existing LP:', err);
     }
   };
 
-  // onSubmit for inviting new limited partner
+  // ✅ Invite new LP submission
   const onSubmitInvitation = async (data: InviteLimitedPartnerFormData) => {
     if (!fundId) return;
     try {
       await createInvitation({
         fund: Number(fundId),
-        invested_amount: data.fundAmount,
+        invested_amount: data.fundAmount.replace(/,/g, ''),
         email_address: data.email,
         public_metadata: {
           name: data.name,
           role: 'limited_partner',
         },
       }).unwrap();
-      inviteLpForm.reset();
-      closeModal(); // Close modal after success
+
+      inviteLpForm.reset({
+        name: '',
+        email: '',
+        website: '',
+        fundAmount: '',
+        description: '',
+      });
+      closeModal();
       openFeedbackModal();
     } catch (err) {
       console.error('Error inviting new LP:', err);
@@ -102,8 +157,9 @@ const useLimitedPartnerFundForm = (fundId: number | string | undefined, closeMod
     inviteLpForm,
     onSubmitExisting,
     onSubmitInvitation,
-    isAddingExisting: creatingLP, // for showing loading only on Add button
-    isInvitingNew: invitingLP,     // for showing loading only on Invite button
+    isAddingExisting: creatingLP,
+    isInvitingNew: invitingLP,
+    handleInviteWebsiteBlur, // 👈 expose this for onBlur
   };
 };
 
