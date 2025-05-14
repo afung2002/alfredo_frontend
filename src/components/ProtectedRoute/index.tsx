@@ -19,7 +19,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const [token, setTokenState] = useState<string | null>(null);
   useEffect(() => {
     if (isLoaded && isSignedIn) {
-      getToken({ template: 'dev_only_token' })
+      getToken({ template: 'access_token' })
         .then((token) => {
           console.log(token, 'token')
           setTokenState(token);
