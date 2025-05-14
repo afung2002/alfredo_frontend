@@ -5,7 +5,7 @@ import { RootState } from '@redux/store';
 import { removeUser } from '@redux/slices/user';
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: import.meta.env.VITE_BASE_URL_DEV,
+  baseUrl: import.meta.env.VITE_BASE_URL,
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).configs.token;
     if (token) {

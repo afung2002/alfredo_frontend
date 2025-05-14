@@ -2,7 +2,7 @@ import { Chip, Box, Typography, IconButton, Card, CardHeader, Menu, MenuItem } f
 import { useNavigate } from "react-router";
 import { Routes } from "@constants/routes";
 // import Card from "../Card";
-import { useDeleteInvestmentMutation } from "../../services/api/baseApi";
+import { useDeleteInvestmentMutation, useGetFundByIdQuery } from "../../services/api/baseApi";
 import { InvestmentResponse } from "../../services/api/baseApi/types";
 import InvestmentIcon from "@assets/investment.svg";
 import { Apps } from "../../constants/apps";
@@ -22,6 +22,7 @@ interface InvestmentCardProps {
 const InvestmentCard: React.FC<InvestmentCardProps> = ({ investment }) => {
   const navigate = useNavigate();
   const [deleteInvestment] = useDeleteInvestmentMutation();
+  console.log('investment', investment) 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const handleCardClick = () => {
     navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':investmentId', investment.id.toString()))
@@ -73,6 +74,9 @@ const InvestmentCard: React.FC<InvestmentCardProps> = ({ investment }) => {
         >
           {`$${Number(investment?.amount).toLocaleString('en-US')}`}
         </Typography>
+        {investment?.fund_name && (
+          <Chip label={investment?.fund_name} />
+        )}
         </div>
         <IconButton onClick={handleMoreMenuClick}>
             <MoreVertIcon />

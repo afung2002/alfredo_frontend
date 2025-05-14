@@ -50,7 +50,7 @@ const inviteNewSchema = z.object({
     ),
   fundAmount: z
     .string()
-    .refine((val) => parseCommaSeparatedNumber(val)! > 0, {
+    .refine((val) => parseCommaSeparatedNumber(val)! >= 0, {
       message: 'Fund amount must be a positive number',
     }),
   description: z.string().optional(),
@@ -148,6 +148,7 @@ const useLimitedPartnerFundForm = (
       console.error('Error inviting new LP:', err);
     }
   };
+
 
   return {
     existingLpForm,

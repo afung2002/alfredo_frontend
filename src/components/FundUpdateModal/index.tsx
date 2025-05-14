@@ -29,6 +29,9 @@ const FundUpdateModal: React.FC<FundUpdateModalProps> = ({
       open={open}
       onClose={onClose}
       aria-labelledby="create-fund-update-modal"
+      PaperProps={{
+        sx: { width: '850px', maxWidth: '90%' } // Ensures responsiveness too
+      }}
     >
       <Box
         sx={{
@@ -36,7 +39,7 @@ const FundUpdateModal: React.FC<FundUpdateModalProps> = ({
           boxShadow: 24,
           p: 4,
           borderRadius: 1,
-          width: '600px'
+          width: '850px' // <- updated width
         }}
       >
         <Typography variant="h6" component="h2" sx={{ mb: 3, color: "black" }}>
