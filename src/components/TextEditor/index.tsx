@@ -1,12 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import ReactQuill from 'react-quill-new';
-import 'react-quill/dist/quill.snow.css';
+import RswEditor from 'react-simple-wysiwyg';
+import { useState } from 'react';
 
-export default function TextEditor({ onEditorChange }: { onEditorChange: (value: string) => void }) {
-  const [value, setValue] = useState('');
-  useEffect(() => {
-    onEditorChange(value);
-  }, [value]);
-  return <ReactQuill style={{ borderRadius: '8px',   }} 
-  theme="snow" onChange={(value: string) => setValue(value)} />;
+export default function App() {
+  const [html, setHtml] = useState();
+
+  function onChange(e) {
+    setHtml(e.target.value);
+  }
+
+  return (
+    <>
+      <RswEditor
+        autoFocus
+        containerProps={{ style: { resize: 'vertical' } }}
+        placeholder="Write your message here..."
+        value={html}
+        onChange={onChange}
+        title="ed1"
+      />
+    </>
+  );
 }
