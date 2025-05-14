@@ -9,6 +9,7 @@ import {
   Paper,
   CardHeader,
   CardActions,
+  Tooltip,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -19,13 +20,14 @@ import { CardMedia } from '@mui/material';
 import Button from '../Button';
 import LockIcon from '../../assets/lock.svg';
 import { useUserContext } from '../../context/userContext';
+
 interface AppCardProps {
   title: string;
   description: string;
   imageUrl: string;
   category: string;
   path: string;
-  onAdd?: () => void;
+  onAdd?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   id: string;
 }
 
@@ -58,8 +60,35 @@ const AppCard: React.FC<AppCardProps> = ({
   const isSaved = savedApps?.some((app) => app.title === title);
 
   return (
-    <Card
-      onClick={handleCardClick}
+    <Tooltip
+  title={
+    !handleAppLock(userRole, id)
+      ? 'The application is locked and only accessible to selected users'
+      : ''
+  }
+  placement="top"
+  arrow
+  componentsProps={{
+    tooltip: {
+      sx: {
+        bgcolor: 'white',
+        color: 'black',
+        boxShadow: 3,
+        fontSize: 12,
+      },
+    },
+    arrow: {
+      sx: {
+        color: 'white',
+        '&::before': {
+          boxShadow: '0px 2px 6px rgba(0, 0, 0, 0.2)', // adds shadow to the arrow
+        },
+      },
+    },
+  }}
+>
+      <Card
+        onClick={handleCardClick}
       sx={{
         boxShadow: 'rgb(0 0 0 / 10%) 0px 2px 4px',
         cursor: 'pointer',
@@ -115,11 +144,12 @@ const AppCard: React.FC<AppCardProps> = ({
             color: 'primary.main',
           }}
         /> */}
+        <Tooltip title={isSaved ? 'This application has been added to your saved apps' : 'Add to saved apps'}>
         <IconButton
           size='large'
           // edge="end"
           className="MuiIconButton-root"
-          onClick={onAdd}
+          onClick={(e) => onAdd(e)}
           sx={{
             color: 'primary.main',
             // margin: '0px 25px 8px 0px'
@@ -127,8 +157,10 @@ const AppCard: React.FC<AppCardProps> = ({
         >
           {isSaved ? <RemoveCircleOutlineIcon sx={{ color: '#b7b7b7' }} /> : <AddCircleOutlineIcon sx={{ color: '#b7b7b7' }} />}
         </IconButton>
+        </Tooltip>
       </CardActions>
     </Card>
+    </Tooltip>
   );
 };
 

@@ -8,6 +8,7 @@ import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Apps } from "@constants/apps";
 import { useAppContext } from "@src/context/appContext";
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
 const FundManagerLayout = () => {
   const sideMenuButtons = [
@@ -17,7 +18,7 @@ const FundManagerLayout = () => {
     { label: 'Documents', value: 'documents', path: Routes.FUND_MANAGER_DOCUMENTS, icon: <FolderOpenOutlinedIcon sx={{color: '#b27b44'}} /> },
     // { label: 'Limited Partners', value: 'limited-partners', path: '/fundmanager-ai/limited-partners' },
     // { label: 'Settings', value: 'settings', path: '/fundmanager-ai/settings' },
-    { label: 'Back to Apps', value: 'back-to-apps', path: Routes.APPS, icon: <ArrowBackIcon sx={{color: '#b27b44'}} /> },
+    { label: 'Back to Apps', value: 'back-to-apps', path: Routes.APPS, icon: <ArrowBackIosNewIcon sx={{color: '#D0D0D0'}} /> },
   ];
   const { app, setApp } = useAppContext();
   setApp(Apps.FUND_MANAGER);

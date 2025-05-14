@@ -104,11 +104,11 @@ export const routes: RouteObject[] = [
       },
       {
         path: Routes.FUND_MANAGER_NEW_FUND,
-        element: <NewFund />,
+        element: <NewFund action="create" />,
       },
       {
         path: Routes.FUND_MANAGER_FUND_EDIT,
-        element: <NewFund />,
+        element: <NewFund action="edit" />,
       },
       {
         path: Routes.FUND_MANAGER_FUND,

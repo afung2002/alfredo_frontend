@@ -82,7 +82,8 @@ const AppsPage = () => {
     setValue('searchApps', '');
   }, [selectedTab]);
 
-  const handleToggleApp = (card: AppType) => {
+  const handleToggleApp = (e: React.MouseEvent<HTMLButtonElement>, card: AppType) => {
+    e.stopPropagation();
     dispatch(addAppToUser(card))
   };
 
@@ -148,7 +149,7 @@ const AppsPage = () => {
               imageUrl={card.imageUrl}
               category={card.category}
               path={card.path}
-              onAdd={() => handleToggleApp(card)}
+              onAdd={(e) => handleToggleApp(e, card)}
             />
           </Grid>
         ))}

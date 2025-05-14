@@ -12,7 +12,7 @@ const selectExistingSchema = z.object({
   }, {
     required_error: 'Limited partner is required'
   }),
-  investedAmount: z.string().refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
+  investedAmount: z.string().refine((val) => !isNaN(Number(val)) && Number(val) >= 0, {
     message: 'Invested amount must be a positive number',
   }),
 });
@@ -21,7 +21,7 @@ const inviteNewSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.string().email('Valid email is required'),
   website: z.string().optional(),
-  fundAmount: z.string().refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
+  fundAmount: z.string().refine((val) => !isNaN(Number(val)) && Number(val) >= 0, {
     message: 'Fund amount must be a positive number',
   }),
   description: z.string().optional(),
@@ -93,6 +93,7 @@ const useLimitedPartnerFundForm = (fundId: number | string | undefined, closeMod
       console.error('Error inviting new LP:', err);
     }
   };
+
 
   return {
     existingLpForm,

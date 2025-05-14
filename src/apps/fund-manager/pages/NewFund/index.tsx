@@ -8,7 +8,7 @@ import NewFundForm from '@components/NewFundForm';
 import Card from '../../../../components/Card';
 import { Routes } from '../../../../constants/routes';
 
-const NewFund: React.FC = () => {
+const NewFund = ({action}: {action: 'create' | 'edit'}) => {
   const navigate = useNavigate();
   const params = useParams();
   const fundId = params.fundId || null;
@@ -33,10 +33,10 @@ const NewFund: React.FC = () => {
       </Button>
 
       <Typography variant="h5" component="h1" gutterBottom>
-        Add Fund
+        {action === 'create' ? 'Add Fund' : 'Edit Fund'}
       </Typography>
       <Card>
-        <NewFundForm onSave={() => navigate(Routes.FUND_MANAGER_FUNDS)} fundId={fundId}  />
+        <NewFundForm action={action} onClose={() => navigate(-1)} onSave={() => navigate(Routes.FUND_MANAGER_FUNDS)} fundId={fundId}  />
       </Card>
     </Box>
   );

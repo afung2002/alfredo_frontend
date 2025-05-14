@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Grid, CircularProgress, Card, Dialog, DialogTitle, DialogContent } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import useNewInvestmentForm from './hooks/useNewInvestmentForm';
 import Input from '@components/Input';
 import Select from '@components/Select';
@@ -30,7 +30,7 @@ const NewInvestment: React.FC = () => {
   const investmentType = watch('investmentType');
   const company = watch('company');
   const fund = watch('fund');
-
+  const { fundId, fundName } = useLocation().state || {};
   const { data: companies, isLoading: isCompaniesLoading } = useGetCompaniesQuery();
   const { data: funds, isLoading: isFundsLoading } = useGetFundsQuery();
 
@@ -121,7 +121,14 @@ const NewInvestment: React.FC = () => {
                       ]
                       : [{ value: 'add_new_company', label: '➕ Add new company' }]
                 }
+                onValueChange={(val) => {
+                  console.log('val', val)
+                  if (val === 'add_new_company') {
+                    setIsCompanyModalOpen(true);
+                  }
+                }}
               />
+
             </Grid>
 
             {/* Investment Fields */}
@@ -188,26 +195,38 @@ const NewInvestment: React.FC = () => {
 
             {/* Fund Select */}
             <Grid size={{ xs: 12, md: 6 }}>
-              <Select
-                rounded={false}
-                label="Fund"
-                name="fund"
-                control={control}
-                disabled={investmentType === 'ANGEL'}
-                options={
-                  isFundsLoading
-                    ? [{ value: '', label: 'Loading funds...' }]
-                    : funds && funds.length > 0
-                      ? [
-                        ...funds.map((fund) => ({
-                          value: fund.id.toString(),
-                          label: fund.name ?? 'Unknown',
-                        })),
-                        { value: 'add_new_fund', label: '➕ Add new fund' },
-                      ]
-                      : [{ value: 'add_new_fund', label: '➕ Add new fund' }]
-                }
-              />
+              {
+                fundName ? (
+                  <>
+                  <label htmlFor="fundName" className="text-sm font-medium text-gray-700">Fund</label>
+
+                  <div className="border  rounded-md p-2 bg-gray-100">
+                    <Typography variant="body1" sx={{ color: 'text.secondary', mr: 1 }}>{fundName}</Typography>
+                    </div>
+                  </>
+                ) : (
+                  <Select
+                    rounded={false}
+                    label="Fund"
+                    name="fund"
+                    control={control}
+                    disabled={investmentType === 'ANGEL'}
+                    options={
+                      isFundsLoading
+                        ? [{ value: '', label: 'Loading funds...' }]
+                        : funds && funds.length > 0
+                          ? [
+                            ...funds.map((fund) => ({
+                              value: fund.id.toString(),
+                              label: fund.name ?? 'Unknown',
+                            })),
+                            { value: 'add_new_fund', label: '➕ Add new fund' },
+                          ]
+                          : [{ value: 'add_new_fund', label: '➕ Add new fund' }]
+                    }
+                  />
+                )
+              }
             </Grid>
 
             {/* Status Field */}
