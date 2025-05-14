@@ -21,6 +21,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     if (isLoaded && isSignedIn) {
       getToken({ template: 'dev_only_token' })
         .then((token) => {
+          console.log(token, 'token')
           setTokenState(token);
           dispatch(setToken(token)); // Set the token in Redux store
         })
