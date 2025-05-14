@@ -29,7 +29,7 @@ const MasterLayout = () => {
   return (
     <div className="w-full min-h-screen flex ">
       <DashboardNavigation />
-      <div className="p-4 w-full ">
+      <div className="p-4 w-full bg-white">
       <Outlet />
       </div>
     </div>
