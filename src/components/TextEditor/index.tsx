@@ -1,13 +1,15 @@
 import RswEditor from 'react-simple-wysiwyg';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-export default function App() {
+export default function TextEditor({ onEditorChange }: { onEditorChange: (html: string) => void }) {
   const [html, setHtml] = useState();
 
-  function onChange(e) {
+  function onChange(e: any) {
     setHtml(e.target.value);
   }
-
+  useEffect(() => {
+    onEditorChange(html);
+  }, [html]);
   return (
     <>
       <RswEditor
@@ -17,7 +19,11 @@ export default function App() {
         value={html}
         onChange={onChange}
         title="ed1"
+        className="min-h-[200px]"
       />
+      <div>
+        {html}
+      </div>
     </>
   );
 }

@@ -75,6 +75,7 @@ const useLimitedPartnerFundForm = (
       investedAmount: '',
     },
     mode: 'onChange',
+    
   });
 
   const inviteLpForm = useForm<InviteLimitedPartnerFormData>({
@@ -87,7 +88,8 @@ const useLimitedPartnerFundForm = (
       description: '',
     },
     mode: 'onChange',
-  });
+
+  })
 
   // ✅ Auto-format numeric fields
   useCommaFormattingWatcher(existingLpForm.watch, existingLpForm.setValue, ['investedAmount']);

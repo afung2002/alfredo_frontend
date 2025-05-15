@@ -57,7 +57,6 @@ const AppsPage = () => {
     try {
       await signUp?.create({ emailAddress: email, password });
       await signUp?.prepareEmailAddressVerification({ strategy: 'email_code' });
-      alert('Check your email for the verification code!');
     } catch (err: any) {
       setError(err.errors?.[0]?.message || 'Sign-up failed.');
     }

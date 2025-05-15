@@ -7,22 +7,19 @@ import Select from "../Select";
 import { useGetLimitedPartnersQuery } from "../../services/api/baseApi";
 import useLimitedPartnerFundForm from "./hooks/useLimitedPartnerFundForm";
 import { useEffect, useState } from "react";
-import FeedbackModal from "../FeedbackModal";
 
 type NewLimitedPartnerFundFormProps = {
   fundId?: number | string;
   closeModal?: () => void;
   fundLimitedPartners?: any[];
+  openFeedbackModal?: () => void;
 };
 
-const NewLimitedPartnerFundForm = ({ fundId, closeModal, fundLimitedPartners }: NewLimitedPartnerFundFormProps) => {
+const NewLimitedPartnerFundForm = ({ fundId, closeModal, fundLimitedPartners, openFeedbackModal }: NewLimitedPartnerFundFormProps) => {
   const navigate = useNavigate();
   const { data: limitedPartnersData, isLoading: limitedPartnersLoading } = useGetLimitedPartnersQuery();
   const [filteredLimitedPartners, setFilteredLimitedPartners] = useState<any[]>([]);
-  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
-  const openFeedbackModal = () => {
-    setIsFeedbackModalOpen(true);
-  };
+
   // Pass closeModal to the hook
   const {
     existingLpForm,
@@ -32,11 +29,15 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal, fundLimitedPartners }: 
     isAddingExisting,
     isInvitingNew,
     handleInviteWebsiteBlur,
-  } = useLimitedPartnerFundForm(fundId, closeModal, openFeedbackModal);
+   } = useLimitedPartnerFundForm(fundId, closeModal, openFeedbackModal);
   useEffect(() => {
     console.log('fundLimitedPartners', fundLimitedPartners);
     console.log('limitedPartnersData', limitedPartnersData);
-  
+    const name = inviteLpForm.watch('name')
+    const name2 = existingLpForm.watch('limitedPartner.name')
+    console.log('name', name)
+    console.log('name2', name2)
+    
     // Extract user_ids of already added limited partners
     const existingLpIds = fundLimitedPartners.map(fp => fp.limited_partner.user_id);
   
@@ -47,7 +48,6 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal, fundLimitedPartners }: 
     setFilteredLimitedPartners(filteredLimitedPartners);
     console.log('Filtered Limited Partners', filteredLimitedPartners);
   }, [limitedPartnersData, fundLimitedPartners]);
- 
   return (
     <>
     <Card sx={{ border: '1px solid', borderColor: 'grey.200', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', p: '30px' }}>
@@ -125,14 +125,7 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal, fundLimitedPartners }: 
       </form>
 
     </Card>
-    <FeedbackModal
-      open={isFeedbackModalOpen}
-      setIsFeedbackModalOpen={setIsFeedbackModalOpen}
-      title="Limited Partner Added"
-      buttonText="Close"
-    >
-      <Typography>The limited partner has been added to the fund.</Typography>
-    </FeedbackModal>
+    
     </>
   );
 };

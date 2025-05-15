@@ -16,7 +16,7 @@ const FeedbackModal = ({ open, setIsFeedbackModalOpen, title, children, buttonTe
       <DialogContent>
         {children}
       </DialogContent>
-      <DialogActions>
+      <DialogActions sx={{ justifyContent: 'center' }}>
         <Button onClick={() => setIsFeedbackModalOpen(false)}>{buttonText}</Button>
       </DialogActions>
     </Dialog>
