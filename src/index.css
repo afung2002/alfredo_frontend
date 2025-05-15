@@ -36,7 +36,6 @@ html,
 
 ol {
   list-style: decimal !important;
-  list-style-position: outside;
 }
 
 .rsw-ce ol {
