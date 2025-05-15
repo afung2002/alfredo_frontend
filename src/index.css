@@ -34,6 +34,19 @@ html,
 
 }
 
+ol {
+  list-style: decimal !important;
+  list-style-position: outside;
+}
+
+.rsw-ce ol {
+  list-style: decimal !important;
+}
+
+.rsw-ce ul, ul {
+  list-style: inside !important;
+}
+
 /* 
 body {
   background-color: #f2f0f5;

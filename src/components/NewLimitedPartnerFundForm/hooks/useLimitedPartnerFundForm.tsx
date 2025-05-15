@@ -62,7 +62,7 @@ export type InviteLimitedPartnerFormData = z.infer<typeof inviteNewSchema>;
 const useLimitedPartnerFundForm = (
   fundId: number | string | undefined,
   closeModal: () => void
-) => {
+, openFeedbackModal: () => void) => {
   const [createLimitedPartner, { isLoading: creatingLP }] =
     useCreateFundLimitedPartnerMutation();
   const [createInvitation, { isLoading: invitingLP }] =
@@ -75,6 +75,7 @@ const useLimitedPartnerFundForm = (
       investedAmount: '',
     },
     mode: 'onChange',
+    
   });
 
   const inviteLpForm = useForm<InviteLimitedPartnerFormData>({
@@ -87,7 +88,8 @@ const useLimitedPartnerFundForm = (
       description: '',
     },
     mode: 'onChange',
-  });
+
+  })
 
   // ✅ Auto-format numeric fields
   useCommaFormattingWatcher(existingLpForm.watch, existingLpForm.setValue, ['investedAmount']);
@@ -117,6 +119,7 @@ const useLimitedPartnerFundForm = (
 
       existingLpForm.reset();
       closeModal();
+      openFeedbackModal();
     } catch (err) {
       console.error('Error adding existing LP:', err);
     }
@@ -144,6 +147,7 @@ const useLimitedPartnerFundForm = (
         description: '',
       });
       closeModal();
+      openFeedbackModal();
     } catch (err) {
       console.error('Error inviting new LP:', err);
     }

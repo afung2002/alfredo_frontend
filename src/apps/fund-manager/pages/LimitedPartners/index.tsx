@@ -23,6 +23,7 @@ import { InvestmentResponse } from '../../../../services/api/baseApi/types';
 import SortDropdown from '../../../../components/SortDropdown';
 import LimitedPartnersList from '@src/components/LimitedPartnersList';
 import NewLimitedPartnerFundForm from '../../../../components/NewLimitedPartnerFundForm';
+import FeedbackModal from '../../../../components/FeedbackModal';
 
 
 const LimitedPartners = () => {
@@ -50,6 +51,7 @@ const LimitedPartners = () => {
   const [selectedTab, setSelectedTab] = useState(DEFAULT_TAB);
   const [sortOption, setSortOption] = useState<string>('recent');
   const [isLimitedPartnerModelOpen, setIsLimitedPartnerModalOpen] = useState(false);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const navigate = useNavigate();
   const { totalInvitations, totalPending, totalRegistered, totalExpired } = calculateInvitationsTotals(invitations || []);
 
@@ -232,10 +234,18 @@ const LimitedPartners = () => {
         <DialogTitle>Add Limited Partner</DialogTitle>
         <DialogContent>
           <NewLimitedPartnerFundForm 
-          
+          openFeedbackModal={() => setIsFeedbackModalOpen(true)}
           closeModal={() => setIsLimitedPartnerModalOpen(false)} />
         </DialogContent>
       </Dialog>
+      <FeedbackModal
+      open={isFeedbackModalOpen}
+      setIsFeedbackModalOpen={setIsFeedbackModalOpen}
+      title="Invite Sent!"
+      buttonText="Got it"
+    >
+      <Typography>Your invitation has been sent </Typography>
+    </FeedbackModal>
     </Box>
   );
 };

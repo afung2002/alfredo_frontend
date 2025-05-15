@@ -43,6 +43,7 @@ import { Routes } from "../../../../constants/routes";
 import NewLimitedPartnerFundForm from "../../../../components/NewLimitedPartnerFundForm";
 import { Apps } from "@src/constants/apps";
 import { useAppContext } from "@src/context/appContext";
+import FeedbackModal from "../../../../components/FeedbackModal";
 
 // Style constants
 const commonButtonStyles: SxProps<Theme> = {
@@ -132,6 +133,7 @@ const FundView: React.FC = () => {
   const [filteredLimitedPartners, setFilteredLimitedPartners] = useState<LimitedPartnerResponse[]>([]);
   const [filteredInvestments, setFilteredInvestments] = useState<InvestmentResponse[]>([]);
   const [isLimitedPartnerModelOpen, setIsLimitedPartnerModalOpen] = useState(false);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const handleEdit = () => {
     navigate(Routes.FUND_MANAGER_FUND_EDIT.replace(':fundId', fundId || ''));
   };
@@ -547,11 +549,21 @@ const FundView: React.FC = () => {
         <DialogTitle>Add Limited Partner</DialogTitle>
         <DialogContent>
           <NewLimitedPartnerFundForm 
+          openFeedbackModal={() => setIsFeedbackModalOpen(true)}
           fundId={fundId} 
           closeModal={() => setIsLimitedPartnerModalOpen(false)} 
           fundLimitedPartners={fundData?.limited_partners} />
         </DialogContent>
       </Dialog>
+      <FeedbackModal
+      open={isFeedbackModalOpen}
+      setIsFeedbackModalOpen={setIsFeedbackModalOpen}
+      title="Invite Sent!"
+      buttonText="Got it"
+      
+    >
+      <Typography>Your invitation has been sent </Typography>
+    </FeedbackModal>
     </Box>
   );
 };
