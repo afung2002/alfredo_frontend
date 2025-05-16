@@ -44,6 +44,7 @@ import NewLimitedPartnerFundForm from "../../../../components/NewLimitedPartnerF
 import { Apps } from "@src/constants/apps";
 import { useAppContext } from "@src/context/appContext";
 import FeedbackModal from "../../../../components/FeedbackModal";
+import ErrorAlert from "../../../../components/ErrorAlert";
 
 // Style constants
 const commonButtonStyles: SxProps<Theme> = {
@@ -160,8 +161,6 @@ const FundView: React.FC = () => {
   }, [searchInvestmentsValue, investmentsData]);
 
   const handleAddNew = () => {
-    console.log('fundId', fundId)
-    console.log('fundName', fundData?.name)
     navigate(Routes.FUND_MANAGER_NEW_INVESTMENT, {
       state: {
         fundId: fundId,
@@ -193,9 +192,7 @@ const FundView: React.FC = () => {
 
   if (error) {
     return (
-      <Box p={3}>
-        <Alert severity="error">Something went wrong</Alert>
-      </Box>
+      <ErrorAlert error={error} />
     );
   }
 

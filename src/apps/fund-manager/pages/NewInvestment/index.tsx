@@ -122,7 +122,6 @@ const NewInvestment: React.FC = () => {
                       : [{ value: 'add_new_company', label: '➕ Add new company' }]
                 }
                 onValueChange={(val) => {
-                  console.log('val', val)
                   if (val === 'add_new_company') {
                     setIsCompanyModalOpen(true);
                   }

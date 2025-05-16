@@ -22,7 +22,6 @@ interface InvestmentCardProps {
 const InvestmentCard: React.FC<InvestmentCardProps> = ({ investment }) => {
   const navigate = useNavigate();
   const [deleteInvestment] = useDeleteInvestmentMutation();
-  console.log('investment', investment) 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const handleCardClick = () => {
     navigate(Routes.FUND_MANAGER_INVESTMENT.replace(':investmentId', investment.id.toString()))

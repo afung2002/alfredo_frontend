@@ -31,10 +31,8 @@ const useCreatePostForm = (handleClose: () => void) => {
     },
     mode: 'onChange',
   });
-  console.log(errors);
   const postTitle = watch('postTitle');
   const postDescription = watch('postDescription');
-  console.log(watch('postDescription'));
   const onSubmit = async (data: CreatePostFormState) => {
     try {
       if (!fundId) {

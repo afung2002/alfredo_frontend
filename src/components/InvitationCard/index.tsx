@@ -12,11 +12,9 @@ interface LimitedPartnerCardProps {
 }
 
 const InvitationCard = ({limitedPartner}) => {
-  console.log("limitedPartner", limitedPartner);
   const [createInvitation, { isLoading: invitingLP }] = useCreateInvitationMutation();
   const [deleteInvitation, { isLoading: deletingLP }] = useDeleteInvitationMutation();
   const handleResendInvitation = async () => {
-    console.log("limitedPartnerResend", limitedPartner);
     const limitedPartnerData = {
       email_address: limitedPartner.email_address,
       fund: limitedPartner.fund,

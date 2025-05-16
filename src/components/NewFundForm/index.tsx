@@ -15,7 +15,6 @@ type NewFundFormProps = {
 };
 const NewFundForm = ({ fundId, onClose, selectCreatedFund, onSave, action }: NewFundFormProps) => {
   const navigate = useNavigate();
-  console.log('fundId', fundId)
   const {
     newFundControl,
     submitNewFund,
@@ -29,9 +28,6 @@ const NewFundForm = ({ fundId, onClose, selectCreatedFund, onSave, action }: New
     e.preventDefault();
     submitNewFund().then((result) => {
       if (result) {
-        console.log('result', result)
-        // If you want to navigate to the funds page after creating a new fund, uncomment the line below
-        
         onSave()
       }
     })

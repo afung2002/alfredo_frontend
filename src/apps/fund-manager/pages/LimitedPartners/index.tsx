@@ -24,6 +24,7 @@ import SortDropdown from '../../../../components/SortDropdown';
 import LimitedPartnersList from '@src/components/LimitedPartnersList';
 import NewLimitedPartnerFundForm from '../../../../components/NewLimitedPartnerFundForm';
 import FeedbackModal from '../../../../components/FeedbackModal';
+import ErrorAlert from '../../../../components/ErrorAlert';
 
 
 const LimitedPartners = () => {
@@ -31,7 +32,6 @@ const LimitedPartners = () => {
   const { data: invitationsData, isLoading: isLoadingInvitations, error: errorInvitations } = useGetInvitationsQuery();
   const { data: limitedPartnersData, isLoading: isLoadingLimitedPartners, error: errorLimitedPartners } = useGetLimitedPartnersQuery();
   const { data: invitationsGroupedByEmailData, isLoading: isLoadingInvitationsGroupedByEmail, error: errorInvitationsGroupedByEmail } = useGetInvitationsGroupedByEmailQuery();
-  console.log(invitationsGroupedByEmailData);
   const { control, watch } = useForm({
     defaultValues: {
       'searchLimitedPartners': ''
@@ -123,9 +123,7 @@ const LimitedPartners = () => {
 
   if (errorInvitationsGroupedByEmail) {
     return (
-      <Box p={3}>
-        <Alert severity="error">Something went wrong</Alert>
-      </Box>
+      <ErrorAlert error={errorInvitationsGroupedByEmail} />
     );
   }
 

@@ -10,6 +10,7 @@ import { useGetDocumentsQuery } from '@services/api/baseApi';
 import { Apps } from '@src/constants/apps';
 import SortDropdown from '../../../../components/SortDropdown';
 import { DOCUMENTS_SORT_OPTIONS } from '../../../../constants';
+import ErrorAlert from '../../../../components/ErrorAlert';
 
 const LimitedPartnerDocuments = () => {
   const { data: documentsData, isLoading: isLoadingDocuments, error: errorDocuments } = useGetDocumentsQuery();
@@ -81,9 +82,7 @@ const LimitedPartnerDocuments = () => {
 
   if (errorDocuments) {
     return (
-      <Box p={3}>
-        <Alert severity="error">Something went wrong</Alert>
-      </Box>
+      <ErrorAlert error={errorDocuments} />
     );
   }
 

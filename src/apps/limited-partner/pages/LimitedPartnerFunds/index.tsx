@@ -11,6 +11,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Apps } from '@constants/apps';
 import SortDropdown from '../../../../components/SortDropdown';
 import { FUNDS_SORT_OPTIONS } from '../../../../constants';
+import ErrorAlert from '../../../../components/ErrorAlert';
 
 const LimitedPartnerFunds = () => {
   const { data: fundsData, isLoading, error } = useGetFundsQuery();
@@ -82,9 +83,7 @@ const LimitedPartnerFunds = () => {
 
   if (error) {
     return (
-      <Box p={3}>
-        <Typography color="error">Error loading funds</Typography>
-      </Box>
+        <ErrorAlert error={error} />
     );
   }
   return (

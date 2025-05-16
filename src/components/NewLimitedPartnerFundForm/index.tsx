@@ -31,13 +31,6 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal, fundLimitedPartners, op
     handleInviteWebsiteBlur,
    } = useLimitedPartnerFundForm(fundId, closeModal, openFeedbackModal);
   useEffect(() => {
-    console.log('fundLimitedPartners', fundLimitedPartners);
-    console.log('limitedPartnersData', limitedPartnersData);
-    const name = inviteLpForm.watch('name')
-    const name2 = existingLpForm.watch('limitedPartner.name')
-    console.log('name', name)
-    console.log('name2', name2)
-    
     // Extract user_ids of already added limited partners
     const existingLpIds = fundLimitedPartners.map(fp => fp.limited_partner.user_id);
   
@@ -46,7 +39,6 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal, fundLimitedPartners, op
       (lp) => !existingLpIds.includes(lp.user_id)
     );
     setFilteredLimitedPartners(filteredLimitedPartners);
-    console.log('Filtered Limited Partners', filteredLimitedPartners);
   }, [limitedPartnersData, fundLimitedPartners]);
   return (
     <>

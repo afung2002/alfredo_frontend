@@ -12,7 +12,6 @@ interface LimitedPartnerCardProps {
 const LimitedPartnerCard = ({ limitedPartner }: LimitedPartnerCardProps) => {
   const { fundId } = useParams<{ fundId: string }>();
   const navigate = useNavigate();
-  console.log(limitedPartner, 'limitedPartner')
   return (
     <Card
       onClick={() => navigate(Routes.FUND_MANAGER_LIMITED_PARTNER.replace(':limitedPartnerId', limitedPartner.limited_partner.user_id.toString()), { state: { fundId } })}

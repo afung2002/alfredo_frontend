@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { InvestmentResponse } from "../../services/api/baseApi/types";
 import { SerializedError } from "@reduxjs/toolkit";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import ErrorAlert from "../ErrorAlert";
 
 type InvestmentsListProps = {
   investments: InvestmentResponse[] | undefined;
@@ -37,9 +38,7 @@ const InvestmentsList = ({ investments, isLoading, error }: InvestmentsListProps
 
   if (error) {
     return (
-      <div className="flex justify-center items-center w-full h-full">
-        <Alert severity="error">Something went wrong</Alert>
-      </div>
+      <ErrorAlert error={error} />
     );
   }
 

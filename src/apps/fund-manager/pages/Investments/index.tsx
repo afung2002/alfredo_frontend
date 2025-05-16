@@ -14,8 +14,9 @@ import { useForm } from 'react-hook-form';
 import InvestmentsList from '@src/components/InvestmentsList';
 import { useGetInvestmentsQuery } from '@services/api/baseApi';
 import { calculateInvestmentTotals, formatNumberString } from '../../../../utils';
-import { InvestmentResponse } from '../../../../services/api/baseApi/types';
-import SortDropdown from '../../../../components/SortDropdown';
+import { InvestmentResponse } from '@services/api/baseApi/types';
+import SortDropdown from '@components/SortDropdown';
+import ErrorAlert from '@components/ErrorAlert';
 
 
 const Investments = () => {
@@ -109,9 +110,7 @@ const Investments = () => {
 
   if (errorInvestments) {
     return (
-      <Box p={3}>
-        <Alert severity="error">Something went wrong</Alert>
-      </Box>
+      <ErrorAlert error={errorInvestments} />
     );
   }
 

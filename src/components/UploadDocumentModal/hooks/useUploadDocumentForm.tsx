@@ -86,7 +86,6 @@ const useUploadDocumentForm = (
         }
 
         if (documentType === 'fund-investment') {
-          console.log(getValues('company'))
           payload.fund = getValues('fund');
           payload.investment = getValues('investment');
           payload.company_name = getValues('company');
@@ -98,7 +97,6 @@ const useUploadDocumentForm = (
         if (limitedPartner) {
           payload.limited_partner = limitedPartner;
         }
-        console.log(payload, 'payload')
         await uploadDocument(payload).unwrap();
 
         reset();

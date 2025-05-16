@@ -10,6 +10,7 @@ import Input from "../../../../components/Input";
 import UploadDocumentModal from "../../../../components/UploadDocumentModal";
 import { useForm } from "react-hook-form";
 import { searchByTitle } from "../../../../utils/uiUtils";
+import ErrorAlert from "../../../../components/ErrorAlert";
 
 const LimitedPartner: React.FC = () => {
   const { limitedPartnerId } = useParams<{ limitedPartnerId: string }>();
@@ -58,9 +59,7 @@ const LimitedPartner: React.FC = () => {
 
   if (error) {
     return (
-      <Box p={3}>
-        <Alert severity="error">Something went wrong</Alert>
-      </Box>
+      <ErrorAlert error={error} />
     );
   }
 

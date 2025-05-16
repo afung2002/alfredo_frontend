@@ -144,7 +144,6 @@ const DocumentCard: React.FC<{ document: Document, orientation: "row" | "grid" }
                 }
               }}
               onClick={() => {
-                console.log("View document:", doc.id);
                 handleDocView(doc.id);
 
               }}

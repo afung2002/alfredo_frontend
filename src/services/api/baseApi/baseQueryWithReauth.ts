@@ -20,7 +20,7 @@ export const baseQueryWithReauth: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   let result = await rawBaseQuery(args, api, extraOptions);
 
-  if (result.error && (result.error.status === 401 || result.error.status === 403)) {
+  if (result.error && (result.error.status === 401)) {
     try {
       const token = await getClerkToken('access_token'); // Adjust the template as needed
       if (token) {

@@ -7,7 +7,6 @@ import { useEffect } from "react";
 import { useAcceptLimitedPartnerInvitationMutation } from "../../services/api/baseApi";
 const MasterLayout = () => {
   const { user } = useUser();
-  console.log('user', user);
   const ticket = useSelector(selectUserTicket);
   const [createLimitedPartner, { isLoading: creatingLP }] =
     useAcceptLimitedPartnerInvitationMutation();

@@ -79,7 +79,6 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
     if (documentType === 'fund-investment') {
       setFilteredCompanies(getReferencedCompanies(investments, documentType, fund))
     } else if (documentType === 'angel-investment') {
-      console.log('angel1')
       setFilteredCompanies(getReferencedCompanies(investments, documentType))
     }
   }, [fund, documentType, investments, companies]);

@@ -3,6 +3,7 @@ import { Box } from "@mui/material";
 import { FundUpdate } from "../../types";
 import UpdateCard from "@components/UpdateCard";
 import { AnimatePresence, motion } from "framer-motion";
+import ErrorAlert from "../ErrorAlert";
 
 const FundUpdatesList = ({ updates, isLoading, error}: any) => {
   const itemVariants = {
@@ -16,9 +17,7 @@ const FundUpdatesList = ({ updates, isLoading, error}: any) => {
   };
   if (error) {
     return (
-      <Box p={3}>
-        <Alert severity="error">Something went wrong</Alert>
-      </Box>
+      <ErrorAlert error={error} />
     );
   }
 

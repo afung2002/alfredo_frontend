@@ -19,35 +19,6 @@ const { user, isSignedIn, isLoaded } = useUser();
     useCreateFundLimitedPartnerMutation();
   
   useEffect(() => {
-    // console.log('user', user);
-    // if (!ticket) return;
-    // const createLimitedPartnerAfterSignup = async () => {
-    //   console.log('createLimitedPartnerAfterSignup');
-      
-    //   if (user.publicMetadata) {
-    //     console.log('user.publicMetadata', user.publicMetadata);
-    //     const fund = user.publicMetadata.fund_name as string | undefined;
-    //     const fund_id = user.publicMetadata.fund_id as number | undefined;
-    //     const name = user.publicMetadata.name as string | undefined;
-    //     const email = user.emailAddresses[0].emailAddress as string | undefined;
-    //     const limited_partner = user.id;
-    //     const invested_amount = user.publicMetadata.invested_amount as string | undefined;
-    //     console.log('User:', user);
-    //       console.log('Creating fund limited partner');
-    //       try {
-    //         await createFundLimitedPartner({
-    //           fund: fund_id,
-    //           limited_partner,
-    //           invested_amount,
-    //         }).unwrap();
-
-    //       } catch (error) {
-    //         console.error('Error creating limited partner after sign up:', error);
-    //       }
-    //   }
-    // };
-
-    // createLimitedPartnerAfterSignup();
     if (ticket) {
       dispatch(setTicket(ticket));
     }

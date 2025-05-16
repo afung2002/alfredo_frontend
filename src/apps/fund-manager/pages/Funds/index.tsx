@@ -13,7 +13,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useUser } from '@clerk/clerk-react';
 import SortDropdown from '../../../../components/SortDropdown';
 import { FUNDS_SORT_OPTIONS } from '../../../../constants';
-
+import ErrorAlert from '../../../../components/ErrorAlert';
 const Funds = () => {
   const { data: fundsData, isLoading, error } = useGetFundsQuery();
   const { user } = useUser();
@@ -101,9 +101,7 @@ const Funds = () => {
 
   if (error) {
     return (
-      <Box p={3}>
-        <Alert severity="error">Something went wrong</Alert>
-      </Box>
+      <ErrorAlert error={error} />
     );
   }
 

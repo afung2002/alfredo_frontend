@@ -46,7 +46,6 @@ const useProspectForm = () => {
   });
 
   const onSubmit = async (data: FormData) => {
-    console.log("Form data:", data);
     try {
       navigate(Routes.PROSPECT_TRACKER_PROSPECT);
     } catch (error: any) {
