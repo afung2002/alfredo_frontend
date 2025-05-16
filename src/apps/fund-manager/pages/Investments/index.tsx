@@ -18,6 +18,7 @@ import SortDropdown from '@components/SortDropdown';
 import ErrorAlert from '@components/ErrorAlert';
 
 
+
 const Investments = () => {
   const { data: investmentsData, isLoading: isLoadingInvestments, error: errorInvestments } = useGetInvestmentsQuery();
   const { control, watch } = useForm({
