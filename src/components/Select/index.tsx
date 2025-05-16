@@ -5,6 +5,8 @@ import React from 'react';
 interface Option {
   value: any;
   label: string;
+  isDisabled?: boolean;
+
 }
 
 interface SelectProps {
@@ -86,7 +88,8 @@ const Select = ({
             <MenuItem
               key={opt.value}
               value={opt.value}
-              onClick={(e) => handleSelect(e, opt.value)} // 👈 this enables triggering modal even if selected again
+              disabled={opt.isDisabled} // 👈 Apply disabled state here
+              onClick={(e) => handleSelect(e, opt.value)}
             >
               {opt.label}
             </MenuItem>
