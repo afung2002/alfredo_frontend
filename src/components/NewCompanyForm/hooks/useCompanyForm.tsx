@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCreateCompanyMutation } from '@services/api/baseApi';
+import { normalizeUrl } from '../../../utils';
 
 const companySchema = z.object({
   companyName: z.string().min(1, 'Company name is required'),
@@ -19,26 +20,21 @@ const useCompanyForm = () => {
   const companySchema = z.object({
     companyName: z.string().min(1, 'Company name is required'),
     websiteUrl: z
-      .string()
-      .trim()
-      .transform((val) =>
-        val.startsWith('http://') || val.startsWith('https://')
-          ? val
-          : `https://${val}`
-      )
-      .refine((val) => {
-        try {
-          new URL(val); // native browser validation
-          return true;
-        } catch {
-          return false;
-        }
-      }, {
-        message: 'Invalid URL',
-      }),
+    .string()
+    .min(1, 'Website is required')
+    .transform((val) => normalizeUrl(val))
+    .refine((val) => {
+      try {
+        new URL(val);
+        return true;
+      } catch {
+        return false;
+      }
+    }, { message: 'Must be a valid URL' }),
     founderEmail: z.string().email('Invalid email'),
     description: z.string().optional(),
   });
+  
   const {
     control,
     handleSubmit,
@@ -46,6 +42,7 @@ const useCompanyForm = () => {
     reset,
     setValue,
     getValues,
+    watch,
   } = useForm<CompanyFormData>({
     resolver: zodResolver(companySchema),
   });
@@ -80,7 +77,12 @@ const useCompanyForm = () => {
       setValue('websiteUrl', corrected);
     }
   }, [createdCompanyId]);
-
+  const handleWebsiteBlur = () => {
+    const current = watch('websiteUrl');
+    if (current) {
+      setValue('websiteUrl', normalizeUrl(current), { shouldValidate: true });
+    }
+  };
   return {
     control,
     handleSubmit: handleSubmit(onSubmit),
@@ -88,6 +90,7 @@ const useCompanyForm = () => {
     isLoading,
     error,
     createdCompanyId,
+    handleWebsiteBlur,
   };
 };
 

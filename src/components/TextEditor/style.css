@@ -1,0 +1,5 @@
+@layer base {
+  .reset-all * {
+    all: revert;
+  }
+}

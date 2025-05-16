@@ -2,7 +2,6 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  useCreateFundLimitedPartnerMutation,
   useCreateInvitationMutation,
 } from '@services/api/baseApi';
 import { useCommaFormattingWatcher } from '@hooks/useCommaFormattingWatcher';
@@ -63,8 +62,7 @@ const useLimitedPartnerFundForm = (
   fundId: number | string | undefined,
   closeModal: () => void
 , openFeedbackModal: () => void) => {
-  const [createLimitedPartner, { isLoading: creatingLP }] =
-    useCreateFundLimitedPartnerMutation();
+
   const [createInvitation, { isLoading: invitingLP }] =
     useCreateInvitationMutation();
 
@@ -159,7 +157,6 @@ const useLimitedPartnerFundForm = (
     inviteLpForm,
     onSubmitExisting,
     onSubmitInvitation,
-    isAddingExisting: creatingLP,
     isInvitingNew: invitingLP,
     handleInviteWebsiteBlur, // 👈 expose this for onBlur
   };
