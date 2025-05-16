@@ -30,56 +30,55 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
   fundId,
   limitedPartnerId,
 }) => {
-  const [getFunds, { data: funds, isLoading: isFundsLoading, error: fundsError }] = useLazyGetFundsQuery();
-  const { data: investments, isLoading: isInvestmentsLoading, error: investmentsError } = useGetInvestmentsQuery();
-  const [getCompanies, { data: companies, isLoading: isCompaniesLoading, error: companiesError }] = useLazyGetCompaniesQuery();
+  const [getFunds, { data: funds, isLoading: isFundsLoading }] = useLazyGetFundsQuery();
+  const [getCompanies, { data: companies }] = useLazyGetCompaniesQuery();
+  const { data: investments, isLoading: isInvestmentsLoading } = useGetInvestmentsQuery();
+
   const [filteredFunds, setFilteredFunds] = useState([]);
   const [filteredCompanies, setFilteredCompanies] = useState([]);
+  const [isAngelInvestmentDisabled, setIsAngelInvestmentDisabled] = useState(true);
+  const [isFundInvestmentDisabled, setIsFundInvestmentDisabled] = useState(true);
+
   const {
     uploadControl,
     submitForm,
     uploadErrors,
     uploadIsLoading,
-    setValue,
     watch,
   } = useUploadDocumentForm(() => {
     onClose();
   }, investmentId, fundId, limitedPartnerId);
+
   const documentType = watch('documentType');
   const fund = watch('fund');
 
   useEffect(() => {
-    if (!documentType) return;
-    switch (documentType) {
-      case 'angel-investment':
-        getCompanies();
-        break;
-      case 'fund-investment':
-        getFunds();
-        // getInvestments();
-        getCompanies();
-        break;
-      case 'fund-management':
-        getFunds();
-        break;
-      default:
-        break;
+    if (open) {
+      getFunds();
+      getCompanies();
     }
-  }, [documentType]);
+  }, [open]);
+
+  useEffect(() => {
+    if (investments) {
+      const angelCompanies = getReferencedCompanies(investments, 'angel-investment') || [];
+      setIsAngelInvestmentDisabled(angelCompanies.length === 0);
+
+      if (funds && funds.length > 0) {
+        const referencedFunds = getReferencedFunds(investments, funds);
+        setFilteredFunds(referencedFunds);
+        setIsFundInvestmentDisabled(referencedFunds.length === 0);
+      }
+    }
+  }, [investments, funds]);
 
   useEffect(() => {
     if (documentType === 'fund-investment') {
-      if (funds && funds.length > 0 && investments && investments.length > 0) {
-        setFilteredFunds(getReferencedFunds(investments, funds))
-      }
-    }
-  }, [documentType, funds, investments, companies]);
-  useEffect(() => {
-    // if (!fund || !) return;
-    if (documentType === 'fund-investment') {
-      setFilteredCompanies(getReferencedCompanies(investments, documentType, fund))
+      const companiesList = getReferencedCompanies(investments, documentType, fund);
+      setFilteredCompanies(companiesList || []);
     } else if (documentType === 'angel-investment') {
-      setFilteredCompanies(getReferencedCompanies(investments, documentType))
+      const companiesList = getReferencedCompanies(investments, documentType);
+      setFilteredCompanies(companiesList || []);
     }
   }, [fund, documentType, investments, companies]);
 
@@ -98,7 +97,8 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
                 error={!!uploadErrors.docTitle?.message}
               />
             </Grid>
-            {fundId || investmentId || limitedPartnerId ? (null) : (
+
+            {!fundId && !investmentId && !limitedPartnerId && (
               <Grid size={{ xs: 12 }}>
                 <Select
                   rounded={false}
@@ -106,87 +106,66 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
                   name="documentType"
                   control={uploadControl}
                   options={[
-                    { value: 'angel-investment', label: 'Angel Investment' },
-                    { value: 'fund-investment', label: 'Fund Investment' },
-                    { value: 'fund-management', label: 'Fund Management' },
+                    {
+                      value: 'angel-investment',
+                      label: 'Angel Investment',
+                      isDisabled: isAngelInvestmentDisabled,
+                    },
+                    {
+                      value: 'fund-investment',
+                      label: 'Fund Investment',
+                      isDisabled: isFundInvestmentDisabled,
+                    },
+                    {
+                      value: 'fund-management',
+                      label: 'Fund Management',
+                    },
                   ]}
                 />
               </Grid>
             )}
 
-            {
-              (documentType === 'fund-investment') && (
-                <Grid size={{ xs: 12 }}>
-                  <Select
-                    rounded={false}
-                    label="Fund"
-                    name="fund"
-                    control={uploadControl}
-                    options={
-                      (isFundsLoading || isInvestmentsLoading)
-                        ? [{ value: '', label: 'Loading funds...' }]
-                        : filteredFunds && filteredFunds.length > 0
-                          ? [
-                            ...filteredFunds.map((fund) => ({
-                              value: String(fund.id ?? 'Unknown'),
-                              label: fund.name ?? 'Unknown',
-                            })),
-                          ]
-                          : [{ value: 'no_funds', label: 'No funds found' }]
-                    }
-                  />
-                </Grid>
-              )
-            }
-            {
-              (documentType === 'fund-management') && (
-                <Grid size={{ xs: 12 }}>
-                  <Select
-                    rounded={false}
-                    label="Fund"
-                    name="fund"
-                    control={uploadControl}
-                    options={
-                      isFundsLoading
-                        ? [{ value: '', label: 'Loading funds...' }]
-                        : funds && funds.length > 0
-                          ? [
-                            ...funds.map((fund) => ({
-                              value: String(fund.id ?? 'Unknown'),
-                              label: fund.name ?? 'Unknown',
-                            })),
-                          ]
-                          : [{ value: 'no_funds', label: 'No funds found' }]
-                    }
-                  />
-                </Grid>
-              )
-            }
+            {documentType === 'fund-investment' && (
+              <Grid size={{ xs: 12 }}>
+                <Select
+                  rounded={false}
+                  label="Fund"
+                  name="fund"
+                  control={uploadControl}
+                  options={
+                    isFundsLoading || isInvestmentsLoading
+                      ? [{ value: '', label: 'Loading funds...' }]
+                      : filteredFunds.length > 0
+                        ? filteredFunds.map((fund) => ({
+                            value: String(fund.id ?? 'Unknown'),
+                            label: fund.name ?? 'Unknown',
+                          }))
+                        : [{ value: 'no_funds', label: 'No funds found' }]
+                  }
+                />
+              </Grid>
+            )}
 
-            {
-              (documentType === 'angel-investment' || documentType === 'fund-investment') && (
-                <Grid size={{ xs: 12 }}>
-                  <Select
-                    rounded={false}
-                    label="Company"
-                    name="company"
-                    control={uploadControl}
-                    options={
-                      (isFundsLoading || isInvestmentsLoading)
-                        ? [{ value: '', label: 'Loading companies...' }]
-                        : filteredCompanies && filteredCompanies.length > 0
-                          ? [
-                            ...filteredCompanies.map((company) => ({
-                              value: company.name,
-                              label: company.name,
-                            })),
-                          ]
-                          : [{ value: 'no_companies', label: 'No companies found' }]
-                    }
-                  />
-                </Grid>
-              )
-            }
+            {(documentType === 'angel-investment' || documentType === 'fund-investment') && (
+              <Grid size={{ xs: 12 }}>
+                <Select
+                  rounded={false}
+                  label="Company"
+                  name="company"
+                  control={uploadControl}
+                  options={
+                    isFundsLoading || isInvestmentsLoading
+                      ? [{ value: '', label: 'Loading companies...' }]
+                      : filteredCompanies.length > 0
+                        ? filteredCompanies.map((company) => ({
+                            value: company.name,
+                            label: company.name,
+                          }))
+                        : [{ value: 'no_companies', label: 'No companies found' }]
+                  }
+                />
+              </Grid>
+            )}
 
             <Grid size={{ xs: 12 }}>
               <Input
