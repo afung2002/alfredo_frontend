@@ -11,7 +11,7 @@ html,
   font-family: "DM Sans", sans-serif !important;
 }
 
-.ql-toolbar {
+/* .ql-toolbar {
   border-radius: 8px 8px 0 0;
 }
 
@@ -48,8 +48,11 @@ html,
 
 .rsw-ce > ul, ul {
   list-style: inside !important;
+} */
+.rsw-ce {
+  min-height: 200px; 
+  overflow-y: auto;
 }
-
 /* 
 body {
   background-color: #f2f0f5;

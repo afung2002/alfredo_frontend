@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Grid } from "@mui/material";
+import { Box, CircularProgress, Grid, Typography } from "@mui/material";
 import Input from "../Input";
 import Button from "../Button";
 import useNewFundForm from "@hooks/useNewFundForm";
@@ -13,6 +13,11 @@ type NewFundFormProps = {
   onSave?: () => void;
   action?: 'create' | 'edit';
 };
+const usd = (
+  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+    <Typography variant="body1" sx={{ color: 'text.secondary', mr: 1 }}>$</Typography>
+  </Box>
+);
 const NewFundForm = ({ fundId, onClose, selectCreatedFund, onSave, action }: NewFundFormProps) => {
   const navigate = useNavigate();
   const {
@@ -89,6 +94,7 @@ const NewFundForm = ({ fundId, onClose, selectCreatedFund, onSave, action }: New
 
         <Grid size={{ xs: 12, md: 6 }}>
           <Input
+            startAdornment={usd}
             rounded={false}
             label='Fund Size'
             type="text"
@@ -100,6 +106,7 @@ const NewFundForm = ({ fundId, onClose, selectCreatedFund, onSave, action }: New
 
         <Grid size={{ xs: 12, md: 6 }}>
           <Input
+            startAdornment={usd}
             rounded={false}
             label="Estimated Value"
             type="text"
