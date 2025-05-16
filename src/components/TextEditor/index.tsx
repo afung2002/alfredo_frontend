@@ -1,6 +1,6 @@
 import RswEditor from 'react-simple-wysiwyg';
 import { useEffect, useState } from 'react';
-
+import './style.css';
 export default function TextEditor({ onEditorChange }: { onEditorChange: (html: string) => void }) {
   const [html, setHtml] = useState();
 
@@ -12,14 +12,14 @@ export default function TextEditor({ onEditorChange }: { onEditorChange: (html: 
   }, [html]);
   return (
     <>
-      <RswEditor
+    <RswEditor
         autoFocus
         containerProps={{ style: { resize: 'vertical' } }}
         placeholder="Write your message here..."
         value={html}
         onChange={onChange}
         title="ed1"
-        className="min-h-[200px]"
+        className="reset-all"
       />
     </>
   );

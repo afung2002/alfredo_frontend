@@ -15,7 +15,11 @@ type NewLimitedPartnerFundFormProps = {
 const NewLimitedPartnerFundForm = ({ closeModal }: NewLimitedPartnerFundFormProps) => {
   const navigate = useNavigate();
   const { data: funds, isLoading: isFundsLoading } = useGetFundsQuery();
-
+  const usd = (
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Typography variant="body1" sx={{ color: 'text.secondary', mr: 1 }}>$</Typography>
+    </Box>
+  );
   const {
     inviteLpForm,
     onSubmitInvitation,
@@ -66,7 +70,7 @@ const NewLimitedPartnerFundForm = ({ closeModal }: NewLimitedPartnerFundFormProp
             <Input type="text" rounded={false} label="Website"  onBlur={handleInviteWebsiteBlur} name="website" control={inviteLpForm.control} />
           </Grid>
           <Grid size={{ xs: 12, lg: 6 }}>
-            <Input type="text" rounded={false} label="Amount Invested" name="fundAmount" control={inviteLpForm.control} />
+            <Input startAdornment={usd} type="text" rounded={false} label="Amount Invested" name="fundAmount" control={inviteLpForm.control} />
           </Grid>
           <Grid size={{ xs: 12 }}>
             <Input multiline rows={4} rounded={false} label="Description" name="description" control={inviteLpForm.control} />

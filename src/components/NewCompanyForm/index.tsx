@@ -17,6 +17,7 @@ const NewCompanyForm = ({onClose, selectCreatedCompany}: NewCompanyFormProps) =>
     isLoading,
     error,
     createdCompanyId,
+    handleWebsiteBlur,
   } = useCompanyForm();
   useEffect(() => {
     if (createdCompanyId) {
@@ -30,7 +31,7 @@ const NewCompanyForm = ({onClose, selectCreatedCompany}: NewCompanyFormProps) =>
           <Input rounded={false} label="Company Name" name="companyName" control={control} error={!!errors.companyName?.message} />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <Input rounded={false} label="Website URL" name="websiteUrl" control={control} error={!!errors.websiteUrl?.message} />
+          <Input onBlur={handleWebsiteBlur} rounded={false} label="Website URL" name="websiteUrl" control={control} error={!!errors.websiteUrl?.message} />
         </Grid>
 
         <Grid size={{ xs: 12, md: 6 }}>

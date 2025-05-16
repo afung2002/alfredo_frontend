@@ -26,7 +26,6 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal, fundLimitedPartners, op
     inviteLpForm,
     onSubmitExisting,
     onSubmitInvitation,
-    isAddingExisting,
     isInvitingNew,
     handleInviteWebsiteBlur,
    } = useLimitedPartnerFundForm(fundId, closeModal, openFeedbackModal);
@@ -40,6 +39,11 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal, fundLimitedPartners, op
     );
     setFilteredLimitedPartners(filteredLimitedPartners);
   }, [limitedPartnersData, fundLimitedPartners]);
+  const usd = (
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Typography variant="body1" sx={{ color: 'text.secondary', mr: 1 }}>$</Typography>
+    </Box>
+  );
   return (
     <>
     <Card sx={{ border: '1px solid', borderColor: 'grey.200', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', p: '30px' }}>
@@ -69,11 +73,11 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal, fundLimitedPartners, op
             />
           </Grid>
           <Grid size={{ xs: 12 }}>
-            <Input rounded={false} label="Amount Invested" name="investedAmount" control={existingLpForm.control} />
+            <Input startAdornment={usd} rounded={false} label="Amount Invested" name="investedAmount" control={existingLpForm.control} />
           </Grid>
           <Grid size={{ xs: 12 }} className="flex justify-end">
-            <Button type="submit" variant="contained" disabled={isAddingExisting}>
-              {isAddingExisting ? <CircularProgress size={24} /> : 'Add'}
+            <Button type="submit" variant="contained" disabled={isInvitingNew}>
+              {isInvitingNew ? <CircularProgress size={24} /> : 'Add'}
             </Button>
           </Grid>
         </Grid>
@@ -98,7 +102,7 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal, fundLimitedPartners, op
             <Input type="text" rounded={false}  onBlur={handleInviteWebsiteBlur} label="Website" name="website" control={inviteLpForm.control} />
           </Grid>
           <Grid size={{ xs: 12, lg: 6 }}>
-            <Input type="text" rounded={false} label="Amount Invested" name="fundAmount" control={inviteLpForm.control} />
+            <Input startAdornment={usd} type="text" rounded={false} label="Amount Invested" name="fundAmount" control={inviteLpForm.control} />
           </Grid>
           <Grid size={{ xs: 12 }}>
             <Input multiline rows={4} rounded={false} label="Description" name="description" control={inviteLpForm.control} />
