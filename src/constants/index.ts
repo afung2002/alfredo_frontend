@@ -31,7 +31,7 @@ export const INVESTMENTS_SORT_OPTIONS = [
 ];
 
 export const FUNDS_SORT_OPTIONS = [
-  { label: 'Recently Edited', value: 'recent' },
+  { label: 'Last Updated', value: 'recent' },
   { label: 'Alphabetical', value: 'alphabetical' },
   { label: 'Fund Size', value: 'amount' },
 ];
