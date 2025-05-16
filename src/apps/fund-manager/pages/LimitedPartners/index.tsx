@@ -10,7 +10,6 @@ import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import {
   filterInvestmentsByType,
   filterInvitationsByStatus,
-  getClerkToken
 } from '@utils/index';
 import { DEFAULT_TAB, INVESTMENTS_SORT_OPTIONS, LIMITED_PARTNERS_FILTER_TABS, LPS_SORT_OPTIONS } from '@constants/index';
 import { Routes } from '@constants/routes';
@@ -28,7 +27,6 @@ import ErrorAlert from '../../../../components/ErrorAlert';
 
 
 const LimitedPartners = () => {
-  getClerkToken();
   const { data: invitationsData, isLoading: isLoadingInvitations, error: errorInvitations } = useGetInvitationsQuery();
   const { data: limitedPartnersData, isLoading: isLoadingLimitedPartners, error: errorLimitedPartners } = useGetLimitedPartnersQuery();
   const { data: invitationsGroupedByEmailData, isLoading: isLoadingInvitationsGroupedByEmail, error: errorInvitationsGroupedByEmail } = useGetInvitationsGroupedByEmailQuery();

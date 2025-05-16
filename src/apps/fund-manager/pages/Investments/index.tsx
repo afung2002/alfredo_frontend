@@ -5,7 +5,6 @@ import { InvestmentDetails, InvestmentType } from '../../../../types';
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import {
   filterInvestmentsByType,
-  getClerkToken
 } from '@utils/index';
 import { FILTER_TABS, DEFAULT_TAB, INVESTMENTS_SORT_OPTIONS } from '@constants/index';
 import { Routes } from '@constants/routes';
@@ -20,7 +19,6 @@ import ErrorAlert from '@components/ErrorAlert';
 
 
 const Investments = () => {
-  getClerkToken();
   const { data: investmentsData, isLoading: isLoadingInvestments, error: errorInvestments } = useGetInvestmentsQuery();
   const { control, watch } = useForm({
     defaultValues: {
