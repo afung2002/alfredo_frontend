@@ -21,9 +21,6 @@ export default function TextEditor({ onEditorChange }: { onEditorChange: (html: 
         title="ed1"
         className="min-h-[200px]"
       />
-      <div>
-        {html}
-      </div>
     </>
   );
 }
