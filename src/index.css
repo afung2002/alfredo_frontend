@@ -34,15 +34,19 @@ html,
 
 }
 
-ol {
+.update-card > ol,
+.rsw-ce > ol {
+  list-style: decimal !important;
+}
+.rsw-ce > il,
+.update-card > il {
+  @apply ml-6;
+}
+.rsw-ce > ol {
   list-style: decimal !important;
 }
 
-.rsw-ce ol {
-  list-style: decimal !important;
-}
-
-.rsw-ce ul, ul {
+.rsw-ce > ul, ul {
   list-style: inside !important;
 }
 

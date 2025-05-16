@@ -40,7 +40,6 @@ const AppsPage = () => {
         setVerifying(true);
         await signUp?.create({ ticket });
         await setActive({ session: signUp.createdSessionId });
-        navigate('/dashboard');
       } catch (err: any) {
         setError(err.errors?.[0]?.message || 'Failed to accept invitation.');
       } finally {

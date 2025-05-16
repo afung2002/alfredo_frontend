@@ -23,7 +23,6 @@ export const baseQueryWithReauth: BaseQueryFn<
   if (result.error && (result.error.status === 401 || result.error.status === 403)) {
     try {
       const token = await getClerkToken('access_token'); // Adjust the template as needed
-
       if (token) {
         api.dispatch(setToken(token));
         result = await rawBaseQuery(args, api, extraOptions); // retry
@@ -32,6 +31,5 @@ export const baseQueryWithReauth: BaseQueryFn<
       console.error('Token refresh failed', e);
     }
   }
-
   return result
 };

@@ -41,7 +41,7 @@ const UpdateCard: React.FC<UpdateListCardProps> = ({ update }) => {
         onDelete={app === Apps.LIMITED_PARTNER ? undefined : () => handleUpdateDelete(update.id)}
         title={update.title}
         subtitle={<Typography variant="subtitle2">{formattedUpdatedAt}</Typography>}
-        className="transition-shadow duration-200"
+        className="transition-shadow duration-200 update-card"
         sideImage={UpdateIcon}
         sx={{
           display: "flex",
