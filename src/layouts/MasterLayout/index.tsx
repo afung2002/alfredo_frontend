@@ -17,7 +17,6 @@ const MasterLayout = () => {
       const invested_amount = user.publicMetadata.invested_amount as number | undefined;
       const name = user.publicMetadata.name as string | undefined;
       const email = user.emailAddresses[0].emailAddress as string | undefined;
-      console.log('ticket', ticket);
       createLimitedPartner({  
         fund: fund_id,
         name: name,
