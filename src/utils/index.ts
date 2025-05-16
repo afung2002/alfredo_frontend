@@ -67,7 +67,9 @@ const clerk = new Clerk( import.meta.env.VITE_PUBLIC_CLERK_FRONTEND_API_KEY!);
 
 export const getClerkToken = async (template?: string) => {
   await clerk.load();
+  console.log('clerk', clerk);
   const token = await clerk.session?.getToken({ template });
+  console.log('token', token);
   return token;
 };
 

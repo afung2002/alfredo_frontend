@@ -21,11 +21,15 @@ export const baseQueryWithReauth: BaseQueryFn<
   let result = await rawBaseQuery(args, api, extraOptions);
   console.log('result', result);
   if (result.error && (result.error.status === 401)) {
+    console.log('401 detected — attempting token refresh or logout');
     try {
       const token = await getClerkToken('access_token'); // Adjust the template as needed
+      console.log('token', token);
       if (token) {
-        api.dispatch(setToken(token));
+        api.dispatch(setToken(token))
+        console.log('api.dispatch(setToken(token))');
         result = await rawBaseQuery(args, api, extraOptions); // retry
+        console.log('result', result);
       }
     } catch (e) {
       console.error('Token refresh failed', e);
