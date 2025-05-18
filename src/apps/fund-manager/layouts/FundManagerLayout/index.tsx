@@ -15,6 +15,8 @@ const FundManagerLayout = () => {
     { label: 'Investments', value: 'all', path: Routes.FUND_MANAGER, icon: <AccountBalanceIcon sx={{color: '#b27b44'}} /> },
     { label: 'Funds', value: 'funds', path: Routes.FUND_MANAGER_FUNDS, icon: <TrendingUpIcon sx={{color: '#b27b44'}} /> },
     { label: 'Limited Partners', value: 'limited-partners', path: Routes.FUND_MANAGER_LIMITED_PARTNERS, icon: <TrendingUpIcon sx={{color: '#b27b44'}} /> },
+    { label: 'Invitations', value: 'invitations', path: Routes.FUND_MANAGER_INVITATIONS, icon: <TrendingUpIcon sx={{color: '#b27b44'}} /> },
+
     { label: 'Documents', value: 'documents', path: Routes.FUND_MANAGER_DOCUMENTS, icon: <FolderOpenOutlinedIcon sx={{color: '#b27b44'}} /> },
     // { label: 'Limited Partners', value: 'limited-partners', path: '/fundmanager-ai/limited-partners' },
     // { label: 'Settings', value: 'settings', path: '/fundmanager-ai/settings' },

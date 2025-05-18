@@ -92,7 +92,6 @@ const FundView: React.FC = () => {
   const { data: fundUpdatesData, isLoading: isFundUpdatesLoading, error: fundUpdatesError } = useGetFundUpdatesQuery();
   const { data: investmentsData, isLoading: isInvestmentsLoading, error: investmentsError } = useGetInvestmentsQuery({ fund: fundId ? +fundId : 0 });
   const [getLimitedPartners, { data: limitedPartners, isLoading: isLoadingLimitedPartners }] = useLazyGetLimitedPartnersQuery();
-
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
