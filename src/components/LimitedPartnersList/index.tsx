@@ -8,7 +8,6 @@ type LimitedPartnersListProps = {
   page?: 'LimitedPartners' | 'Fund' | 'Invitations';
 }
 const LimitedPartnersList = ({limitedPartners, isLoading, page}: LimitedPartnersListProps) => {
-    console.log('LimitedPartnersList', limitedPartners, isLoading, page);
   if (isLoading) {
     return (
       <div className="w-full flex justify-center items-center h-full">

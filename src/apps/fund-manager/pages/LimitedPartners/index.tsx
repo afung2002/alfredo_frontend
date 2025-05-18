@@ -44,7 +44,6 @@ const LimitedPartners = () => {
   const [isLimitedPartnerModelOpen, setIsLimitedPartnerModalOpen] = useState(false);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const navigate = useNavigate();
-  console.log('limitedPartnersData', limitedPartnersData);
 
   const handleAddNew = (event: React.MouseEvent) => {
     if ((event.target as HTMLElement).closest('.MuiIconButton-root')) {
