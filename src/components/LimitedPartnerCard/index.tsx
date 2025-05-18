@@ -33,13 +33,13 @@ const LimitedPartnerCard = ({ limitedPartner }: LimitedPartnerCardProps) => {
     >
       <Box sx={{ display: "flex", flexDirection: 'column', }}>
         <Typography variant="subtitle1" sx={{ fontWeight: 500, flex: 1 }}>
-          {limitedPartner.limited_partner.name}
+          {limitedPartner?.limited_partner?.name || limitedPartner?.name}
         </Typography>
         <Typography
           variant="body2"
           sx={{ color: "text.secondary", }}
         >
-          {limitedPartner.limited_partner.email}
+          {limitedPartner?.limited_partner?.email || limitedPartner?.email}
         </Typography>
       </Box>
       <Box>
