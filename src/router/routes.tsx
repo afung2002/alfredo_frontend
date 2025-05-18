@@ -34,6 +34,7 @@ import Heat from "@src/apps/prospect-tracker/pages/heat";
 import Updates from "@src/apps/prospect-tracker/pages/update";
 import LimitedPartners from "@src/apps/fund-manager/pages/LimitedPartners";
 import RoleBasedProtectedRoute from "../components/RoleBasedProtectedRoute";
+import Invitations from "../apps/fund-manager/pages/Invitations";
 
 export const routes: RouteObject[] = [
   {
@@ -129,6 +130,10 @@ export const routes: RouteObject[] = [
       {
         path: Routes.FUND_MANAGER_LIMITED_PARTNERS,
         element: <LimitedPartners />,
+      },
+      {
+        path: Routes.FUND_MANAGER_INVITATIONS,
+        element: <Invitations />,
       }
     ],
   },
