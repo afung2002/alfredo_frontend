@@ -269,12 +269,6 @@ const FundView: React.FC = () => {
           </Box>
 
           <Box sx={{ display: "flex", flexDirection: "column", gap: 0 }}>
-            <Box sx={boxRowStyles}>
-              <Typography variant="body2">Name:</Typography>
-              <Typography variant="body2" color="text.secondary">
-                {fundData?.name}
-              </Typography>
-            </Box>
 
             <Box sx={boxRowStyles}>
               <Typography variant="body2">Description:</Typography>
