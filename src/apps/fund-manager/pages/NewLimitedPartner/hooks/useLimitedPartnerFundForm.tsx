@@ -19,7 +19,7 @@ const selectExistingSchema = z.object({
     .refine(
       (val) => {
         const num = parseCommaSeparatedNumber(val);
-        return num !== null && num > 0;
+        return num !== null && num >= 0;
       },
       { message: 'Invested amount must be a positive number' }
     ),
@@ -47,7 +47,7 @@ const inviteNewSchema = z.object({
     .refine(
       (val) => {
         const num = parseCommaSeparatedNumber(val);
-        return num !== null && num > 0;
+        return num !== null && num >= 0;
       },
       { message: 'Fund amount must be a positive number' }
     ),

@@ -125,7 +125,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
               </Grid>
             )}
 
-            {documentType === 'fund-investment' && (
+            {documentType === 'fund-investment' || documentType === 'fund-management'  && (
               <Grid size={{ xs: 12 }}>
                 <Select
                   rounded={false}

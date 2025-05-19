@@ -34,6 +34,7 @@ const NewFundForm = ({ fundId, onClose, selectCreatedFund, onSave, action }: New
     submitNewFund().then((result) => {
       if (result) {
         onSave()
+        navigate(Routes.FUND_MANAGER_FUNDS);
       }
     })
   }

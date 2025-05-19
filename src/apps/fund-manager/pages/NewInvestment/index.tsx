@@ -16,6 +16,8 @@ import { formatNumberWithCommas } from '@utils/index'; // helper utils
 const NewInvestment: React.FC = () => {
   const params = useParams();
   const navigate = useNavigate();
+  const { fundId, fundName } = useLocation().state || {};
+
   const {
     control,
     handleSubmit,
@@ -25,12 +27,11 @@ const NewInvestment: React.FC = () => {
     setFundValue,
     setCompanyValue,
     setValue,
-  } = useNewInvestmentForm(params?.investmentId || null);
+  } = useNewInvestmentForm(params?.investmentId || null, fundId);
 
   const investmentType = watch('investmentType');
   const company = watch('company');
   const fund = watch('fund');
-  const { fundId, fundName } = useLocation().state || {};
   const { data: companies, isLoading: isCompaniesLoading } = useGetCompaniesQuery();
   const { data: funds, isLoading: isFundsLoading } = useGetFundsQuery();
 

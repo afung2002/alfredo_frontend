@@ -75,7 +75,7 @@ export function getReferencedFunds(investments: InvestmentResponse[], funds: Fun
   const fundIds = investments
     .filter(inv => inv.type === "FUND" && inv.fund !== null)
     .map(inv => inv.fund as number);
-
+  
   const uniqueFundIds = Array.from(new Set(fundIds));
 
   return funds.filter(fund => uniqueFundIds.includes(fund.id));
