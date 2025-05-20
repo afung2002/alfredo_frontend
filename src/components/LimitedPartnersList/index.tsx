@@ -15,11 +15,11 @@ const LimitedPartnersList = ({limitedPartners, isLoading, page}: LimitedPartners
       </div>
     );
   }
-  debugger
+
   return (
     <div className="flex flex-col w-full h-full gap-4 mt-2">
       {
-        page === 'Fund' || page === 'LimitedPartners' && limitedPartners && limitedPartners?.length > 0 && limitedPartners.map((partner, index) => (
+        (page === 'Fund' || page === 'LimitedPartners') && limitedPartners?.length > 0 && limitedPartners.map((partner, index) => (
           <LimitedPartnerCard key={index} limitedPartner={partner} />
         ))
       }
