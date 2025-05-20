@@ -225,7 +225,7 @@ const handleDocView = async (id: number) => {
               </IconButton>
             )}
 
-            <Button
+            {/* <Button
               variant="contained"
               sx={{
                 bgcolor: 'gray',
@@ -242,7 +242,7 @@ const handleDocView = async (id: number) => {
               size="small"
             >
               View
-            </Button>
+            </Button> */}
 
             <IconButton
               onClick={() => handleDocDownload(doc.id)}
