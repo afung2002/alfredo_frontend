@@ -40,15 +40,110 @@ const DocumentCard: React.FC<{ document: Document, orientation: "row" | "grid" }
     }
   };
 
-  const handleDocView = async (id: number) => {
-    try {
-      const blob = await triggerDownload(id).unwrap();
-      const fileUrl = window.URL.createObjectURL(blob);
-      setDocLink(fileUrl);
-    } catch (err) {
-      console.error('Failed to view the document:', err);
+  // const handleDocView = async (id: number) => {
+  //   try {
+  //     const blob = await triggerDownload(id).unwrap();
+  //     const fileUrl = window.URL.createObjectURL(blob);
+  //     setDocLink(fileUrl);
+  //   } catch (err) {
+  //     console.error('Failed to view the document:', err);
+  //   }
+  // };
+
+//   const handleDocView = async (id: number) => {
+//   try {
+//     // Trigger the file download
+//     const response = await triggerDownload(id).unwrap();
+
+//     // Get the blob and filename from the response
+//     const contentDisposition = response.headers?.get?.("Content-Disposition");
+//     const contentType = response.type || response.headers?.get?.("Content-Type");
+
+//     // Try to extract filename from Content-Disposition header
+//     let filename = "file";
+//     if (contentDisposition && contentDisposition.includes("filename=")) {
+//       const match = contentDisposition.match(/filename="?(.+?)"?$/);
+//       if (match) {
+//         filename = match[1];
+//       }
+//     }
+
+//     // Determine the extension (fallback to content type if needed)
+//     const extension = filename.split('.').pop()?.toLowerCase();
+
+//     // Create a URL from the blob
+//     const fileUrl = window.URL.createObjectURL(response);
+
+//     if (extension === 'pdf' || contentType === 'application/pdf') {
+//       // If it's a PDF, just open in new tab or set link to viewer
+//       setDocLink(fileUrl);
+//       // window.open(fileUrl, '_blank');
+//     } else if (extension === 'docx' || contentType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+//       // If it's a Word document, force download
+//       const link = document.createElement('a');
+//       link.href = fileUrl;
+//       link.download = filename;
+//       document.body.appendChild(link);
+//       link.click();
+//       document.body.removeChild(link);
+//       window.URL.revokeObjectURL(fileUrl);
+//     } else {
+//       console.warn('Unknown file type:', extension);
+//     }
+//   } catch (err) {
+//     console.error('Failed to handle document:', err);
+//   }
+// };
+
+const handleDocView = async (id: number) => {
+  try {
+    // Fetch the file blob
+    const response = await triggerDownload(id).unwrap();
+
+    // Try to extract filename from Content-Disposition header
+    const contentDisposition = response.headers?.get?.("Content-Disposition");
+    const contentType = response.type || response.headers?.get?.("Content-Type");
+
+    let filename = "file";
+    if (contentDisposition && contentDisposition.includes("filename=")) {
+      const match = contentDisposition.match(/filename="?(.+?)"?$/);
+      if (match) {
+        filename = match[1];
+      }
     }
-  };
+
+    const extension = filename.split('.').pop()?.toLowerCase();
+
+    // Create a Blob URL
+    const fileUrl = window.URL.createObjectURL(response);
+
+    if (extension === 'pdf' || contentType === 'application/pdf') {
+      // View PDF in new tab
+      setDocLink(fileUrl);
+      window.open(fileUrl, '_blank');
+    } else if (
+      extension === 'docx' ||
+      contentType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ) {
+      // Use Google Docs Viewer for .docx files
+      const googleViewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true`;
+      window.open(googleViewerUrl, '_blank');
+    } else {
+      // Fallback: trigger download
+      const link = document.createElement('a');
+      link.href = fileUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(fileUrl);
+    }
+  } catch (err) {
+    console.error('Failed to handle document:', err);
+  }
+};
+
+
 
   const handleCloseViewer = () => {
     setDocLink(null);
