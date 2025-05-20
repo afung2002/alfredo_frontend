@@ -7,6 +7,8 @@ import { useDeleteFundUpdateMutation } from "../../services/api/baseApi";
 import UpdateIcon from "@assets/update.svg";
 import { useAppContext } from "../../context/appContext";
 import { Apps } from "../../constants/apps";
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 interface UpdateListCardProps {
   update: FundUpdate;
 }
@@ -61,6 +63,7 @@ const UpdateCard: React.FC<UpdateListCardProps> = ({ update }) => {
           <div>
             <div
               ref={descriptionRef}
+              className="reset-all"
               style={{
                 overflow: 'hidden',
                 transition: 'max-height 0.3s ease',
@@ -82,7 +85,7 @@ const UpdateCard: React.FC<UpdateListCardProps> = ({ update }) => {
                 sx={{ color: 'primary.main', mt: 1, cursor: 'pointer', fontWeight: 500 }}
                 onClick={toggleCollapse}
               >
-                {isCollapsed ? 'Read more' : 'Show less'}
+                {isCollapsed ? 'Read more' : 'Show less'} {isCollapsed ? <ArrowDownwardIcon fontSize="small" /> : <ArrowUpwardIcon fontSize="small" />}
               </Typography>
             )}
           </div>
