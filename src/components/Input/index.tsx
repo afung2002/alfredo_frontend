@@ -72,6 +72,9 @@ const Input = ({
         onChange={handleChange}
         // avoid binding value to file input to prevent React warning
         {...(type === 'file' ? {} : { value })}
+        inputProps={{
+          accept: type === 'file' ? '.pdf, .docx' : undefined,
+        }}
       />
       {error?.message && (
         <Typography color="error" variant="caption">
