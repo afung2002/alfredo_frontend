@@ -100,19 +100,16 @@ const handleDocView = async (id: number) => {
     // Fetch the file blob
     const response = await triggerDownload(id).unwrap();
 
-    // Try to extract filename from Content-Disposition header
-    const contentDisposition = response.headers?.get?.("Content-Disposition");
-    const contentType = response.type || response.headers?.get?.("Content-Type");
-
-    let filename = "file";
-    if (contentDisposition && contentDisposition.includes("filename=")) {
-      const match = contentDisposition.match(/filename="?(.+?)"?$/);
-      if (match) {
-        filename = match[1];
-      }
-    }
-
+    // Use the document name and extension from the doc object
+    const filename = doc.name ?? "file";
     const extension = filename.split('.').pop()?.toLowerCase();
+    // Try to infer content type from extension
+    let contentType = "";
+    if (extension === "pdf") {
+      contentType = "application/pdf";
+    } else if (extension === "docx") {
+      contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+    }
 
     // Create a Blob URL
     const fileUrl = window.URL.createObjectURL(response);
