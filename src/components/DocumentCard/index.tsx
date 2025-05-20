@@ -117,7 +117,7 @@ const handleDocView = async (id: number) => {
     if (extension === 'pdf' || contentType === 'application/pdf') {
       // View PDF in new tab
       setDocLink(fileUrl);
-      window.open(fileUrl, '_blank');
+      // window.open(fileUrl, '_blank');
     } else if (
       extension === 'docx' ||
       contentType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
