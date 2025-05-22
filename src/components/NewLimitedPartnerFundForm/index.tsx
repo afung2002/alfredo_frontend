@@ -28,7 +28,7 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal, fundLimitedPartners, op
     onSubmitInvitation,
     isInvitingNew,
     handleInviteWebsiteBlur,
-   } = useLimitedPartnerFundForm(fundId, closeModal, openFeedbackModal);
+  } = useLimitedPartnerFundForm(fundId, closeModal, openFeedbackModal, filteredLimitedPartners);
   useEffect(() => {
     // Extract user_ids of already added limited partners
     const existingLpIds = fundLimitedPartners.map(fp => fp.limited_partner.user_id);
@@ -44,6 +44,7 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal, fundLimitedPartners, op
       <Typography variant="body1" sx={{ color: 'text.secondary', mr: 1 }}>$</Typography>
     </Box>
   );
+  console.log('filteredLimitedPartners', filteredLimitedPartners);
   return (
     <>
     <Card sx={{ border: '1px solid', borderColor: 'grey.200', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', p: '30px' }}>
@@ -65,7 +66,7 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal, fundLimitedPartners, op
                   ? [{ value: '', label: 'Loading limited partners...' }]
                   : filteredLimitedPartners && filteredLimitedPartners.length > 0
                     ? filteredLimitedPartners.map((lp) => ({
-                      value: lp, // this is now an object
+                      value: lp.user_id, // this is now an object
                       label: lp.name ?? 'Unknown',
                     }))
                     : [{ value: 'no_limited_partner', label: 'No limited partner found' }]
