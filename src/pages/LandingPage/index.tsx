@@ -46,7 +46,7 @@ const { user, isSignedIn, isLoaded } = useUser();
     >
       <Container maxWidth="sm">
         {ticket ? (
-          <SignUp forceRedirectUrl={lp ? Routes.LIMITED_PARTNER_FUNDS : Routes.APPS} />
+          <SignUp forceRedirectUrl={Routes.FUND_MANAGER_FUNDS} />
         ) : (
           <SignIn
           forceRedirectUrl={Routes.APPS}  
