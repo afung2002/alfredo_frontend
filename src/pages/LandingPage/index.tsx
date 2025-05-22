@@ -33,6 +33,7 @@ const { user, isSignedIn, isLoaded } = useUser();
     return <Navigate to={Routes.APPS} />;
   }
 
+  const lp = user?.publicMetadata?.isLimitedPartner;
   return (
     <Box
       sx={{
@@ -45,7 +46,7 @@ const { user, isSignedIn, isLoaded } = useUser();
     >
       <Container maxWidth="sm">
         {ticket ? (
-          <SignUp />
+          <SignUp forceRedirectUrl={lp ? Routes.LIMITED_PARTNER_FUNDS : Routes.APPS} />
         ) : (
           <SignIn
           forceRedirectUrl={Routes.APPS}  
