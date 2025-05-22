@@ -1,10 +1,8 @@
-import { Chip, Box, Typography, IconButton, Card, CardHeader, Menu, MenuItem } from "@mui/material";
+import { Chip, Box, Typography, IconButton, Card, Menu, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router";
 import { Routes } from "@constants/routes";
-// import Card from "../Card";
-import { useDeleteInvestmentMutation, useGetFundByIdQuery } from "../../services/api/baseApi";
+import { useDeleteInvestmentMutation } from "../../services/api/baseApi";
 import { InvestmentResponse } from "../../services/api/baseApi/types";
-import InvestmentIcon from "@assets/investment.svg";
 import { Apps } from "../../constants/apps";
 import { useAppContext } from "../../context/appContext";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
@@ -63,23 +61,23 @@ const InvestmentCard: React.FC<InvestmentCardProps> = ({ investment }) => {
     >
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center gap-1">
-        <Typography variant="subtitle1" sx={{ fontWeight: 500, flex: 1 }}>
-          {investment?.company?.name || ''}
-        </Typography>
-        <FiberManualRecordIcon sx={{ fontSize: 8, color: "black" }} />
-        <Typography
-          variant="body2"
-          sx={{ color: "text.secondary", width: "min-content" }}
-        >
-          {`$${Number(investment?.amount).toLocaleString('en-US')}`}
-        </Typography>
-        {investment?.fund_name && (
-          <Chip label={investment?.fund_name} />
-        )}
+          <Typography variant="subtitle1" sx={{ fontWeight: 500, flex: 1 }}>
+            {investment?.company?.name || ''}
+          </Typography>
+          <FiberManualRecordIcon sx={{ fontSize: 8, color: "black" }} />
+          <Typography
+            variant="body2"
+            sx={{ color: "text.secondary", width: "min-content" }}
+          >
+            {`$${Number(investment?.amount).toLocaleString('en-US')}`}
+          </Typography>
+          {investment?.fund_name && (
+            <Chip label={investment?.fund_name} />
+          )}
         </div>
         <IconButton onClick={handleMoreMenuClick}>
-            <MoreVertIcon />
-          </IconButton>
+          <MoreVertIcon />
+        </IconButton>
       </div>
       <Box>
 
@@ -102,10 +100,13 @@ const InvestmentCard: React.FC<InvestmentCardProps> = ({ investment }) => {
           horizontal: 'right',
         }}
       >
-        <MenuItem onClick={handleInvestmentDelete}>
-          <DeleteOutlineIcon />
-          Delete
-        </MenuItem>
+        {
+          app === Apps.FUND_MANAGER && (
+            <MenuItem onClick={handleInvestmentDelete}>
+              <DeleteOutlineIcon />
+              Delete
+            </MenuItem>)
+        }
       </Menu>
     </Card>
   )
