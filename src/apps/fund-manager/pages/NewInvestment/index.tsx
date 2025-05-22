@@ -182,6 +182,7 @@ const NewInvestment: React.FC = () => {
             {/* Investment Type */}
             <Grid size={{ xs: 12, md: 6 }}>
               <Select
+                disabled={fundId}
                 rounded={false}
                 label="Investment Type"
                 name="investmentType"
