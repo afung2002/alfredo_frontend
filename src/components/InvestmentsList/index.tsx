@@ -8,6 +8,8 @@ import { InvestmentResponse } from "../../services/api/baseApi/types";
 import { SerializedError } from "@reduxjs/toolkit";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import ErrorAlert from "../ErrorAlert";
+import { Apps } from "../../constants/apps";
+import { useAppContext } from "../../context/appContext";
 
 type InvestmentsListProps = {
   investments: InvestmentResponse[] | undefined;
@@ -27,7 +29,7 @@ const itemVariants = {
 
 const InvestmentsList = ({ investments, isLoading, error }: InvestmentsListProps) => {
   const navigate = useNavigate();
-
+  const { app } = useAppContext();
   if (isLoading) {
     return (
       <div className="flex justify-center items-center w-full h-full">
@@ -36,10 +38,28 @@ const InvestmentsList = ({ investments, isLoading, error }: InvestmentsListProps
     );
   }
 
+
   if (error) {
     return (
       <ErrorAlert error={error} />
     );
+  }
+  const handleInvestmentCardClick = (investment: any) => {
+    switch (app) {
+      case Apps.FUND_MANAGER:
+        navigate(
+          Routes.FUND_MANAGER_INVESTMENT.replace(
+            ":investmentId",
+            investment.id.toString()
+          )
+        );
+        break;
+      case Apps.LIMITED_PARTNER:
+        return;
+        break;
+      default:
+        break;
+    }
   }
 
   return (
@@ -57,14 +77,7 @@ const InvestmentsList = ({ investments, isLoading, error }: InvestmentsListProps
             >
               <InvestmentCard
                 investment={investment}
-                onClick={() =>
-                  navigate(
-                    Routes.FUND_MANAGER_INVESTMENT.replace(
-                      ":investmentId",
-                      investment.id.toString()
-                    )
-                  )
-                }
+                onClick={() => handleInvestmentCardClick(investment)}
               />
             </motion.div>
           ))}
