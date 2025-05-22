@@ -436,7 +436,7 @@ const FundView: React.FC = () => {
                   },
                 }}
               >
-                Add New
+                Invite
               </Button>
             </Box>
             <LimitedPartnersList page="Fund" limitedPartners={fundData?.limited_partners} isLoading={isLoadingLimitedPartners} />
