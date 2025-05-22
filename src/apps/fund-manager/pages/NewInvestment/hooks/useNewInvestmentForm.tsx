@@ -37,7 +37,7 @@ const schema = z.object({
   limitedPartner: z.string().optional(),
 });
 
-const useNewInvestmentForm = (id: string | null, fundId) => {
+const  useNewInvestmentForm = (id: string | null, fundId) => {
   const navigate = useNavigate();
   const [createInvestment, { isLoading }] = useCreateInvestmentMutation();
   const [updateInvestment] = useUpdateInvestmentMutation();
@@ -103,11 +103,11 @@ const useNewInvestmentForm = (id: string | null, fundId) => {
     }
   }, [isInvestmentLoading, investmentData, isInvestmentError, companyData]);
 
-  const onSubmit = async (data: any, fundId: string | null = null) => {
+  const onSubmit = async (data: any) => {
     console.log('investment type', data.investmentType);
     console.log('fundId', fundId);
     console.log('data', data);
-
+    debugger
     try {
       const payload = {
         company: data.company,
