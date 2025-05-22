@@ -12,15 +12,7 @@ import {
 
 // Validation schemas
 const selectExistingSchema = z.object({
-  limitedPartner: z.object(
-    {
-      email: z.string().email(),
-      name: z.string().min(1),
-    },
-    {
-      required_error: 'Limited partner is required',
-    }
-  ),
+  limitedPartner: z.string(),
   investedAmount: z
     .string()
     .refine((val) => parseCommaSeparatedNumber(val)! >= 0, {
@@ -61,7 +53,8 @@ export type InviteLimitedPartnerFormData = z.infer<typeof inviteNewSchema>;
 const useLimitedPartnerFundForm = (
   fundId: number | string | undefined,
   closeModal: () => void
-, openFeedbackModal: () => void) => {
+, openFeedbackModal: () => void,
+filteredLimitedPartners: any[]) => {
 
   const [createInvitation, { isLoading: invitingLP }] =
     useCreateInvitationMutation();
@@ -103,14 +96,22 @@ const useLimitedPartnerFundForm = (
 
   // ✅ Existing LP submission
   const onSubmitExisting = async (data: SelectLimitedPartnerFormData) => {
+    debugger
     if (!fundId) return;
+    const email = filteredLimitedPartners.find(
+      (lp) => lp.user_id === data.limitedPartner
+    )?.email;
+    const name = filteredLimitedPartners.find(
+      (lp) => lp.user_id === data.limitedPartner
+    )?.name;
+    if (!email || !name) return;
     try {
       await createInvitation({
         fund: Number(fundId),
         invested_amount: data.investedAmount.replace(/,/g, ''),
-        email_address: data.limitedPartner.email,
+        email_address: email,
         public_metadata: {
-          name: data.limitedPartner.name,
+          name: name,
           role: 'limited_partner',
         },
       }).unwrap();
