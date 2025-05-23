@@ -29,9 +29,9 @@ const { user, isSignedIn, isLoaded } = useUser();
   }
 
 
-  if (isSignedIn) {
-    return <Navigate to={Routes.APPS} />;
-  }
+  // if (isSignedIn) {
+  //   return <Navigate to={Routes.APPS} />;
+  // }
 
   const lp = user?.publicMetadata?.isLimitedPartner;
   return (
