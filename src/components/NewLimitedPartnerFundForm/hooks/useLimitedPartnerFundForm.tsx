@@ -96,7 +96,6 @@ filteredLimitedPartners: any[]) => {
 
   // ✅ Existing LP submission
   const onSubmitExisting = async (data: SelectLimitedPartnerFormData) => {
-    debugger
     if (!fundId) return;
     const email = filteredLimitedPartners.find(
       (lp) => lp.user_id === data.limitedPartner

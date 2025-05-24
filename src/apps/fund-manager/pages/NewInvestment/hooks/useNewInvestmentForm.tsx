@@ -107,7 +107,6 @@ const  useNewInvestmentForm = (id: string | null, fundId) => {
     console.log('investment type', data.investmentType);
     console.log('fundId', fundId);
     console.log('data', data);
-    debugger
     try {
       const payload = {
         company: data.company,
