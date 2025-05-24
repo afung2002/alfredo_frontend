@@ -1,3 +1,4 @@
+// useUploadDocumentForm.ts
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -23,8 +24,7 @@ const useUploadDocumentForm = (
   onSuccess: () => void,
   investmentId?: string,
   fundId?: string,
-  limitedPartner?: string,
-
+  limitedPartner?: string
 ) => {
   const [uploadDocument, { isLoading }] = useUploadDocumentMutation();
 
@@ -33,7 +33,6 @@ const useUploadDocumentForm = (
     handleSubmit,
     formState: { errors },
     reset,
-    setValue,
     watch,
     getValues,
   } = useForm<UploadDocumentFormData>({
@@ -50,62 +49,62 @@ const useUploadDocumentForm = (
     mode: 'onChange',
   });
 
-  // Automatically set documentType if fundId or investmentId is passed
-  // useEffect(() => {
-  //   if (investmentId) {
-  //     setValue('documentType', 'fund-investment');
-  //   } else if (fundId) {
-  //     setValue('documentType', 'fund-management');
-  //   }
-  // }, [investmentId, fundId, setValue]);
-
-  // Submits the form and posts to API
   const submitForm = async () => {
-    await handleSubmit(async (data) => {
+    await handleSubmit(async () => {
       try {
-        const file = data.file[0]; // extract from FileList
+        const file = getValues('file')[0];
         const documentType = getValues('documentType');
 
-        // Prepare payload conditionally
         const payload: any = {
-          name: data.docTitle,
-          description: data.description,
+          name: getValues('docTitle'),
+          description: getValues('description'),
           file,
         };
 
+        // if no explicit documentType and external IDs passed
         if (!documentType && fundId) {
           payload.fund = fundId;
         }
-
         if (!documentType && investmentId) {
           payload.investment = investmentId;
         }
 
+        // fund-management branch
         if (documentType === 'fund-management') {
-          payload.fund = getValues('fund');
+          const fundVal = getValues('fund');
+          payload.fund = fundVal === 'no_funds' ? null : fundVal; // 🔥 treat no_funds as null
         }
 
+        // fund-investment branch
         if (documentType === 'fund-investment') {
-          payload.fund = getValues('fund');
-          payload.investment = getValues('investment');
-          payload.company_name = getValues('company');
+          const fundVal = getValues('fund');
+          const invVal  = getValues('investment');
+          const compVal = getValues('company');
+          payload.fund         = fundVal === 'no_funds'        ? null : fundVal; // 🔥
+          payload.investment   = invVal  === 'no_investments'  ? null : invVal;  // 🔥
+          payload.company_name = compVal === 'no_companies'    ? null : compVal; // 🔥
         }
 
+        // angel-investment branch
         if (documentType === 'angel-investment') {
-          payload.company_name = getValues('company');
+          const invVal  = getValues('investment');
+          const compVal = getValues('company');
+          payload.investment   = invVal  === 'no_investments'  ? null : invVal;  // 🔥
+          payload.company_name = compVal === 'no_companies'    ? null : compVal; // 🔥
         }
+
         if (limitedPartner) {
           payload.limited_partner = limitedPartner;
         }
-        await uploadDocument(payload).unwrap();
 
+        await uploadDocument(payload).unwrap();
         reset();
         onSuccess();
       } catch (err: any) {
         const message = err?.data?.message || 'Upload failed. Try again.';
         console.error('Upload error:', message);
       }
-    })(); // Immediately invoke
+    })();
   };
 
   return {
@@ -113,7 +112,6 @@ const useUploadDocumentForm = (
     submitForm,
     uploadErrors: errors,
     uploadIsLoading: isLoading,
-    setValue,
     watch,
   };
 };
