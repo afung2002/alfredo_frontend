@@ -13,7 +13,7 @@ const LandingPage = () => {
 const { user, isSignedIn, isLoaded } = useUser();
   const [searchParams] = useSearchParams();
   const ticket = searchParams.get('__clerk_ticket');
-  debugger
+  console.log('ticket', ticket);
   const [createLimitedPartner, { isLoading: creatingLP }] =
     useAcceptLimitedPartnerInvitationMutation();
   const [createFundLimitedPartner, { isLoading: creatingFundLP }] =
