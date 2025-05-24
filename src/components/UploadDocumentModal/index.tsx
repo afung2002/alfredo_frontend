@@ -1,3 +1,4 @@
+// UploadDocumentModal.tsx
 import {
   Dialog,
   DialogTitle,
@@ -11,7 +12,11 @@ import Input from '@components/Input';
 import Button from '@components/Button';
 import useUploadDocumentForm from './hooks/useUploadDocumentForm';
 import Select from '../Select';
-import { useLazyGetCompaniesQuery, useLazyGetFundsQuery, useGetInvestmentsQuery } from '@services/api/baseApi';
+import {
+  useLazyGetCompaniesQuery,
+  useLazyGetFundsQuery,
+  useGetInvestmentsQuery,
+} from '@services/api/baseApi';
 import { useEffect, useState } from 'react';
 import { getReferencedCompanies, getReferencedFunds } from '../../utils';
 
@@ -32,8 +37,8 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
 }) => {
   const [getFunds, { data: funds, isLoading: isFundsLoading }] = useLazyGetFundsQuery();
   const [getCompanies, { data: companies }] = useLazyGetCompaniesQuery();
-  const { data: investments, isLoading: isInvestmentsLoading } = useGetInvestmentsQuery();
-
+  const { data: investments, isLoading: isInvestmentsLoading } = useGetInvestmentsQuery(); // 🔥 new
+  
   const [filteredFunds, setFilteredFunds] = useState([]);
   const [filteredCompanies, setFilteredCompanies] = useState([]);
   const [isAngelInvestmentDisabled, setIsAngelInvestmentDisabled] = useState(true);
@@ -45,12 +50,18 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
     uploadErrors,
     uploadIsLoading,
     watch,
-  } = useUploadDocumentForm(() => {
-    onClose();
-  }, investmentId, fundId, limitedPartnerId);
+  } = useUploadDocumentForm(
+    () => {
+      onClose();
+    },
+    investmentId,
+    fundId,
+    limitedPartnerId
+  );
 
   const documentType = watch('documentType');
   const fund = watch('fund');
+  // const selectedInvestment = watch('investment'); // you can watch this if needed
 
   useEffect(() => {
     if (open) {
@@ -81,7 +92,9 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
       setFilteredCompanies(companiesList || []);
     }
   }, [fund, documentType, investments, companies]);
-
+  const angelInvestments = investments?.filter(
+    (inv) => inv.type === 'ANGEL'
+  ) || [];
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Upload New Document</DialogTitle>
@@ -125,7 +138,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
               </Grid>
             )}
 
-            {documentType === 'fund-investment' || documentType === 'fund-management'  && (
+            {(documentType === 'fund-investment' || documentType === 'fund-management') && (
               <Grid size={{ xs: 12 }}>
                 <Select
                   rounded={false}
@@ -136,11 +149,33 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
                     isFundsLoading || isInvestmentsLoading
                       ? [{ value: '', label: 'Loading funds...' }]
                       : filteredFunds.length > 0
-                        ? filteredFunds.map((fund) => ({
-                            value: String(fund.id ?? 'Unknown'),
-                            label: fund.name ?? 'Unknown',
-                          }))
-                        : [{ value: 'no_funds', label: 'No funds found' }]
+                      ? filteredFunds.map((f) => ({
+                          value: String(f.id ?? 'Unknown'),
+                          label: f.name ?? 'Unknown',
+                        }))
+                      : [{ value: 'no_funds', label: 'No funds found' }]
+                  }
+                />
+              </Grid>
+            )}
+
+            {/* 🔥 New: Select Investment for angel-investment */}
+            {documentType === 'angel-investment' && (
+              <Grid size={{ xs: 12 }}>
+                <Select
+                  rounded={false}
+                  label="Select Investment"
+                  name="investment"
+                  control={uploadControl}
+                  options={
+                    isInvestmentsLoading
+                      ? [{ value: '', label: 'Loading investments...' }]
+                      : angelInvestments && angelInvestments.length > 0
+                      ? angelInvestments.map((inv) => ({
+                          value: String(inv.id),
+                          label: `Investment ${inv.id}`,
+                        }))
+                      : [{ value: 'no_investments', label: 'No investments found' }]
                   }
                 />
               </Grid>
@@ -157,11 +192,11 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
                     isFundsLoading || isInvestmentsLoading
                       ? [{ value: '', label: 'Loading companies...' }]
                       : filteredCompanies.length > 0
-                        ? filteredCompanies.map((company) => ({
-                            value: company.name,
-                            label: company.name,
-                          }))
-                        : [{ value: 'no_companies', label: 'No companies found' }]
+                      ? filteredCompanies.map((company) => ({
+                          value: company.name,
+                          label: company.name,
+                        }))
+                      : [{ value: 'no_companies', label: 'No companies found' }]
                   }
                 />
               </Grid>
