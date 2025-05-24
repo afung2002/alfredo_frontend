@@ -24,13 +24,13 @@ const schema = z.object({
   company: z.string().min(1, 'Company is required'),
   investedAmount: z.string()
     .min(1)
-    .refine((val) => parseCommaSeparatedNumber(val)! > 0, { message: 'Must be greater than 0' }),
+    .refine((val) => parseCommaSeparatedNumber(val)! >= 0, { message: 'Must be equal or greater than 0' }),
   estimatedValue: z.string()
     .min(1)
-    .refine((val) => parseCommaSeparatedNumber(val)! > 0, { message: 'Must be greater than 0' }),
+    .refine((val) => parseCommaSeparatedNumber(val)! >= 0, { message: 'Must be equal or greater than 0' }),
   postMoneyValuation: z.string()
     .min(1)
-    .refine((val) => parseCommaSeparatedNumber(val)! > 0, { message: 'Must be greater than 0' }),
+    .refine((val) => parseCommaSeparatedNumber(val)! >= 0, { message: 'Must be equal or greater than 0' }),
   investmentDate: z.string().min(1),
   investmentType: z.enum(['FUND', 'ANGEL']),
   fund: z.string().optional(),

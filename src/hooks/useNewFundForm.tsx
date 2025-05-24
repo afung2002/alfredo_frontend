@@ -33,10 +33,10 @@ const schema = z.object({
   legalEntity: z.string().min(1, 'Legal entity is required'),
   fundSize: z.string()
     .min(1)
-    .refine((val) => parseCommaSeparatedNumber(val)! > 0, { message: 'Must be greater than 0' }),
+    .refine((val) => parseCommaSeparatedNumber(val)! >= 0, { message: 'Must be equal or greater than 0' }),
   estimatedValue: z.string()
     .min(1)
-    .refine((val) => parseCommaSeparatedNumber(val)! > 0, { message: 'Must be greater than 0' }),
+    .refine((val) => parseCommaSeparatedNumber(val)! >= 0, { message: 'Must be equal or greater than 0' }),
 });
 
 export type NewFundFormData = z.infer<typeof schema>;
