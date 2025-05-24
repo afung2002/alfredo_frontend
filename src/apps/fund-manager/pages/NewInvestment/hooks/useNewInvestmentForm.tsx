@@ -18,6 +18,7 @@ import {
   parseCommaSeparatedNumber,
 } from '@utils/index';
 import { useCommaFormattingWatcher } from '@hooks/useCommaFormattingWatcher';
+import { useUser } from '@clerk/clerk-react';
 
 const schema = z.object({
   company: z.string().min(1, 'Company is required'),
@@ -37,8 +38,9 @@ const schema = z.object({
   limitedPartner: z.string().optional(),
 });
 
-const  useNewInvestmentForm = (id: string | null, fundId) => {
+const useNewInvestmentForm = (id: string | null, fundId) => {
   const navigate = useNavigate();
+  const { user } = useUser();
   const [createInvestment, { isLoading }] = useCreateInvestmentMutation();
   const [updateInvestment] = useUpdateInvestmentMutation();
   const { data: investmentData, isLoading: isInvestmentLoading, error: isInvestmentError } = useGetInvestmentByIdQuery(+id, {
@@ -104,27 +106,46 @@ const  useNewInvestmentForm = (id: string | null, fundId) => {
   }, [isInvestmentLoading, investmentData, isInvestmentError, companyData]);
 
   const onSubmit = async (data: any) => {
-    console.log('investment type', data.investmentType);
-    console.log('fundId', fundId);
-    console.log('data', data);
-    try {
-      const payload = {
-        company: data.company,
-        estimated_value: removeCommas(data.estimatedValue),
-        post_money_valuation: removeCommas(data.postMoneyValuation),
-        investment_date: data.investmentDate,
-        type: data.investmentType,
-        fund: data.investmentType === 'FUND' ? (fundId || data.fund) : null,
-        status: data.status,
-        amount: removeCommas(data.investedAmount),
-        fund_manager_id: data.limitedPartner || null,
-      };
 
-      if (investmentData) {
-        await updateInvestment({ id: investmentData.id, ...payload }).unwrap();
-      } else {
-        await createInvestment(payload).unwrap();
+    try {
+      if (data.investmentType === 'FUND') {
+        const payload = {
+          company: data.company,
+          estimated_value: removeCommas(data.estimatedValue),
+          post_money_valuation: removeCommas(data.postMoneyValuation),
+          investment_date: data.investmentDate,
+          type: data.investmentType,
+          fund: data.investmentType === 'FUND' ? (fundId || data.fund) : null,
+          status: data.status,
+          amount: removeCommas(data.investedAmount),
+          fund_manager_id: user?.id,
+        }
+        if (investmentData) {
+          await updateInvestment({ id: investmentData.id, ...payload }).unwrap();
+        } else {
+          await createInvestment(payload).unwrap();
+        }
+      } 
+      if (data.investmentType === 'ANGEL') {
+        const payload = {
+          company: data.company,
+          estimated_value: removeCommas(data.estimatedValue),
+          post_money_valuation: removeCommas(data.postMoneyValuation),
+          investment_date: data.investmentDate,
+          type: data.investmentType,
+          status: data.status,
+          amount: removeCommas(data.investedAmount),
+          fund_manager_id: user?.id,
+        }
+        if (investmentData) {
+          await updateInvestment({ id: investmentData.id, ...payload }).unwrap();
+        } else {
+          await createInvestment(payload).unwrap();
+        }
       }
+
+
+
 
       reset();
       navigate(Routes.FUND_MANAGER);
