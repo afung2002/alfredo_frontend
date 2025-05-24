@@ -18,7 +18,7 @@ export enum Routes {
   FUND_MANAGER_INVITATIONS = `${Routes.FUND_MANAGER}/invitations`,
 
   FUND_MANAGER_NEW_LIMITED_PARTNER = `${Routes.FUND_MANAGER}/limited-partners/new-limited-partner`,
-  FUND_MANAGER_LIMITED_PARTNER = `${Routes.FUND_MANAGER}/limited-partners/:limitedPartnerId`,
+  FUND_MANAGER_LIMITED_PARTNER = `${Routes.FUND_MANAGER}/funds/:fundId/limited-partners/:limitedPartnerId`,
   FUND_MANAGER_LIMITED_PARTNER_EDIT = `${Routes.FUND_MANAGER}/limited-partners/:limitedPartnerId/edit`,
   FUND_MANAGER_LIMITED_PARTNERS = `${Routes.FUND_MANAGER}/limited-partners`,
   LIMITED_PARTNER_FUNDS = `${Routes.APPS}/limited-partner`,
