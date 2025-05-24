@@ -86,7 +86,7 @@ export type BaseInvestment = {
   type: 'FUND' | 'ANGEL'; // Adjust enum if needed
   status: string;
   fund_manager_id: string | null;
-  fund: number;
+  fund?: number;
   company: CompanyResponse;
 };
 
