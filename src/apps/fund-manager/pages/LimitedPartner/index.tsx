@@ -13,7 +13,7 @@ import { searchByTitle } from "../../../../utils/uiUtils";
 import ErrorAlert from "../../../../components/ErrorAlert";
 
 const LimitedPartner: React.FC = () => {
-  const { limitedPartnerId } = useParams<{ limitedPartnerId: string }>();
+  const { limitedPartnerId, fundId } = useParams<{ limitedPartnerId: string, fundId: string }>();
   const location = useLocation();
   const { state } = location
   const { data: limitedPartner, error, isLoading } = useGetLimitedPartnerByIdQuery(limitedPartnerId);
@@ -177,6 +177,7 @@ const LimitedPartner: React.FC = () => {
       </Box>
       <DocumentsList documents={filteredDocs} isLoading={isDocumentsLoading} />
       <UploadDocumentModal
+        fundId={fundId}
         open={isUploadModalOpen}
         onClose={handleModalClose}
         limitedPartnerId={limitedPartnerId}
