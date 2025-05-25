@@ -8,33 +8,37 @@ import { useAcceptLimitedPartnerInvitationMutation, useCreateFundLimitedPartnerM
 import { Routes } from '../../constants/routes';
 import { setTicket } from '../../redux/slices/user';
 import { useDispatch } from 'react-redux';
+import { validateEmail } from '../../utils/validationUtils';
 const LandingPage = () => {
   const dispatch = useDispatch();
-const { user, isSignedIn, isLoaded } = useUser();
-console.log('user', useUser());
+  const { user, isSignedIn, isLoaded } = useUser();
   const [searchParams] = useSearchParams();
   const ticket = searchParams.get('__clerk_ticket');
-  console.log('ticket', ticket);
+  const isValidTicket = ticket && validateEmail(ticket);
+  const invId = searchParams.get('invitationId') || '1234';
+  const role = searchParams.get('role') || 'limitedPartner';
+  const email = searchParams.get('email') || 'islam.sayed8@gmail.com';
+  const username = searchParams.get('username') || 'username';
   const [createLimitedPartner, { isLoading: creatingLP }] =
     useAcceptLimitedPartnerInvitationMutation();
   const [createFundLimitedPartner, { isLoading: creatingFundLP }] =
     useCreateFundLimitedPartnerMutation();
-  
+
   useEffect(() => {
     if (ticket) {
       dispatch(setTicket(ticket));
     }
   }, [ticket]);
 
-  if (!isLoaded || creatingLP ) {
+  if (!isLoaded || creatingLP) {
     return <Loader />;
   }
-
+  
 
   // if (isSignedIn) {
   //   return <Navigate to={Routes.APPS} />;
   // }
-
+  debugger
   const lp = user?.publicMetadata?.isLimitedPartner;
   return (
     <Box
@@ -47,11 +51,15 @@ console.log('user', useUser());
       }}
     >
       <Container maxWidth="sm">
-        {ticket ? (
-          <SignUp forceRedirectUrl={Routes.FUND_MANAGER_FUNDS} />
+        {invId && email && role ? (
+          <SignUp 
+            initialValues={{
+            emailAddress: email,
+            username: username,}}
+            forceRedirectUrl={Routes.APPS} />
         ) : (
           <SignIn
-          forceRedirectUrl={Routes.APPS}  
+            forceRedirectUrl={Routes.APPS}
             appearance={{
               elements: {
                 rootBox: {
