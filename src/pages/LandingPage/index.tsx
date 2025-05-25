@@ -11,6 +11,7 @@ import { useDispatch } from 'react-redux';
 const LandingPage = () => {
   const dispatch = useDispatch();
 const { user, isSignedIn, isLoaded } = useUser();
+console.log('user', useUser());
   const [searchParams] = useSearchParams();
   const ticket = searchParams.get('__clerk_ticket');
   console.log('ticket', ticket);
