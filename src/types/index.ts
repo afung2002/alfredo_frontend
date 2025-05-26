@@ -3,6 +3,7 @@ import { CompanyResponse } from "../services/api/baseApi/types";
 // InvestmentDetails aligned with InvestmentResponse and embedded company
 export interface InvestmentDetails {
   id: number;
+  name?: string;
   created_at: string;
   updated_at: string;
   amount: string;
