@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAcceptLimitedPartnerInvitationMutation, useCreateFundLimitedPartnerMutation } from '@services/api/baseApi';
 import { Routes } from '../../constants/routes';
-import { setTicket } from '../../redux/slices/user';
+import { setInvitationId, setTicket } from '../../redux/slices/user';
 import { useDispatch } from 'react-redux';
 import { validateEmail } from '../../utils/validationUtils';
 const LandingPage = () => {
@@ -15,16 +15,15 @@ const LandingPage = () => {
   const [searchParams] = useSearchParams();
   const ticket = searchParams.get('__clerk_ticket');
   const invitationId = searchParams.get('invitation_id');
-
+  
   const [createLimitedPartner, { isLoading: creatingLP }] =
     useAcceptLimitedPartnerInvitationMutation();
   const [createFundLimitedPartner, { isLoading: creatingFundLP }] =
     useCreateFundLimitedPartnerMutation();
 
   useEffect(() => {
-    if (ticket) {
-      dispatch(setTicket(ticket));
-    }
+    if (ticket) dispatch(setTicket(ticket));
+    if (invitationId) dispatch(setInvitationId(invitationId));
   }, [ticket]);
 
   if (!isLoaded || creatingLP) {

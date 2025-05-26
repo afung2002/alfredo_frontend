@@ -67,5 +67,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, removeUser, addAppToUser, addInvestmentsToUser, setTicket, removeTicket } = userSlice.actions;
+export const { setUser, removeUser, addAppToUser, addInvestmentsToUser, setTicket, removeTicket, setInvitationId, removeInvitationId } = userSlice.actions;
 export default userSlice.reducer;
