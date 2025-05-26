@@ -14,11 +14,8 @@ const LandingPage = () => {
   const { user, isSignedIn, isLoaded } = useUser();
   const [searchParams] = useSearchParams();
   const ticket = searchParams.get('__clerk_ticket');
-  const isValidTicket = ticket && validateEmail(ticket);
-  const invId = searchParams.get('invitationId') || '1234';
-  const role = searchParams.get('role') || 'limitedPartner';
-  const email = searchParams.get('email') || 'islam.sayed8@gmail.com';
-  const username = searchParams.get('username') || 'username';
+  const invitationId = searchParams.get('invitation_id');
+
   const [createLimitedPartner, { isLoading: creatingLP }] =
     useAcceptLimitedPartnerInvitationMutation();
   const [createFundLimitedPartner, { isLoading: creatingFundLP }] =
@@ -38,7 +35,9 @@ const LandingPage = () => {
   // if (isSignedIn) {
   //   return <Navigate to={Routes.APPS} />;
   // }
-  debugger
+  console.log('user', user);
+  console.log('invitationId', invitationId);
+
   const lp = user?.publicMetadata?.isLimitedPartner;
   return (
     <Box
@@ -51,11 +50,8 @@ const LandingPage = () => {
       }}
     >
       <Container maxWidth="sm">
-        {invId && email && role ? (
+        {invitationId && ticket ? (
           <SignUp 
-            initialValues={{
-            emailAddress: email,
-            username: username,}}
             forceRedirectUrl={Routes.APPS} />
         ) : (
           <SignIn

@@ -2,25 +2,24 @@ import { Outlet } from "react-router-dom"
 import DashboardNavigation from "@components/DashboardNavigation"
 import { useUser } from "@clerk/clerk-react";
 import { useSelector } from "react-redux";
-import { selectUserTicket } from "../../redux/selectors/user.selector";
+import { selectUserInvitationId, selectUserTicket } from "../../redux/selectors/user.selector";
 import { useEffect } from "react";
 import { useAcceptLimitedPartnerInvitationMutation } from "../../services/api/baseApi";
 const MasterLayout = () => {
   const { user } = useUser();
   const ticket = useSelector(selectUserTicket);
+  const invitationId = useSelector(selectUserInvitationId)
   const [createLimitedPartner, { isLoading: creatingLP }] =
     useAcceptLimitedPartnerInvitationMutation();
   useEffect(() => {
-    if (ticket && user) {
-      const fund_id = user.publicMetadata.fund_id as number | undefined;
-      const invested_amount = user.publicMetadata.invested_amount as number | undefined;
+    if (ticket && user && invitationId) {
       const name = user.publicMetadata.name as string | undefined;
       const email = user.emailAddresses[0].emailAddress as string | undefined;
-      createLimitedPartner({  
-        fund: fund_id,
-        name: name,
-        email: user.emailAddresses[0].emailAddress,
-         }
+      createLimitedPartner({
+        invitation_id: invitationId,
+        name,
+        email,
+      }
       );
     }
   }, [ticket, user]);
@@ -28,7 +27,7 @@ const MasterLayout = () => {
     <div className="w-full min-h-screen flex ">
       <DashboardNavigation />
       <div className="p-4 w-full bg-white">
-      <Outlet />
+        <Outlet />
       </div>
     </div>
   )

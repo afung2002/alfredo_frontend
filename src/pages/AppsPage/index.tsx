@@ -1,24 +1,19 @@
 import { useEffect, useState } from 'react';
 import {
   Typography,
-  Tabs,
-  Tab,
-  TextField,
   Grid,
 } from '@mui/material';
 import AppCard from '@components/AppCard';
 import { APP_CARDS } from '@constants/appCards';
-import { APPS_FILTER_TABS } from '@constants/index';
 import { useDispatch } from 'react-redux';
 import { addAppToUser } from '@redux/slices/user';
 import { AppType } from '../../types';
 import { searchByTitle } from '@utils/uiUtils';
 import Input from '../../components/Input';
 import { useForm } from 'react-hook-form';
-import { SignUp } from '@clerk/clerk-react';
 import { useSignUp } from '@clerk/clerk-react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { UserProvider, useUserContext } from '../../context/userContext';
+import { useUserContext } from '../../context/userContext';
 const AppsPage = () => {
   const { signUp, setActive } = useSignUp();
   const [searchParams] = useSearchParams();
@@ -28,7 +23,7 @@ const AppsPage = () => {
   const [password, setPassword] = useState('');   
   const [verifying, setVerifying] = useState(false);
   const [error, setError] = useState('');
-
+  
   const ticket = searchParams.get('__clerk_ticket');
 
   useEffect(() => {

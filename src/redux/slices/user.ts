@@ -14,6 +14,7 @@ interface UserState {
   savedApps: AppType[] | null;
   investments: InvestmentDetails[] | null;
   ticket: string | null;
+  invitationId: string | null;
 }
 
 const initialState: UserState = {
@@ -22,6 +23,7 @@ const initialState: UserState = {
   savedApps: null,
   investments: null,
   ticket: null,
+  invitationId: null,
 };
 
 const userSlice = createSlice({
@@ -55,6 +57,12 @@ const userSlice = createSlice({
     },
     removeTicket: (state) => {
       state.ticket = null;
+    },
+    setInvitationId: (state, action: PayloadAction<string | null>) => {
+      state.invitationId = action.payload;
+    },
+    removeInvitationId: (state) => {
+      state.invitationId = null;
     },
   },
 });
