@@ -173,7 +173,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
                       : angelInvestments && angelInvestments.length > 0
                       ? angelInvestments.map((inv) => ({
                           value: String(inv.id),
-                          label: `Investment ${inv.id}`,
+                          label: `${inv?.company?.name} ${inv?.name ? "-" + inv.name : ''} - (${inv?.investment_date})`,
                         }))
                       : [{ value: 'no_investments', label: 'No investments found' }]
                   }
