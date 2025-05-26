@@ -97,6 +97,7 @@ export type InvestmentResponse = BaseInvestment & {
   created_at: string;
   updated_at: string;
   fund_name: string;
+  name?: string; 
 };
 
 export type InvestmentPayload = BaseInvestment & {
