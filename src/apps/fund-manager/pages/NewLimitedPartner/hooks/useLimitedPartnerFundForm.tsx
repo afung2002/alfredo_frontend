@@ -105,13 +105,14 @@ const useLimitedPartnerFundForm = (closeModal: () => void) => {
       }).unwrap();
       existingLpForm.reset();
       navigate(-1);
-      closeModal();
+      closeModal && closeModal();
     } catch (err) {
       console.error('Error adding existing LP:', err);
     }
   };
 
   const onSubmitInvitation = async (data: InviteLimitedPartnerFormData) => {
+
     try {
       await createInvitation({
         fund: Number(data.fund),
@@ -122,8 +123,9 @@ const useLimitedPartnerFundForm = (closeModal: () => void) => {
           role: 'limited_partner',
         },
       }).unwrap();
+
       inviteLpForm.reset();
-      closeModal();
+      closeModal && closeModal();
       navigate(-1);
     } catch (err) {
       console.error('Error inviting new LP:', err);
