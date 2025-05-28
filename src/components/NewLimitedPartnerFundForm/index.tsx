@@ -7,6 +7,7 @@ import Select from "../Select";
 import { useGetLimitedPartnersQuery } from "../../services/api/baseApi";
 import useLimitedPartnerFundForm from "./hooks/useLimitedPartnerFundForm";
 import { useEffect, useState } from "react";
+import FeedbackModal from "../FeedbackModal";
 
 type NewLimitedPartnerFundFormProps = {
   fundId?: number | string;
@@ -19,7 +20,7 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal, fundLimitedPartners, op
   const navigate = useNavigate();
   const { data: limitedPartnersData, isLoading: limitedPartnersLoading } = useGetLimitedPartnersQuery();
   const [filteredLimitedPartners, setFilteredLimitedPartners] = useState<any[]>([]);
-
+const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   // Pass closeModal to the hook
   const {
     existingLpForm,
@@ -122,7 +123,15 @@ const NewLimitedPartnerFundForm = ({ fundId, closeModal, fundLimitedPartners, op
       </form>
 
     </Card>
-    
+    <FeedbackModal
+      open={isFeedbackModalOpen}
+      setIsFeedbackModalOpen={setIsFeedbackModalOpen}
+      title="Invite Sent!"
+      buttonText="Got it"
+    >
+            <Typography>Your invitation has been sent </Typography>
+      
+    </FeedbackModal>
     </>
   );
 };
