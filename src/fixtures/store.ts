@@ -7,13 +7,15 @@ import type {
   InvestmentResponse,
   InvestmentRequest,
   DocumentResponse,
+  DocumentUploadRequest,
   FundUpdateResponse,
   FundUpdatePostRequest,
   LimitedPartnerResponse,
   LimitedPartner,
   FundLimitedPartnerResponse,
   FundLimitedPartnerRequest,
-  Invitation
+  Invitation,
+  FundDetail
 } from '../services/api/baseApi/types';
 import { mockFunds, mockCompanies, mockInvestments, mockDocuments, mockFundUpdates, mockLimitedPartners, mockInvitations } from './index';
 
@@ -340,7 +342,7 @@ class FixtureStore {
   }
 
   // Fund Detail
-  getFundDetail(id: number) {
+  getFundDetail(id: number): FundDetail | undefined {
     const fund = this.getFundById(id);
     if (!fund) return undefined;
     const fundDocuments = this.documents.filter(d => d.name.includes('Fund'));
