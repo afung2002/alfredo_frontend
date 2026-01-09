@@ -89,7 +89,24 @@ $ yarn run dev
 
 - env.dev  
 
-- env.prod  
+- env.prod
+
+### Fixture Mode (Local Development Without Backend)
+
+To run the frontend without a backend connection, enable fixture mode:
+
+Add to `env/.env.dev`:
+```bash
+VITE_USE_FIXTURES=true
+```
+
+When enabled:
+- All API calls use local fixtures instead of the backend
+- Write operations (POST/PUT/DELETE) are stored in-memory
+- A "Fixture Mode" badge appears in the top-right corner
+- Network latency is simulated (300-800ms)
+
+To switch back to real backend, remove or set `VITE_USE_FIXTURES=false`.  
 
 ## 📂 Folder Structure  
 

@@ -50,11 +50,8 @@ export const routes: RouteObject[] = [
   {
     path: Routes.APPS,
     element: (
-      <ProtectedRoute>
-        {/* <RoleBasedProtectedRoute> */}
           <MasterLayout />
-        {/* </RoleBasedProtectedRoute> */}
-      </ProtectedRoute>
+      
     ),
     children: [
       {
@@ -74,9 +71,9 @@ export const routes: RouteObject[] = [
   {
     path: Routes.FUND_MANAGER,
     element: (
-      <ProtectedRoute>
+
         <FundManagerLayout />
-      </ProtectedRoute>
+
     ),
     children: [
       {

@@ -54,39 +54,41 @@ const AppCard: React.FC<AppCardProps> = ({
     }
   }
   const handleCardClick = () => {
-    const hasAccess = handleAppLock(userRole, id);
+    // const hasAccess = handleAppLock(userRole, id);
+    const hasAccess = true;
+    //remove this after testing
     hasAccess && navigate(path);
   };
   const isSaved = savedApps?.some((app) => app.title === title);
 
   return (
-    <Tooltip
-  title={
-    !handleAppLock(userRole, id)
-      ? 'The application is locked and only accessible to selected users'
-      : ''
-  }
-  placement="top"
-  arrow
-  componentsProps={{
-    tooltip: {
-      sx: {
-        bgcolor: 'white',
-        color: 'black',
-        boxShadow: 3,
-        fontSize: 12,
-      },
-    },
-    arrow: {
-      sx: {
-        color: 'white',
-        '&::before': {
-          boxShadow: '0px 2px 6px rgba(0, 0, 0, 0.2)', // adds shadow to the arrow
-        },
-      },
-    },
-  }}
->
+//     <Tooltip
+//   title={
+//     !handleAppLock(userRole, id)
+//       ? 'The application is locked and only accessible to selected users'
+//       : ''
+//   }
+//   placement="top"
+//   arrow
+//   componentsProps={{
+//     tooltip: {
+//       sx: {
+//         bgcolor: 'white',
+//         color: 'black',
+//         boxShadow: 3,
+//         fontSize: 12,
+//       },
+//     },
+//     arrow: {
+//       sx: {
+//         color: 'white',
+//         '&::before': {
+//           boxShadow: '0px 2px 6px rgba(0, 0, 0, 0.2)', // adds shadow to the arrow
+//         },
+//       },
+//     },
+//   }}
+// >
       <Card
         onClick={handleCardClick}
       sx={{
@@ -111,11 +113,11 @@ const AppCard: React.FC<AppCardProps> = ({
         image={imageUrl}
         title={title}
       />
-      {
+      {/* {
         !handleAppLock(userRole, id) &&
         <img src={LockIcon} alt="lock" className="absolute top-2 left-0 w-16" />
 
-      }
+      } */}
       <CardContent sx={{
         p: '18px',
         flex: 1,
@@ -160,7 +162,7 @@ const AppCard: React.FC<AppCardProps> = ({
         </Tooltip>
       </CardActions>
     </Card>
-    </Tooltip>
+    // </Tooltip>
   );
 };
 

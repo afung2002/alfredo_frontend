@@ -5,6 +5,7 @@ import { lightTheme, darkTheme } from './theme';
 import { useMemo, useState } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import { AppProvider } from './context/appContext';
+import FixtureModeBadge from './components/FixtureModeBadge';
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false); // Can toggle or use system preference
@@ -15,6 +16,7 @@ function App() {
     <BrowserRouter>
       <ThemeProvider theme={theme}>
       <AppProvider>
+        <FixtureModeBadge />
         <AppRoutes />
     </AppProvider>
       </ThemeProvider>
