@@ -12,13 +12,13 @@ const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
 createRoot(document.getElementById('root')!).render(
 
-    <ClerkProvider publishableKey={clerkPubKey}>
-        <Provider store={store}>
-            <PersistGate loading={null} persistor={persistor}>
-                <UserProvider>
+    // <ClerkProvider publishableKey={clerkPubKey}>
+    //     <Provider store={store}>
+    //         <PersistGate loading={null} persistor={persistor}>
+    //             <UserProvider>
                     <App />
-                </UserProvider>
-            </PersistGate>
-        </Provider>
-    </ClerkProvider>
+    //             </UserProvider>
+    //         </PersistGate>
+    //     </Provider>
+    // </ClerkProvider>
 )
