@@ -128,14 +128,36 @@ class FixtureStore {
 
   createInvestment(data: InvestmentRequest): InvestmentResponse {
     const now = new Date().toISOString();
-    const company = this.companies.find(c => c.id === data.company.id) || data.company;
+    // Handle both cases: company as ID (number/string) or as CompanyResponse object
+    let company: CompanyResponse;
+    if (typeof data.company === 'object' && 'id' in data.company) {
+      // Company is already a full object
+      company = this.companies.find(c => c.id === data.company.id) || data.company;
+    } else {
+      // Company is just an ID (number or string)
+      const companyId = typeof data.company === 'string' ? parseInt(data.company, 10) : data.company;
+      const foundCompany = this.companies.find(c => c.id === companyId);
+      if (!foundCompany) {
+        throw new Error(`Company with id ${companyId} not found`);
+      }
+      company = foundCompany;
+    }
+    
+    // Look up the actual fund name if fund ID is provided
+    let fundName = 'Personal';
+    if (data.fund) {
+      const fundId = typeof data.fund === 'string' ? parseInt(data.fund, 10) : data.fund;
+      const fund = this.funds.find(f => f.id === fundId);
+      fundName = fund ? fund.name : `Fund ${fundId}`;
+    }
+    
     const newInvestment: InvestmentResponse = {
       ...data,
       company,
       id: this.nextId.investment++,
       created_at: now,
       updated_at: now,
-      fund_name: data.fund ? `Fund ${data.fund}` : 'Personal',
+      fund_name: fundName,
       name: company.name
     };
     this.investments.push(newInvestment);
@@ -145,6 +167,14 @@ class FixtureStore {
   updateInvestment(id: number, data: Partial<InvestmentRequest>): InvestmentResponse | undefined {
     const investment = this.investments.find(i => i.id === id);
     if (!investment) return undefined;
+    
+    // Update fund_name if fund is being updated
+    if (data.fund !== undefined) {
+      const fundId = typeof data.fund === 'string' ? parseInt(data.fund, 10) : data.fund;
+      const fund = this.funds.find(f => f.id === fundId);
+      investment.fund_name = fund ? fund.name : `Fund ${fundId}`;
+    }
+    
     Object.assign(investment, data, { updated_at: new Date().toISOString() });
     return { ...investment };
   }

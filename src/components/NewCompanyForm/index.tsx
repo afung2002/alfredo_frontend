@@ -3,6 +3,7 @@ import Input from "../Input";
 import useCompanyForm from "./hooks/useCompanyForm";
 import Button from "../Button";
 import { useEffect } from "react";
+import { useGetCompaniesQuery } from '@services/api/baseApi';
 
 type NewCompanyFormProps = {
   onClose?: () => void;
@@ -10,6 +11,7 @@ type NewCompanyFormProps = {
 };
 
 const NewCompanyForm = ({onClose, selectCreatedCompany}: NewCompanyFormProps) => {
+  const { refetch: refetchCompanies } = useGetCompaniesQuery();
   const {
     control,
     handleSubmit,
@@ -21,7 +23,9 @@ const NewCompanyForm = ({onClose, selectCreatedCompany}: NewCompanyFormProps) =>
   } = useCompanyForm();
   useEffect(() => {
     if (createdCompanyId) {
-      selectCreatedCompany(createdCompanyId);
+      refetchCompanies().then(() => {
+        selectCreatedCompany?.(createdCompanyId);
+      });
     }
   }, [createdCompanyId]);
   return (
