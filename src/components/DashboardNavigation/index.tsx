@@ -1,12 +1,12 @@
 import { Box, Button, ButtonGroup } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useClerk } from "@clerk/clerk-react";
+// import { useClerk } from "@clerk/clerk-react";
 import { Routes } from "@constants/routes";
 import LogoBlack from "@assets/Alfred AI.png";
 const DashboardNavigation: React.FC = () => {
   const navigate = useNavigate();
-  const { signOut } = useClerk();
+  // const { signOut } = useClerk();
   const sidebarButtons = [
     { label: "App marketplace", value: "marketplace" },
     { label: "Saved apps", value: "saved" },
@@ -31,12 +31,14 @@ const DashboardNavigation: React.FC = () => {
       return;
     }
     if (value === "logout") {
-      try {
-        await signOut();
-        navigate(Routes.LANDING);
-      } catch (error) {
-        console.error("Error signing out:", error);
-      }
+      // Bypass Clerk for demo - just navigate
+      navigate(Routes.LANDING);
+      // try {
+      //   await signOut();
+      //   navigate(Routes.LANDING);
+      // } catch (error) {
+      //   console.error("Error signing out:", error);
+      // }
       return;
     }
   };

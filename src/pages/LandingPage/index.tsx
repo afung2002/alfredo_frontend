@@ -1,43 +1,45 @@
-import { Box, Container } from '@mui/material';
-import { SignIn, SignUp, useUser } from '@clerk/clerk-react';
-import { Navigate } from 'react-router';
-import Loader from '@components/Loader';
-import { useEffect, useState } from 'react';
+import { Box, Container, Button, Typography } from '@mui/material';
+// import { SignIn, SignUp, useUser } from '@clerk/clerk-react';
+import { Navigate, useNavigate } from 'react-router';
+// import Loader from '@components/Loader';
+import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useAcceptLimitedPartnerInvitationMutation, useCreateFundLimitedPartnerMutation } from '@services/api/baseApi';
+// import { useAcceptLimitedPartnerInvitationMutation, useCreateFundLimitedPartnerMutation } from '@services/api/baseApi';
 import { Routes } from '../../constants/routes';
 import { setInvitationId, setTicket } from '../../redux/slices/user';
 import { useDispatch } from 'react-redux';
-import { validateEmail } from '../../utils/validationUtils';
+// import { validateEmail } from '../../utils/validationUtils';
 const LandingPage = () => {
   const dispatch = useDispatch();
-  const { user, isSignedIn, isLoaded } = useUser();
+  const navigate = useNavigate();
+  // const { user, isSignedIn, isLoaded } = useUser();
   const [searchParams] = useSearchParams();
   const ticket = searchParams.get('__clerk_ticket');
   const invitationId = searchParams.get('invitation_id');
   
-  const [createLimitedPartner, { isLoading: creatingLP }] =
-    useAcceptLimitedPartnerInvitationMutation();
-  const [createFundLimitedPartner, { isLoading: creatingFundLP }] =
-    useCreateFundLimitedPartnerMutation();
+  // const [createLimitedPartner, { isLoading: creatingLP }] =
+  //   useAcceptLimitedPartnerInvitationMutation();
+  // const [createFundLimitedPartner, { isLoading: creatingFundLP }] =
+  //   useCreateFundLimitedPartnerMutation();
 
   useEffect(() => {
     if (ticket) dispatch(setTicket(ticket));
     if (invitationId) dispatch(setInvitationId(invitationId));
-  }, [ticket]);
+  }, [ticket, dispatch, invitationId]);
 
-  if (!isLoaded || creatingLP) {
-    return <Loader />;
-  }
+  // Bypass Clerk for demo - show simple login button
+  // if (!isLoaded || creatingLP) {
+  //   return <Loader />;
+  // }
   
 
   // if (isSignedIn) {
   //   return <Navigate to={Routes.APPS} />;
   // }
-  console.log('user', user);
-  console.log('invitationId', invitationId);
+  // console.log('user', user);
+  // console.log('invitationId', invitationId);
 
-  const lp = user?.publicMetadata?.isLimitedPartner;
+  // const lp = user?.publicMetadata?.isLimitedPartner;
   return (
     <Box
       sx={{
@@ -49,7 +51,21 @@ const LandingPage = () => {
       }}
     >
       <Container maxWidth="sm">
-        {invitationId && ticket ? (
+        <Box sx={{ textAlign: 'center', py: 4 }}>
+          <Typography variant="h4" sx={{ mb: 2 }}>Demo Mode</Typography>
+          <Typography variant="body1" sx={{ mb: 4, color: 'text.secondary' }}>
+            Clerk authentication is disabled for demo purposes
+          </Typography>
+          <Button 
+            variant="contained" 
+            size="large"
+            onClick={() => navigate(Routes.APPS)}
+            sx={{ minWidth: 200 }}
+          >
+            Continue to App
+          </Button>
+        </Box>
+        {/* {invitationId && ticket ? (
           <SignUp 
             forceRedirectUrl={Routes.APPS} />
         ) : (
@@ -66,7 +82,7 @@ const LandingPage = () => {
               },
             }}
           />
-        )}
+        )} */}
       </Container>
     </Box>
   );

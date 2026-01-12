@@ -1,5 +1,5 @@
 //get user from clerk and store role in context
-import { useUser } from '@clerk/clerk-react';
+// import { useUser } from '@clerk/clerk-react';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 interface UserContextType {
@@ -11,14 +11,17 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const { user: clerkUser } = useUser();
-  const [userRole, setUserRole] = useState<string | null>(null);
+  // const { user: clerkUser } = useUser();
+  // Bypass Clerk for demo - provide mock user
+  const mockUser = { id: 'demo-user', publicMetadata: { role: 'fund_manager' } };
+  const [userRole, setUserRole] = useState<string | null>('fund_manager');
   useEffect(() => {
-    if (clerkUser) {
-      setUserRole(clerkUser.publicMetadata.role as string);
-    }
-  }, [clerkUser]);
-  return <UserContext.Provider value={{ user: clerkUser, setUser: setUserRole, userRole }}>{children}</UserContext.Provider>;
+    // if (clerkUser) {
+    //   setUserRole(clerkUser.publicMetadata.role as string);
+    // }
+    setUserRole('fund_manager');
+  }, []);
+  return <UserContext.Provider value={{ user: mockUser, setUser: setUserRole, userRole }}>{children}</UserContext.Provider>;
 };
 
 

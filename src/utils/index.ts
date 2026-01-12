@@ -1,6 +1,6 @@
 import { FundResponse, InvestmentResponse } from "../services/api/baseApi/types";
 import { InvestmentDetails } from "../types";
-import { Clerk } from '@clerk/clerk-js';
+// import { Clerk } from '@clerk/clerk-js';
 import { Path, UseFormSetValue } from 'react-hook-form';
 
 export type InvestmentTotals = {
@@ -63,12 +63,14 @@ export const filterInvitationsByStatus = (invitations: any[], status: string): a
   return invitations.filter(inv => inv.status === status);
 };
 
-const clerk = new Clerk( import.meta.env.VITE_PUBLIC_CLERK_FRONTEND_API_KEY!);
+// const clerk = new Clerk( import.meta.env.VITE_PUBLIC_CLERK_FRONTEND_API_KEY!);
 
 export const getClerkToken = async (template?: string) => {
-  await clerk.load();
-  const token = await clerk.session?.getToken({ template });
-  return token;
+  // Bypass Clerk for demo - return mock token
+  return Promise.resolve('demo-token');
+  // await clerk.load();
+  // const token = await clerk.session?.getToken({ template });
+  // return token;
 };
 
 export function getReferencedFunds(investments: InvestmentResponse[], funds: FundResponse[]): FundResponse[] {

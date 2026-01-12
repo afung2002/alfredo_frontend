@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import { UserProfile } from "@clerk/clerk-react";
+// import { UserProfile } from "@clerk/clerk-react";
 
 const Settings = () => {
   return (
@@ -14,7 +14,11 @@ const Settings = () => {
         Settings
       </Typography>
 
-      <UserProfile
+      <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+        Clerk user profile is disabled for demo purposes.
+      </Typography>
+
+      {/* <UserProfile
         appearance={{
           elements: {
             rootBox: {
@@ -23,7 +27,7 @@ const Settings = () => {
             },
           },
         }}
-      />
+      /> */}
     </Box>
   )
 }
