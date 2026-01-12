@@ -18,7 +18,8 @@ import {
   parseCommaSeparatedNumber,
 } from '@utils/index';
 import { useCommaFormattingWatcher } from '@hooks/useCommaFormattingWatcher';
-import { useUser } from '@clerk/clerk-react';
+// import { useUser } from '@clerk/clerk-react';
+
 
 const schema = z.object({
   company: z.string().min(1, 'Company is required'),
@@ -40,7 +41,9 @@ const schema = z.object({
 
 const useNewInvestmentForm = (id: string | null, fundId) => {
   const navigate = useNavigate();
-  const { user } = useUser();
+  // const { user } = useUser();
+  const user = { id: 'demo-user' };
+  //for demo purpose
   const [createInvestment, { isLoading }] = useCreateInvestmentMutation();
   const [updateInvestment] = useUpdateInvestmentMutation();
   const { data: investmentData, isLoading: isInvestmentLoading, error: isInvestmentError } = useGetInvestmentByIdQuery(+id, {

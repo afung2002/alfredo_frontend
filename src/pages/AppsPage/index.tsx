@@ -11,11 +11,13 @@ import { AppType } from '../../types';
 import { searchByTitle } from '@utils/uiUtils';
 import Input from '../../components/Input';
 import { useForm } from 'react-hook-form';
-import { useSignUp } from '@clerk/clerk-react';
+// import { useSignUp } from '@clerk/clerk-react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useUserContext } from '../../context/userContext';
 const AppsPage = () => {
-  const { signUp, setActive } = useSignUp();
+  // const { signUp, setActive } = useSignUp();
+  const signUp = null;
+  const setActive = null;
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { userRole } = useUserContext();

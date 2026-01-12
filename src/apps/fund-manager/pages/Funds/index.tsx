@@ -16,7 +16,7 @@ import { FUNDS_SORT_OPTIONS } from '../../../../constants';
 import ErrorAlert from '../../../../components/ErrorAlert';
 const Funds = () => {
   const { data: fundsData, isLoading, error } = useGetFundsQuery();
-  const { user } = useUser();
+  // const { user } = useUser();
   const { control, watch } = useForm({
     defaultValues: {
       'searchFunds': ''
