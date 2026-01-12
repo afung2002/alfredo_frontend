@@ -9,10 +9,10 @@ import { UserProvider } from './context/userContext.tsx';
 
 
 // const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
-const clerkPubKey = 'pk_test_aW5ub2NlbnQtbW9sbHVzay0yLmNsZXJrLmFjY291bnRzLmRldiQ';
+// const clerkPubKey = 'pk_test_aW5ub2NlbnQtbW9sbHVzay0yLmNsZXJrLmFjY291bnRzLmRldiQ';
 createRoot(document.getElementById('root')!).render(
 
-    <ClerkProvider publishableKey={clerkPubKey}>
+    // <ClerkProvider publishableKey={clerkPubKey}>
          <Provider store={store}>
              <PersistGate loading={null} persistor={persistor}>
                  <UserProvider>
@@ -20,5 +20,5 @@ createRoot(document.getElementById('root')!).render(
                  </UserProvider>
              </PersistGate>
          </Provider>
-    </ClerkProvider>
+    // </ClerkProvider>
 )
