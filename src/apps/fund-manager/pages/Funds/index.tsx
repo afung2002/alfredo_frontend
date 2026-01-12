@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form';
 import { useGetFundsQuery } from '@services/api/baseApi';
 import { calculateFundTotals, formatNumberString } from '../../../../utils';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useUser } from '@clerk/clerk-react';
+// import { useUser } from '@clerk/clerk-react';
 import SortDropdown from '../../../../components/SortDropdown';
 import { FUNDS_SORT_OPTIONS } from '../../../../constants';
 import ErrorAlert from '../../../../components/ErrorAlert';

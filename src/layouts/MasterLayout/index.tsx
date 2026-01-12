@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom"
 import DashboardNavigation from "@components/DashboardNavigation"
-import { useUser } from "@clerk/clerk-react";
+// import { useUser } from "@clerk/clerk-react";
 import { useSelector } from "react-redux";
 import { selectUserInvitationId, selectUserTicket } from "../../redux/selectors/user.selector";
 import { useEffect } from "react";
